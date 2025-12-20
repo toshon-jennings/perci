@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { ChevronRight, ChevronDown, Brain, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export function ThinkingDisplay({ thinking, tokens, duration, isStreaming = false }) {
     const [isExpanded, setIsExpanded] = useState(false);
 
+    // Don't render if no thinking content
     if (!thinking && !isStreaming) return null;
 
     // Calculate character count if tokens not provided
@@ -28,9 +31,6 @@ export function ThinkingDisplay({ thinking, tokens, duration, isStreaming = fals
             handleToggle();
         }
     };
-
-    // Get first line preview when collapsed
-    const previewText = thinking ? thinking.split('\n')[0].substring(0, 60) + (thinking.length > 60 ? '...' : '') : '';
 
     return (
         <div className="thinking-container mb-3 rounded-lg overflow-hidden border border-purple-200 dark:border-purple-900/30 bg-gradient-to-br from-indigo-50/50 via-purple-50/30 to-pink-50/20 dark:from-indigo-950/20 dark:via-purple-950/20 dark:to-pink-950/10">
@@ -68,7 +68,7 @@ export function ThinkingDisplay({ thinking, tokens, duration, isStreaming = fals
                     </span>
                     {!isExpanded && thinking && !isStreaming && (
                         <div className="text-xs text-purple-600/70 dark:text-purple-400/70 truncate mt-0.5">
-                            {previewText}
+                            Click to expand reasoning
                         </div>
                     )}
                 </div>
@@ -97,9 +97,11 @@ export function ThinkingDisplay({ thinking, tokens, duration, isStreaming = fals
                         className="overflow-hidden"
                     >
                         <div className="thinking-content border-t border-purple-200/60 dark:border-purple-800/30 p-4 bg-white/40 dark:bg-gray-900/20">
-                            <pre className="text-sm text-gray-700 dark:text-gray-300 font-mono whitespace-pre-wrap leading-relaxed">
-                                {thinking}
-                            </pre>
+                            <div className="prose prose-sm max-w-none dark:prose-invert">
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                    {thinking}
+                                </ReactMarkdown>
+                            </div>
                         </div>
                     </motion.div>
                 )}

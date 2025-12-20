@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { modelService } from '../lib/llm/ModelService';
+import { ModelService, getModelCapabilities } from '../lib/llm/ModelService';
 
+const modelService = new ModelService();
 const ChatContext = createContext();
 
 export function ChatProvider({ children }) {
@@ -41,20 +42,49 @@ export function ChatProvider({ children }) {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    // Save chats to localStorage whenever they change
+    // Incognito Mode - chats won't be saved when enabled
+    const [isIncognitoMode, setIsIncognitoMode] = useState(false);
+
+    const toggleIncognitoMode = useCallback(() => {
+        setIsIncognitoMode(prev => !prev);
+    }, []);
+
+    // User Name - persisted to localStorage
+    const [userName, setUserNameState] = useState(() => {
+        return localStorage.getItem('user_name') || '';
+    });
+
+    const setUserName = useCallback((name) => {
+        setUserNameState(name);
+        localStorage.setItem('user_name', name);
+    }, []);
+
+    // Save chats to localStorage whenever they change (but not in incognito mode)
     useEffect(() => {
-        localStorage.setItem('chat_history', JSON.stringify(chats));
-        localStorage.setItem('current_chat_id', currentChatId);
-    }, [chats, currentChatId]);
+        if (!isIncognitoMode) {
+            localStorage.setItem('chat_history', JSON.stringify(chats));
+            localStorage.setItem('current_chat_id', currentChatId);
+        }
+    }, [chats, currentChatId, isIncognitoMode]);
 
     // Update current chat when messages or artifacts change
     useEffect(() => {
-        setChats(prev => prev.map(chat =>
-            chat.id === currentChatId
-                ? { ...chat, messages, artifacts, updatedAt: Date.now() }
-                : chat
-        ));
-    }, [messages, artifacts, currentChatId]);
+        // Only update chats if we have a current chat and either messages or artifacts have actually changed
+        // from what's stored in the chats array.
+        setChats(prev => {
+            const chat = prev.find(c => c.id === currentChatId);
+            if (!chat) return prev;
+
+            // Check if anything actually changed to avoid infinite loops or unnecessary updates
+            if (chat.messages === messages && chat.artifacts === artifacts) return prev;
+
+            return prev.map(c =>
+                c.id === currentChatId
+                    ? { ...c, messages, artifacts, updatedAt: Date.now() }
+                    : c
+            );
+        });
+    }, [messages, artifacts]);
 
     // Load chat when switching
     useEffect(() => {
@@ -116,15 +146,25 @@ export function ChatProvider({ children }) {
         gemini: []
     });
 
+    // Current model capabilities
+    const [currentModelCapabilities, setCurrentModelCapabilities] = useState({
+        text: true,
+        image: false,
+        audio: false,
+        video: false
+    });
+
     const [isLoadingModels, setIsLoadingModels] = useState(false);
 
     // Artifacts
     const [currentArtifactId, setCurrentArtifactId] = useState(null);
+    const [isArtifactOpen, setIsArtifactOpen] = useState(false);
 
     const addArtifact = useCallback((artifact) => {
         const newArtifact = { ...artifact, id: Date.now().toString(), createdAt: Date.now() };
         setArtifacts(prev => [newArtifact, ...prev]);
         setCurrentArtifactId(newArtifact.id);
+        setIsArtifactOpen(true);
         return newArtifact.id;
     }, []);
 
@@ -198,22 +238,36 @@ export function ChatProvider({ children }) {
         }
     }, [apiKeys.groq, apiKeys.openai, apiKeys.gemini]);
 
-    const addMessage = useCallback((role, content, metadata = {}) => {
+    // Update capabilities when model changes
+    useEffect(() => {
+        if (selectedModel) {
+            const capabilities = getModelCapabilities(selectedModel);
+            setCurrentModelCapabilities(capabilities);
+        }
+    }, [selectedModel]);
+
+    const addMessage = useCallback((role, content, metadata = {}, thinking = null, images = []) => {
+        const safeMetadata = metadata || {};
         const newMessage = {
             role,
             content,
             id: Date.now().toString(),
             timestamp: Date.now(),
-            thinking: metadata.thinking || null,
-            thinkingTokens: metadata.thinkingTokens || null,
-            duration: metadata.duration || null
+            metadata: safeMetadata, // Store full metadata object
+            // Legacy fields for backward compatibility
+            thinking: thinking || safeMetadata.thinking || null,
+            thinkingTokens: safeMetadata.thinkingTokens || null,
+            duration: safeMetadata.duration || null,
+            // Image support
+            images: images || []
         };
         setMessages(prev => {
             const updated = [...prev, newMessage];
 
             // Update chat title from first user message
             if (role === 'user' && prev.length === 0) {
-                const title = content.length > 50 ? content.substring(0, 50) + '...' : content;
+                const titleContent = content || (images.length > 0 ? '[Image]' : '');
+                const title = titleContent.length > 50 ? titleContent.substring(0, 50) + '...' : titleContent || 'New Chat';
                 setChats(prevChats => prevChats.map(chat =>
                     chat.id === currentChatId ? { ...chat, title } : chat
                 ));
@@ -257,12 +311,25 @@ export function ChatProvider({ children }) {
             getArtifact,
             currentArtifactId,
             setCurrentArtifactId,
+            isArtifactOpen,
+            setIsArtifactOpen,
             // Chat history
             chats,
             currentChatId,
             createNewChat,
             switchToChat,
-            deleteChat
+            deleteChat,
+            // Incognito mode
+            isIncognitoMode,
+            toggleIncognitoMode,
+            // User settings
+            userName,
+            setUserName,
+            // Model capabilities
+            currentModelCapabilities,
+            supportsImages: currentModelCapabilities.image,
+            supportsAudio: currentModelCapabilities.audio,
+            supportsVideo: currentModelCapabilities.video
         }}>
             {children}
         </ChatContext.Provider>
@@ -270,5 +337,9 @@ export function ChatProvider({ children }) {
 }
 
 export function useChat() {
-    return useContext(ChatContext);
+    const context = useContext(ChatContext);
+    if (!context) {
+        throw new Error('useChat must be used within a ChatProvider');
+    }
+    return context;
 }

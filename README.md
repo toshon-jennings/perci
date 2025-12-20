@@ -20,13 +20,14 @@ Open Claude is a powerful, open-source chat interface inspired by Anthropic's Cl
 
 ### 🌟 Highlights
 
+- **🔬 Deep Research Scientist Mode**: Autonomous iterative research loop for professional multi-page reports
 - **🧠 Advanced Thinking UI**: Unique collapsible thinking/reasoning display showing AI's thought process
 - **🎨 Premium Design**: Modern, responsive interface with dark/light mode
 - **🔄 Multi-Provider**: Switch between OpenAI, Groq, Gemini, Ollama, and LM Studio
-- **🔍 Web Search**: Integrated Tavily search for real-time information
-- **📦 Artifacts**: Preview HTML, React, and SVG code in a dedicated panel
-- **💬 Chat History**: Multiple conversations with persistent storage
-- **🎭 Markdown Support**: Full GitHub-flavored markdown with syntax highlighting
+- **🔍 Intelligent Web Search**: Integrated Tavily search with dynamic tool selection
+- **📦 Artifacts**: Preview HTML, React, SVG, and Research Papers in a dedicated panel
+- **💬 Chat History**: Multiple conversations with persistent local storage
+- **🎭 Markdown Support**: Full GitHub-flavored markdown with syntax highlighting and automatic citations
 
 ---
 
@@ -46,10 +47,10 @@ A groundbreaking feature that displays the AI's internal reasoning process:
 
 | Provider | Models Supported | Authentication |
 |----------|-----------------|----------------|
-| **OpenAI** | GPT-4, GPT-4o, GPT-3.5, o1 series | API Key |
-| **Google Gemini** | Gemini 2.0, Gemini 1.5 Pro/Flash | API Key |
-| **Groq** | Llama 3.3, Mixtral, others | API Key |
-| **Ollama** | Any local model | No auth (local) |
+| **OpenAI** | o1 series, o3 series, GPT-4o, GPT-4o Mini | API Key |
+| **Google Gemini** | Gemini 2.0 Flash, Gemini 1.5 Pro/Flash | API Key |
+| **Groq** | Llama 3.3 70B, Llama 3.2 Vision, Mixtral | API Key |
+| **Ollama** | Any local model (Llama 3, Mistral, etc.) | No auth (local) |
 | **LM Studio** | Any loaded model | No auth (local) |
 
 ### 🎨 User Interface
@@ -183,11 +184,21 @@ When the AI generates code (HTML, React, SVG):
 3. Toggle between **Preview** and **Code** views
 4. Copy code with the copy button
 
+### 🔬 Deep Research Scientist Mode
+
+The flagship feature for professional investigation:
+
+1.  **Autonomous Loop**: The agent decides what to search, evaluates results, and digs deeper until requirements are met.
+2.  **3-Minute Minimum**: Ensures high-quality, non-trivial research outputs.
+3.  **PDF-Ready Reports**: Generates formal research papers with Abstracts, Methodology, and References.
+4.  **Automatic Citations**: All claims are cited to verifiable sources.
+
 ### Managing Chats
 
-- **New Chat**: Click the **+** icon in the sidebar
+- **New Chat**: Click the **New Chat** button in the sidebar
 - **Switch Chats**: Click on any chat in the history
 - **Delete Chat**: Hover over a chat and click the trash icon
+- **Persistence**: Your chats and artifacts are saved to your browser's local storage and isolated per session.
 
 ### Viewing AI Thinking Process
 
@@ -354,7 +365,7 @@ If you find this project useful, please consider giving it a star! ⭐
 
 <div align="center">
 
-Made with ❤️ by [Damien Chakma](https://github.com/Damienchakma)
+Owner: [Damien Chakma](https://github.com/Damienchakma)
 
 **[⬆ back to top](#-open-claude)**
 

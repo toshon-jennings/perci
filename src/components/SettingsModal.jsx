@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Key, Globe, RefreshCw, ChevronDown, Check, Cpu, Wifi, WifiOff } from 'lucide-react';
+import { X, Key, Globe, RefreshCw, ChevronDown, Check, Cpu, Wifi, WifiOff, User } from 'lucide-react';
 import { useChat } from '../context/ChatContext';
 
 export function SettingsModal({ isOpen, onClose }) {
@@ -12,10 +12,20 @@ export function SettingsModal({ isOpen, onClose }) {
         updateModel,
         availableModels,
         isLoadingModels,
-        refreshModels
+        refreshModels,
+        userName,
+        setUserName
     } = useChat();
 
     const [showModelDropdown, setShowModelDropdown] = useState(false);
+    const [editingName, setEditingName] = useState('');
+
+    // Sync editingName when modal opens
+    useEffect(() => {
+        if (isOpen) {
+            setEditingName(userName || '');
+        }
+    }, [isOpen, userName]);
 
     if (!isOpen) return null;
 
@@ -31,6 +41,12 @@ export function SettingsModal({ isOpen, onClose }) {
     const hasModels = currentProviderModels.length > 0;
     const selectedModelObj = currentProviderModels.find(m => m.id === selectedModel);
 
+    const handleSaveName = () => {
+        if (editingName.trim() !== userName) {
+            setUserName(editingName.trim());
+        }
+    };
+
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50" onClick={onClose}>
             <div className="bg-[var(--bg-primary)] w-full max-w-2xl rounded-2xl border border-[var(--border)] overflow-hidden" onClick={(e) => e.stopPropagation()}>
@@ -39,7 +55,7 @@ export function SettingsModal({ isOpen, onClose }) {
                     <div className="flex justify-between items-start">
                         <div>
                             <h2 className="text-xl font-medium text-[var(--text-primary)]">Settings</h2>
-                            <p className="text-sm text-[var(--text-tertiary)] mt-0.5">Configure providers and models</p>
+                            <p className="text-sm text-[var(--text-tertiary)] mt-0.5">Manage your profile and preferences</p>
                         </div>
                         <button
                             onClick={onClose}
@@ -50,6 +66,31 @@ export function SettingsModal({ isOpen, onClose }) {
                 </div>
 
                 <div className="p-5 md:p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                    {/* Profile Section */}
+                    <div className="space-y-3">
+                        <label className="flex items-center gap-2 text-sm font-medium text-[var(--text-primary)]">
+                            <User size={16} className="text-[var(--accent)]" />
+                            Your Name
+                        </label>
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                value={editingName}
+                                onChange={(e) => setEditingName(e.target.value)}
+                                onBlur={handleSaveName}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleSaveName();
+                                        e.target.blur();
+                                    }
+                                }}
+                                className="flex-1 px-4 py-3 rounded-xl border border-[var(--border)] bg-[var(--bg-tertiary)] focus:ring-2 ring-[var(--accent)] outline-none transition-all duration-200 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]"
+                                placeholder="Enter your name..."
+                            />
+                        </div>
+                        <p className="text-xs text-[var(--text-tertiary)]">This name will be used in greetings and can be referenced by AI models.</p>
+                    </div>
+
                     {/* Provider Selection */}
                     <div className="space-y-3">
                         <div className="flex items-center justify-between">

@@ -10,8 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
+    "@webcontainer/api": "^1.6.1",
     "clsx": "^2.1.0",
     "framer-motion": "^11.0.8",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.4",
     "lucide-react": "^0.344.0",
     "prismjs": "^1.30.0",
     "react": "^18.2.0",
@@ -20,6 +24,7 @@
     "react-syntax-highlighter": "^16.1.0",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
+    "streamdown": "^1.6.9",
     "tailwind-merge": "^2.2.1"
   },
   "devDependencies": {
