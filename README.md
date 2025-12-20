@@ -45,13 +45,13 @@ A groundbreaking feature that displays the AI's internal reasoning process:
 
 ### 🤖 Multi-Provider Support
 
-| Provider | Models Supported | Authentication |
-|----------|-----------------|----------------|
-| **OpenAI** | o1 series, o3 series, GPT-4o, GPT-4o Mini | API Key |
-| **Google Gemini** | Gemini 2.0 Flash, Gemini 1.5 Pro/Flash | API Key |
-| **Groq** | Llama 3.3 70B, Llama 3.2 Vision, Mixtral | API Key |
-| **Ollama** | Any local model (Llama 3, Mistral, etc.) | No auth (local) |
-| **LM Studio** | Any loaded model | No auth (local) |
+| Provider | Typical Models | Hosted | Notes |
+|----------|----------------|--------|-------|
+| **OpenAI** | GPT-5.2, GPT-5, GPT-4.x | Cloud | Best general purpose + tools |
+| **Google Gemini** | Gemini 3 Pro / Flash, 2.5 Flash / Pro | Cloud | Excellent multimodal, long context |
+| **Groq** | llama3, mixtral, gemma, openai/gpt-oss | Cloud / optimized servers | Ultra-fast inference |
+| **Ollama** | LLaMA, Gemma, Qwen, Mistral, Mixtral, CodeLlama | Local | Self-hosted open models |
+| **LM Studio** | Any local GGUF model | Local | Local hosting with OpenAI-style API |
 
 ### 🎨 User Interface
 
@@ -218,26 +218,31 @@ For models that support reasoning (like OpenAI o1):
 Open-claude/
 ├── src/
 │   ├── components/          # React components
-│   │   ├── ArtifactPanel.jsx      # Code preview panel
+│   │   ├── ArtifactPanel.jsx      # Code & Research preview panel
+│   │   ├── BuildMode.jsx          # AI App Builder mode
 │   │   ├── ChatMessage.jsx        # Individual message display
-│   │   ├── SettingsModal.jsx      # Settings dialog
-│   │   └── ThinkingDisplay.jsx    # Reasoning UI
-│   ├── context/
-│   │   └── ChatContext.jsx        # Global state management
-│   ├── lib/
-│   │   ├── llm/
-│   │   │   ├── clients.js         # LLM client implementations
-│   │   │   └── ModelService.js    # Model discovery
-│   │   └── tavily.js              # Web search client
-│   ├── App.jsx                    # Main app component
-│   ├── main.jsx                   # Entry point
-│   └── index.css                  # Global styles
-├── public/
-│   └── claude-logo.svg            # Logo asset
-├── index.html                     # HTML template
-├── package.json                   # Dependencies
-├── vite.config.js                 # Vite configuration
-└── tailwind.config.js             # Tailwind config
+│   │   ├── ChatMode.jsx           # Main chat interface logic
+│   │   ├── CitationDisplay.jsx    # Research source citations
+│   │   ├── CodeMode.jsx           # Dedicated code editor
+│   │   ├── ModeSwitcher.jsx       # Switch between Chat, Build, Code
+│   │   ├── SettingsModal.jsx      # Provider & Model configuration
+│   │   ├── ThinkingDisplay.jsx    # Reasoning process UI
+│   │   └── Workbench/             # Build mode development area
+│   ├── context/             # Global state management
+│   │   ├── ChatContext.jsx        # Core chat & artifacts state
+│   │   ├── ModeContext.jsx        # Application mode state
+│   │   └── BuildContext.jsx       # Build mode state
+│   ├── lib/                 # Core logic & tools
+│   │   ├── llm/                   # LLM factory and clients
+│   │   ├── IntelligentSearchTool.js # Deep Research & Web Search
+│   │   └── BoltArtifactParser.js   # Advanced artifact extraction
+│   ├── App.jsx              # Main app entry layout
+│   ├── main.jsx             # React mounting point
+│   └── index.css            # Global design system
+├── public/                  # Static assets
+├── index.html               # Main entry template
+├── package.json             # Dependencies
+└── tailwind.config.js       # UI design tokens
 ```
 
 ### Tech Stack
