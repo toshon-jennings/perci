@@ -19,6 +19,11 @@
 - [x] Window + dock system landed (`65c32f6`). Chat is the always-mounted base; Cowork,
       Code, Agents, Mission, Build, and OpenClaw open as floating windows tracked by a
       bottom dock with whirlpool-minimize and domino chip-in.
+- [x] Mission Control and both Guide modals now use scoped focus-card hover:
+      hovered cards lift/glow while sibling cards in the same group recede for easier scanning.
+- [x] Window system hardening: open windows persist across reloads, a main-process
+      guard stops stray same-origin reloads, dragging an edge outward now resizes
+      reliably (drag shield), and each window has its own error boundary.
 
 ## Window + dock system
 
@@ -50,15 +55,36 @@
   flourishes are gated behind `prefers-reduced-motion`. Styles live at the end of
   `src/index.css` on Perci's `--bg/--accent/--text` tokens.
 
+### Hardening / fixes
+
+- **Open windows persist across reloads** (`opal_open_windows`): which modes are
+  open, their state, and geometry are restored on load (re-clamped to the current
+  viewport via `hydrateWindows`). Per-mode geometry is still also remembered
+  separately (`opal_window_bounds`) so reopening a *closed* window restores its size.
+- **Spurious full reloads fixed**: a stray same-origin top-frame navigation was
+  reloading the whole SPA (`will-navigate url=…:5173/` in renderer.log), wiping
+  in-memory window state. `electron/main.cjs` now blocks same-origin top-frame
+  navigations (logs `blocked-self-navigation`); does not affect Vite HMR
+  (`location.reload`), the OpenClaw `<webview>`, or external links. **Needs an
+  Electron restart to take effect.**
+- **Resize-larger drag fixed**: dragging an edge outward moved the cursor over the
+  Chat base / a webview, which swallowed pointer events and silently stopped the
+  drag (shrinking worked, growing didn't). `WindowFrame` now renders a full-viewport
+  drag shield (`.perci-drag-shield`, z 100000) during any drag so pointer events
+  stay in-document.
+- **Per-window error boundary**: each window's content is wrapped in
+  `WindowErrorBoundary`, so a throw in one mode shows an inline retry instead of
+  tearing down the other windows or the Chat base.
+
 ### Limitations / follow-ups
 
-- Per-session only: open windows are not auto-reopened on reload (geometry is
-  remembered, the open set is not). Full conversation persistence across a real
-  close/reload is still the broader deferred task.
 - The OpenClaw window has two layers of chrome (window title bar + OpenClaw's own
   toolbar/tabs); could be slimmed if it feels heavy.
 - `prefers-reduced-motion` and live `<webview>` resize behavior have not been
   verified in-app yet.
+- The exact source of the stray top-frame navigation wasn't pinned (all forms
+  `preventDefault`); the main-process guard neutralizes it regardless. If it
+  recurs it'll show as `blocked-self-navigation` in renderer.log.
 
 ## Search behavior (intent-aware)
 
