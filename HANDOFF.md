@@ -21,6 +21,8 @@
       bottom dock with whirlpool-minimize and domino chip-in.
 - [x] Mission Control and both Guide modals now use scoped focus-card hover:
       hovered cards lift/glow while sibling cards in the same group recede for easier scanning.
+- [x] Guide modals no longer reset Advanced back to Guide during background re-renders;
+      `onClose` is kept in a ref so tab reset only happens when a modal opens.
 - [x] Window system hardening: open windows persist across reloads, a main-process
       guard stops stray same-origin reloads, dragging an edge outward now resizes
       reliably (drag shield), and each window has its own error boundary.
