@@ -13,6 +13,52 @@
       selected model when available, deterministic local-fact detection for clock/calendar
       questions, and keyword heuristics as the offline fallback — replacing the brittle
       `shouldAutoUseWebSearch` phrase matcher (removed from `ChatMode.jsx`).
+- [x] First non-window Odysseus-inspired motion pass landed for Perci/Mission:
+      whirlpool thinking/search indicators, Mission timeline rails, active synapse pulses,
+      and domino list reveal utilities.
+- [x] Window + dock system landed (`65c32f6`). Chat is the always-mounted base; Cowork,
+      Code, Agents, Mission, Build, and OpenClaw open as floating windows tracked by a
+      bottom dock with whirlpool-minimize and domino chip-in.
+
+## Window + dock system
+
+- Window manager lives in `src/context/ModeContext.jsx`: `windows[]` with
+  `state` (normal/minimized/maximized), z-ordering, per-mode geometry memory
+  (persisted to `opal_window_bounds`), and actions (open/close/focus/minimize/
+  toggleMaximize/move/resize). `setCurrentMode` and `setShowOpenClawDashboard` are
+  **bridged** to the window system, so every existing call site (ModeSwitcher,
+  SecondaryModeNav, ChatMode buttons, AgentsPanel, SettingsModal, MissionControl)
+  keeps working unchanged.
+- Components in `src/components/windows/`:
+  - `WindowFrame` — drag, 8-way resize, macOS traffic-light controls, double-click
+    maximize. Minimized windows stay **mounted but hidden**, so a mode's state
+    (e.g. the Cowork conversation) survives — this also resolves the deferred
+    "preserve Cowork across navigation" follow-up for the minimize case.
+  - `DesktopHost` — paints open windows over the Chat base; `renderContent(modeId)`
+    supplies the mode UI (so Mission Control still gets its live props).
+  - `Dock` — domino-staggered chip-in (framer-motion spring, per-index delay),
+    focus dot, click-to-minimize, right-click context menu.
+  - `WindowContextMenu` — pop-from-anchor menu (Focus/Minimize/Maximize/Close),
+    opens above the cursor; measures with `offsetHeight` so the scale-0.6 pop
+    animation doesn't mis-place it.
+- OpenClaw is window id `'openclaw'` (not a MODE). Its old fullscreen overlay was
+  extracted into `renderOpenClawWindow()` in `App.jsx` and rendered as window
+  content. Because its content is an Electron `<webview>`, it minimizes with a
+  plain fade (`noWhirlpool`) to avoid transform flicker. Its redundant inline
+  close button was removed (window chrome owns close).
+- Motion uses the signature spring `cubic-bezier(0.34, 1.56, 0.64, 1)`; all
+  flourishes are gated behind `prefers-reduced-motion`. Styles live at the end of
+  `src/index.css` on Perci's `--bg/--accent/--text` tokens.
+
+### Limitations / follow-ups
+
+- Per-session only: open windows are not auto-reopened on reload (geometry is
+  remembered, the open set is not). Full conversation persistence across a real
+  close/reload is still the broader deferred task.
+- The OpenClaw window has two layers of chrome (window title bar + OpenClaw's own
+  toolbar/tabs); could be slimmed if it feels heavy.
+- `prefers-reduced-motion` and live `<webview>` resize behavior have not been
+  verified in-app yet.
 
 ## Search behavior (intent-aware)
 
@@ -45,6 +91,7 @@
 - [x] Preserved Codex's in-flight work in `src/lib/integrationTools.js` and included it in the cleanup commit.
 - [ ] If isolated Cowork/OpenClaw conversations become needed, add a session key generation strategy; `runOpenClawAgent` already accepts `sessionKey`.
 - [ ] Generated graphify docs still reflect older code until the architecture graph is regenerated.
+- [ ] Review the new Perci/Mission motion in-app and decide whether to make it bolder or calmer before applying it to more surfaces.
 
 ## Notes
 
