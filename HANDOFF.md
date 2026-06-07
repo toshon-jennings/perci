@@ -1,4 +1,4 @@
-# Opal Handoff
+# Perci Handoff
 
 ## Current Milestone
 
@@ -26,12 +26,16 @@
 - [x] Window system hardening: open windows persist across reloads, a main-process
       guard stops stray same-origin reloads, dragging an edge outward now resizes
       reliably (drag shield), and each window has its own error boundary.
+- [x] Modal stacking issues fixed: global modals (Transit Map, Settings, guides,
+      changelog, and YouTube overlay modals/PiPs) are now rendered using React Portals
+      (`createPortal`) to mount under `document.body`, escaping the z-index 30 capping
+      of the window host container.
 
 ## Window + dock system
 
 - Window manager lives in `src/context/ModeContext.jsx`: `windows[]` with
   `state` (normal/minimized/maximized), z-ordering, per-mode geometry memory
-  (persisted to `opal_window_bounds`), and actions (open/close/focus/minimize/
+  (persisted to `perci_window_bounds`), and actions (open/close/focus/minimize/
   toggleMaximize/move/resize). `setCurrentMode` and `setShowOpenClawDashboard` are
   **bridged** to the window system, so every existing call site (ModeSwitcher,
   SecondaryModeNav, ChatMode buttons, AgentsPanel, SettingsModal, MissionControl)
@@ -59,10 +63,10 @@
 
 ### Hardening / fixes
 
-- **Open windows persist across reloads** (`opal_open_windows`): which modes are
+- **Open windows persist across reloads** (`perci_open_windows`): which modes are
   open, their state, and geometry are restored on load (re-clamped to the current
   viewport via `hydrateWindows`). Per-mode geometry is still also remembered
-  separately (`opal_window_bounds`) so reopening a *closed* window restores its size.
+  separately (`perci_window_bounds`) so reopening a *closed* window restores its size.
 - **Spurious full reloads fixed**: a stray same-origin top-frame navigation was
   reloading the whole SPA (`will-navigate url=…:5173/` in renderer.log), wiping
   in-memory window state. `electron/main.cjs` now blocks same-origin top-frame
@@ -77,6 +81,11 @@
 - **Per-window error boundary**: each window's content is wrapped in
   `WindowErrorBoundary`, so a throw in one mode shows an inline retry instead of
   tearing down the other windows or the Chat base.
+- **Global modal portal mounting**: global modals rendered from within windows
+  (Transit Map modal in Mission Control, Guide modals, Settings modal, Changelog,
+  and YouTube overlays) are portaled to `document.body` with `z-[9999]` or `z-[10000]`.
+  This escapes the `z-index: 30` stacking context of `.perci-desktop-host` and
+  prevents parent window CSS transforms from breaking full-screen fixed positioning.
 
 ### Limitations / follow-ups
 
