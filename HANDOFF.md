@@ -30,6 +30,9 @@
       changelog, and YouTube overlay modals/PiPs) are now rendered using React Portals
       (`createPortal`) to mount under `document.body`, escaping the z-index 30 capping
       of the window host container.
+- [x] Dock overlap fixed: when window chips exist, the main desktop reserves a 64px
+      bottom lane for the dock, and window default/clamp bounds keep floating and
+      maximized windows out of that lane.
 
 ## Window + dock system
 
@@ -86,6 +89,10 @@
   and YouTube overlays) are portaled to `document.body` with `z-[9999]` or `z-[10000]`.
   This escapes the `z-index: 30` stacking context of `.perci-desktop-host` and
   prevents parent window CSS transforms from breaking full-screen fixed positioning.
+- **Dock no longer blocks bottom controls**: `App.jsx` marks the desktop container
+  with `.perci-dock-reserved` whenever the dock is visible. `src/index.css`
+  reserves the bottom lane for the dock and shrinks `.perci-desktop-host`, while
+  `ModeContext.jsx` uses the same 64px reserve for default and clamped window bounds.
 
 ### Limitations / follow-ups
 
