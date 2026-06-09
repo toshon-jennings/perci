@@ -33,6 +33,16 @@
 - [x] Dock overlap fixed: when window chips exist, the main desktop reserves a 64px
       bottom lane for the dock, and window default/clamp bounds keep floating and
       maximized windows out of that lane.
+- [x] YouTube PiP is now a first-class Perci window (id `'youtube'`, `YT` dock chip)
+      instead of a native Electron `BrowserWindow`. It gets minimize/restore/maximize/
+      close + dock wiring for free, like Cowork/OpenClaw. The native window, its
+      `youtube-player:*` IPC handlers, and the preload bridge were deleted. In desktop
+      mode the window content is a `<webview>` loading the YouTube `/watch` page
+      (`/embed` is blocked in an Electron `<iframe>` with `ERR_BLOCKED_BY_RESPONSE`
+      and errors 153 as a top-level webview doc); the web build keeps the `/embed`
+      iframe. `key={youtubeUrl}` forces the webview to re-navigate when the video
+      changes; the window is `noWhirlpool` (webview fade). Verified in-app:
+      open → dock chip → play → minimize → restore → switch video.
 
 ## Window + dock system
 
