@@ -145,7 +145,7 @@
 - [x] Preserved Codex's in-flight work in `src/lib/integrationTools.js` and included it in the cleanup commit.
 - [x] Perci HQ window scene now derives dawn/day/dusk/night sky, lighting, and lamp intensity from the local system clock in `src/components/OfficeScene.jsx`.
 - [x] Perci HQ office dressing pass added synced side-window scenery, a right-wall door, framed wall art under the neon sign, and larger potted tree/plant decor in `src/components/OfficeScene.jsx`.
-- [x] Perci HQ now includes a compact back-wall retro TV with a 24/7 YouTube embed, autoplay/muted defaults, power toggle, and mute toggle; placement clears the neon sign and window.
+- [x] Perci HQ now includes a compact back-wall retro TV rendered entirely in WebGL with an animated live-feed screen; because it is not a DOM iframe, desks and agents depth-sort in front of it correctly.
 - [x] Perci HQ clock and shelf cluster moved off the back wall to the left wall so the retro TV can sit in the old clock/shelf space.
 - [x] Perci HQ desk name labels now render as WebGL billboards instead of DOM `<Html>` overlays, so Sir Perci depth-sorts in front of them while walking past.
 - [x] `npm run build` passes for the current Perci HQ scene work.
