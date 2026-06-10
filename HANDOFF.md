@@ -144,8 +144,12 @@
 - [x] Reviewed and prepared the broad dirty tree for commit; changes include product UI/Build work, graph docs, and the Tavily-free search path.
 - [x] Preserved Codex's in-flight work in `src/lib/integrationTools.js` and included it in the cleanup commit.
 - [x] Perci HQ window scene now derives dawn/day/dusk/night sky, lighting, and lamp intensity from the local system clock in `src/components/OfficeScene.jsx`.
+- [x] Perci HQ office dressing pass added synced side-window scenery, a right-wall door, framed wall art under the neon sign, and larger potted tree/plant decor in `src/components/OfficeScene.jsx`.
+- [x] Perci HQ now includes a compact back-wall retro TV with a 24/7 YouTube embed, autoplay/muted defaults, power toggle, and mute toggle; placement clears the neon sign and window.
+- [x] Perci HQ clock and shelf cluster moved off the back wall to the left wall so the retro TV can sit in the old clock/shelf space.
+- [x] Perci HQ desk name labels now render as WebGL billboards instead of DOM `<Html>` overlays, so Sir Perci depth-sorts in front of them while walking past.
+- [x] `npm run build` passes for the current Perci HQ scene work.
 - [ ] Weather syncing is not implemented yet; there is no existing local weather/location bridge, so it needs a separate consented source or settings-backed location.
-- [ ] `npm run build` is currently blocked before Perci HQ validation by `src/App.jsx` importing missing `./components/DashboardMode`; `OfficeScene.jsx` JSX transform passes via esbuild.
 - [ ] If isolated Cowork/OpenClaw conversations become needed, add a session key generation strategy; `runOpenClawAgent` already accepts `sessionKey`.
 - [ ] Generated graphify docs still reflect older code until the architecture graph is regenerated.
 - [ ] Review the new Perci/Mission motion in-app and decide whether to make it bolder or calmer before applying it to more surfaces.
