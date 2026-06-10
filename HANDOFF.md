@@ -158,6 +158,16 @@
       the 30s gateway health poll: agent count, active tasks, failures, and runtime
       version (e.g. "2 agents · 1 active task · v2026.x"), falling back to
       "Checking gateway…" / "Gateway offline". `npm run build` passes.
+- [x] Perci HQ snack table now uses AI-themed treats/drinks in `OfficeScene.jsx`:
+      microchips with thermal paste, data crunch bits, HTTP cookies, SPAM,
+      Raspberry Pi, Java, and liquid nitrogen. `npm run build` passes.
+- [x] Sir Perci now reads less menacing in Perci HQ: sword and shield are
+      crossed on his back in an X, his hands stay empty, and office arm motion
+      gestures/waves instead of guarding/chopping. 3D and dashboard-office
+      variants now include round hand spheres, and the 3D antennae are longer
+      with full bulb tips so they no longer read as chopped side nubs. The
+      dashboard Office card uses the same softer mascot variant without
+      changing global chat mascot usage. `npm run build` passes.
 - [ ] Weather syncing is not implemented yet; there is no existing local weather/location bridge, so it needs a separate consented source or settings-backed location.
 - [ ] If isolated Cowork/OpenClaw conversations become needed, add a session key generation strategy; `runOpenClawAgent` already accepts `sessionKey`.
 - [ ] Generated graphify docs still reflect older code until the architecture graph is regenerated.
