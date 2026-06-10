@@ -151,6 +151,7 @@
 - [x] `npm run build` passes for the current Perci HQ scene work.
 - [x] Perci HQ Office artwork pass: sourced and imported 9 Unsplash images (landscape/portrait pairs + extras), framed artwork renders on Office walls with proper aspect-ratio fitting and shadowed frames.
 - [x] Replaced DOM-based RetroTvPlayer with canvas-based `LiveTvScreen` starfield animation in `OfficeScene.jsx` with reduce-motion support and proper texture disposal.
+- [x] Added two comic covers (`marv-amazing.webp`, `dc-action.png`, copied into `public/artwork/`) displayed in thick wall-mounted glass cases (`ComicCase3D` in `OfficeScene.jsx`). Originally true comic size on the left wall but unreadably small, so they now sit on the back wall centered beneath the PERCI HQ sign (x ±0.55, y 3.0) at `scale={2.8}` while keeping real comic proportions. `npm run build` passes.
 - [ ] Weather syncing is not implemented yet; there is no existing local weather/location bridge, so it needs a separate consented source or settings-backed location.
 - [ ] If isolated Cowork/OpenClaw conversations become needed, add a session key generation strategy; `runOpenClawAgent` already accepts `sessionKey`.
 - [ ] Generated graphify docs still reflect older code until the architecture graph is regenerated.
