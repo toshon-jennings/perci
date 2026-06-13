@@ -2,6 +2,67 @@
 
 ## Current Milestone
 
+- [x] Lighthouse upper cards now align as one row: the accidental
+      `.lh-section + .lh-section` sibling margin was pushing Quick Port Check
+      down, and the temporary JS height-sync loop was removed. The info button
+      now resolves the parent process name/command and explains what the Parent
+      PID means, including the PID 1 launchd case shown in the original app.
+- [x] Hermes surface gained a **Terminal** tab (between Console and Sessions)
+      that is itself a multitab terminal: `src/components/TerminalTabs.jsx`
+      manages up to 6 PTY sessions over the existing local terminal bridge
+      (`terminalBridge.js`, ports 3001/3002 — same server the global terminal
+      uses). Each tab is a unique `hermes-shell-*` sessionId; inactive tabs
+      stay mounted so shells survive tab switches, the strip shows per-session
+      connection dots, and Reset/Reconnect act on the active tab.
+      `Terminal.jsx` is now `forwardRef` with `embedded` (hides its own
+      chrome), `onStatusChange`, and an imperative `{ reset, reconnect,
+      focus }` handle — the global `App.jsx` usage is unchanged. The whole
+      TerminalTabs pane stays mounted in `HermesMode.jsx` after first visit.
+- [x] Fixed garbled terminal output (doubled echo, stacked `❯ ❯ ❯` prompts):
+      `terminal-server.cjs` broadcasts PTY output to *every* client on a
+      session, and under React StrictMode the panel's aborted first socket
+      could fire a zombie `setTimeout(connect)` retry after remount, attaching
+      **two** sockets to the same session → every output chunk written twice.
+      `Terminal.jsx` now drops/detaches any previous socket before opening a
+      new one, guards all ws handlers with `wsRef.current !== ws`, clears the
+      retry timer on cleanup, nulls `termInstanceRef` on dispose, and connects
+      *after* the initial fit so the PTY spawns at the real size instead of
+      80x24 (the misdrawn welcome box). Applies to both the Hermes terminal
+      tabs and the global terminal (same component).
+- [ ] Suspect band-aid: the 24ms `isDuplicateSingleKeyInput` filter in
+      `Terminal.jsx` (and the server's device-attribute stripping) likely
+      papered over this same double-socket bug. At fast macOS key-repeat
+      settings (KeyRepeat=1 ≈ 15ms) it can swallow legitimate held-key
+      repeats. Once the fix is verified in-app, consider deleting the filter.
+- [x] Hermes surface polish pass ("amber dispatch console" identity, scoped
+      `hermes-*` CSS at the end of `src/index.css`): amber atmosphere header
+      gradient with a glowing badge while a run is active, gateway status
+      pill in the header (replacing the bare dot and the duplicate vitals
+      chip), overshoot-spring amber tab underline, amber-railed run cards
+      with done/failed status icons and hover glow, radial-glow console empty
+      state, amber Run/Start-dashboard buttons and input focus ring, and
+      amber-accented Insights pills / Sessions card hovers. All new motion is
+      `prefers-reduced-motion` gated. `npm run build` passes.
+
+- [x] Hermes now has a first-class window surface (id `'hermes'`, `HM` dock chip),
+      lighter than OpenClaw's but complete: a status header (version/model/provider/
+      gateway from `hermes status`, amber pulse while running) and four tabs —
+      **Console** (one-shot runs via
+      `hermes -z` with cancel, plus a live activity rail tailing `hermes logs -f`
+      so tool calls are visible as they happen), **Sessions** (parsed
+      `hermes sessions list/stats`), **Insights** (`hermes insights` for 7/30/90
+      days), and **Web UI** (embedded `hermes dashboard` webview on :9119 with a
+      start-and-poll flow). Bridge lives in `electron/main.cjs` (`hermes:*` IPC,
+      arg-array spawns, no shell; redacted key fragments never cross IPC) and
+      `electron/preload.cjs`; surface is `src/components/HermesMode.jsx`. The
+      top-bar Hermes button (circled Nous Research mark, `hermes-branded` CSS)
+      opens this window; the Agents panel's Hermes entry runs real `hermes -z`
+      jobs through `agent-jobs:queue` and has an "Open window" shortcut. The
+      Mercury desktop-app integration was removed entirely (button, Settings
+      path field, `hermesAppPath` context state, `hermes_app_path` persistence
+      key, `hermes:open-app` IPC, `src/assets/hermes.png`). **Needs an Electron
+      restart to pick up the new preload/main IPC** — renderer HMR alone shows
+      the desktop-only fallback.
 - [x] OpenClaw bridge steps 1 and 2 committed in `de24ea7`.
 - [x] OpenClaw bridge step 3 committed in `3a20762`.
 - [x] Mission Control now has gateway health summary and live OpenClaw event streaming.
