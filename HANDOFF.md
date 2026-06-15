@@ -2,6 +2,8 @@
 
 ## Current Milestone
 
+- [x] BARS is now a first-class Perci window surface in the OS-surface group: `MODES.BARS`, Dashboard tile, dock glyph, `BarsMode.jsx`/`BarsMode.css`, and `bars:*` Electron IPC. Bars data lives in Perci localStorage (`perci_bars_ideas:v1`) and stays independent from standalone Bars; export/import is the bridge. Cloud keys use Opal/Electron encrypted app data (`openai_key`, `anthropic_key`, `gemini_key`, `groq_key`, `openrouter_key`), not standalone Bars storage. Electron main/preload changes require a full Perci restart.
+- [x] BARS flow polish restored the standalone app's actual notebook flow inside Perci: all-caps `BARS_` masthead, original Bars font stack (`Spline Sans`, `Big Shoulders Display`, `Spline Sans Mono`), original uppercase label/stat/chip/section treatment, pulsing hot-orange REC dot in the quick-capture bar, canonical statuses (`Inbox`, `New`, `Exploring`, `Building`, `Launched`, `Archived`), day streak stat, full-width "Ask your bars" panel, two-column "The book" / "On the page" workspace, cream paper detail, collapsible "Write one up properly" form, and "Turn into idea" opening the edit/write-up flow with status `New` instead of silently mutating an Inbox bar. The Bars root now scrolls inside the default Perci window and fixed-height stats strip no longer clips labels.
 - [x] Lighthouse upper cards now align as one row: the accidental
       `.lh-section + .lh-section` sibling margin was pushing Quick Port Check
       down, and the temporary JS height-sync loop was removed. The info button
