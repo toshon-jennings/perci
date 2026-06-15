@@ -2,7 +2,28 @@
 
 ## Current Milestone
 
+- [x] New **Beginner's guide** in-app modal (`src/components/BeginnerGuideModal.jsx`)
+      for first-time users, styled like `ModeGuideModal`. Two modules: "1 · Local
+      AI" (what a local model is, installing Ollama, a RAM→model table, LM Studio/
+      Jan alternatives) and "2 · OpenRouter key" (what it is, how to get a key,
+      key safety) with a CTA that opens Settings focused on OpenRouter. Opened
+      from a new "Beginner's guide" hero button on the dashboard; a new "Get API
+      Key" tile in the Perci-native group calls `updateProvider('openrouter')` +
+      opens Settings. Seven 16:9 illustrations in `public/guide/` (hero,
+      what-is-local-ai, download-ollama, which-model, local-alternatives,
+      openrouter-cloud, keep-key-safe), optimized to ~737KB total; image slots are
+      guarded so missing art renders icon-only. Renderer-only.
+- [x] OpenRouter model selection is now a real searchable picker instead of manual
+      entry. `ModelService.fetchOpenRouterModels` loads the **public**
+      `openrouter.ai/api/v1/models` catalog (337 models) with or without a key
+      (auth header sent only when a key exists), and `getAllModels` always
+      populates it. `ChatContext.fetchModels` auto-select now skips key-required
+      providers that have no key, so a keyless user isn't defaulted onto an
+      unusable OpenRouter model. Settings → OpenRouter shows the list; the manual
+      "Add a model" box stays for niche IDs. Renderer-only.
 - [x] BARS is now a first-class Perci window surface in the OS-surface group: `MODES.BARS`, Dashboard tile, dock glyph, `BarsMode.jsx`/`BarsMode.css`, and `bars:*` Electron IPC. Bars data lives in Perci localStorage (`perci_bars_ideas:v1`) and stays independent from standalone Bars; export/import is the bridge. Cloud keys use Opal/Electron encrypted app data (`openai_key`, `anthropic_key`, `gemini_key`, `groq_key`, `openrouter_key`), not standalone Bars storage. Electron main/preload changes require a full Perci restart.
+- [x] Bars quick capture now recognizes IdeaBrowser-style emails and `ideabrowser.com/idea/...` URLs, parses them through `src/lib/barsIdeaBrowser.js`, and saves them as normal `New` Bars ideas instead of Inbox thoughts. The June 12, 2026 "Idea of the Day: GLP-1 pharmacy index" email is covered by `test/barsIdeaBrowser.test.js`: title, core thesis, supporting notes, tags, follow-up angles, and canonical source URL are mapped into the existing Bars fields. No Electron restart is required for this renderer-only change.
+- [x] Bars now has a compact in-app guide opened from the top action cluster (`HelpCircle` button). The modal keeps the Bars aesthetic with the existing dark panel, gold labels, cream paper hero, and quick "field manual" copy explaining capture, shaping, heat sorting, and asking the notebook.
 - [x] BARS flow polish restored the standalone app's actual notebook flow inside Perci: all-caps `BARS_` masthead, original Bars font stack (`Spline Sans`, `Big Shoulders Display`, `Spline Sans Mono`), original uppercase label/stat/chip/section treatment, pulsing hot-orange REC dot in the quick-capture bar, canonical statuses (`Inbox`, `New`, `Exploring`, `Building`, `Launched`, `Archived`), day streak stat, full-width "Ask your bars" panel, two-column "The book" / "On the page" workspace, cream paper detail, collapsible "Write one up properly" form, and "Turn into idea" opening the edit/write-up flow with status `New` instead of silently mutating an Inbox bar. The Bars root now scrolls inside the default Perci window and fixed-height stats strip no longer clips labels.
 - [x] Lighthouse upper cards now align as one row: the accidental
       `.lh-section + .lh-section` sibling margin was pushing Quick Port Check
@@ -215,6 +236,8 @@
 - [x] Perci HQ Office artwork pass: sourced and imported 9 Unsplash images (landscape/portrait pairs + extras), framed artwork renders on Office walls with proper aspect-ratio fitting and shadowed frames.
 - [x] Replaced DOM-based RetroTvPlayer with canvas-based `LiveTvScreen` starfield animation in `OfficeScene.jsx` with reduce-motion support and proper texture disposal.
 - [x] Added two comic covers (`marv-amazing.webp`, `dc-action.png`, copied into `public/artwork/`) displayed in thick wall-mounted glass cases (`ComicCase3D` in `OfficeScene.jsx`). Originally true comic size on the left wall but unreadably small, so they now sit on the back wall centered beneath the PERCI HQ sign (x ±0.55, y 3.0) at `scale={2.8}` while keeping real comic proportions. `npm run build` passes.
+- [x] Perci HQ weather sync now uses the existing ChatContext weather state plus `src/lib/weatherService.js`: weather sync defaults on unless `weather_sync_enabled` is persisted as `false`, `weather_location` overrides locale lookup when present, and blank location falls back to browser geolocation then timezone-derived city lookup. `OfficeScene.jsx` maps `clear/clouds/rain/snow` into outside window weather, sky/fog, and lighting. Verified with `npm run build` and a Playwright visual pass mocking Open-Meteo weather code 61 (rain) at `/private/tmp/perci-office-weather-rain.png`; only existing Jan connection errors appeared in console.
+- [x] Fixed G-Dash blank window in dev: Vite was applying `X-Frame-Options: DENY` and `Content-Security-Policy: frame-ancestors 'none'` to `/gdash/index.html`, so the same-origin iframe rendered as a gray broken-document frame. `vite.config.js` now keeps deny-by-default framing for the app root but allows same-origin framing for `/gdash/`. Dev server restart required. Verified headers with `curl -I`, `npm run build`, and Browser validation: G-Dash iframe renders 58 service cards / 8 sections and search for `docs` filters to 2 cards.
 - [x] Dashboard OpenClaw tile now shows the real OpenClaw lobster logo (fetched from the
       gateway control UI's `favicon.svg`, vendored at `public/openclaw-logo.svg` so it
       renders even when the gateway is offline) and a live data-driven description from
