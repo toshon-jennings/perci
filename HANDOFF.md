@@ -2,6 +2,41 @@
 
 ## Current Milestone
 
+- [x] Git Shells (`MODES.PROJECTS`) integration wrap-up: `electron/main.cjs`
+      now attaches `select-directory` to `mainWindow` so macOS directory
+      dialogs open as app-modal sheets instead of hiding behind Perci.
+      `ProjectsMode.jsx` uses `gitshells_projects` plus `supaterm_active_*`
+      keys, safely parses corrupted project snapshots, falls back to a guarded
+      manual path prompt when Electron IPC is unavailable or throws, keeps
+      hidden shell panels mounted, and only suppresses idle notifications when
+      the same shell is selected and the app is visibly focused. Prompt-idle
+      matching now covers `$`, `%`, `#`, `>`, `❯`, and `➜`. `Terminal.jsx`
+      exposes `onOutput` and `sendInput` for Git Shells while keeping Hermes/global
+      terminal behavior intact. Verified `npm run build`, `npm run lint`, and
+      `npm test`; native click-through still needs a restarted Electron main
+      process because the currently running dev app predates the main-process
+      change.
+- [x] Git Shells sidebar shell titles are editable from each shell row and
+      persist through the existing `gitshells_projects` local/Electron store.
+      Sidebar custom names render as `N > Title`, while both main-header shell
+      selectors remain ordinal `SHELL N` labels and renumber with shell order.
+- [x] Git Shells project sidebar is horizontally resizable from 220–480px via
+      its right-edge separator. Width persists as `gitshells_sidebar_width`;
+      xterm continues to refit through `Terminal.jsx`'s existing
+      `ResizeObserver` and sends updated PTY rows/columns after layout changes.
+- [x] Dashboard launch tiles now visibly lift on hover and compress with a
+      distinct accent press state on click. Their retained entrance animation
+      uses CSS `translate` instead of `transform`, so it no longer suppresses
+      hover/active movement; reduced-motion mode keeps feedback stationary.
+- [x] Notes pages now support YAML-frontmatter tags. `src/lib/notesTags.js`
+      parses/writes `tags: [...]`, hides frontmatter from preview rendering,
+      and is covered by `test/notesTags.test.js`. `NotesMode.jsx` shows an
+      editable tag strip under the note header, lists active tags and shared-tag
+      related notes in the Connections panel, and resolves note IDs through a
+      shared helper so `.md` and `.enc.md` filenames navigate consistently.
+      `NotesGraph3D.jsx` adds a persisted `Show shared tags` setting
+      (`includeSharedTags`) that draws weak optional edges between notes with a
+      common tag; default graph behavior remains wikilink/direct-link based.
 - [x] New **Beginner's guide** in-app modal (`src/components/BeginnerGuideModal.jsx`)
       for first-time users, styled like `ModeGuideModal`. Two modules: "1 · Local
       AI" (what a local model is, installing Ollama, a RAM→model table, LM Studio/
@@ -52,11 +87,10 @@
       *after* the initial fit so the PTY spawns at the real size instead of
       80x24 (the misdrawn welcome box). Applies to both the Hermes terminal
       tabs and the global terminal (same component).
-- [ ] Suspect band-aid: the 24ms `isDuplicateSingleKeyInput` filter in
-      `Terminal.jsx` (and the server's device-attribute stripping) likely
-      papered over this same double-socket bug. At fast macOS key-repeat
-      settings (KeyRepeat=1 ≈ 15ms) it can swallow legitimate held-key
-      repeats. Once the fix is verified in-app, consider deleting the filter.
+- [x] Removed the suspect 24ms `isDuplicateSingleKeyInput` filter from
+      `Terminal.jsx` after the stale-socket cleanup landed; held-key repeats
+      now pass through normally. The remaining device-attribute stripping is
+      protocol cleanup, not duplicate-key throttling.
 - [x] Hermes surface polish pass ("amber dispatch console" identity, scoped
       `hermes-*` CSS at the end of `src/index.css`): amber atmosphere header
       gradient with a glowing badge while a run is active, gateway status
@@ -254,7 +288,12 @@
       with full bulb tips so they no longer read as chopped side nubs. The
       dashboard Office card uses the same softer mascot variant without
       changing global chat mascot usage. `npm run build` passes.
-- [ ] Weather syncing is not implemented yet; there is no existing local weather/location bridge, so it needs a separate consented source or settings-backed location.
+- [x] Weather syncing is implemented for Perci HQ through `weatherService.js`,
+      ChatContext weather state, browser geolocation/timezone fallback, and the
+      settings-backed `weather_location` / `weather_sync_enabled` values.
+- [x] Git Shells (`MODES.PROJECTS`) is integrated as a standalone window mode. Resolved a critical storage key collision on `perci_projects` by migrating its project list storage to a dedicated `gitshells_projects` key registered in `persistentStore.js` and Electron App Data.
+- [x] Native directory selector focus issue resolved in `electron/main.cjs` by passing `mainWindow` to `dialog.showOpenDialog`. This prevents the OS folder picker from spawning behind the main app window on macOS.
+- [x] Copied latest background image (`Sleek_dark_background_for_'Git_202606201611.jpeg`) from `~/Downloads` to `src/assets/gitshells-bg.jpg` and applied it as a washed-out background on the front/empty landing page of the Git Shells workspace.
 - [ ] If isolated Cowork/OpenClaw conversations become needed, add a session key generation strategy; `runOpenClawAgent` already accepts `sessionKey`.
 - [ ] Generated graphify docs still reflect older code until the architecture graph is regenerated.
 - [ ] Review the new Perci/Mission motion in-app and decide whether to make it bolder or calmer before applying it to more surfaces.
@@ -264,3 +303,4 @@
 - OpenClaw bridge turns currently use `--agent main`.
 - The root `main.cjs` is legacy dead code; use `electron/main.cjs` for main-process work.
 - Tavily runtime code was removed from active search paths; local desktop search is exposed by `electron/preload.cjs` as `window.electron.webSearch`.
+- Git Shells is hydrated from the Electron App Data store on startup if native environment is detected, with active state persistence.
