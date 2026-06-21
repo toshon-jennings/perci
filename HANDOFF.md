@@ -2,6 +2,28 @@
 
 ## Current Milestone
 
+- [x] Hermes dashboard tile now crops its baked-in pale artwork margin with a
+      tile-scoped 116% background height, leaving the other launch-tile images
+      unchanged. Renderer-only; `npm run build` and a live 1972x1280 visual
+      check pass.
+- [x] Git Shells now marks any background shell output unread immediately,
+      retains the existing prompt-idle completion detection, and exposes native
+      notification plus completion-sound toggles in the sidebar header. Native
+      permission is requested only when the user enables it; audio defaults off.
+- [x] Git Shells terminal input focus is reinforced at the xterm panel boundary.
+      Live QA entered commands through the rendered terminal, interrupted
+      `sleep 20` with Ctrl+C, returned to the prompt, and showed an unread amber
+      marker when a second shell completed in the background.
+- [x] Cowork local routines now apply and register their saved folder before
+      starting. `run_command` works in Electron local folders through a bounded,
+      shell-free executable/argument IPC runner restricted to the registered
+      workspace; shell operators remain intentionally unsupported. Main/preload
+      changes require a Perci restart before this command bridge is live.
+- [x] Chat now keeps a labeled **New chat** button in the persistent composer
+      area, so starting a fresh conversation remains accessible at the bottom
+      of long message histories and in narrow windows. The existing sidebar
+      action is unchanged. Renderer-only; `npm run build` and live long-scroll
+      click-through verification pass.
 - [x] Git Shells (`MODES.PROJECTS`) integration wrap-up: `electron/main.cjs`
       now attaches `select-directory` to `mainWindow` so macOS directory
       dialogs open as app-modal sheets instead of hiding behind Perci.
