@@ -2,7 +2,7 @@
 
 ## Current Milestone
 
-- [ ] Power User Workspace planning is now the active product direction. The
+- [x] Power User Workspace planning is now the active product direction. The
       goal is to improve Perci for technical founder/operator/builder power
       users by connecting ideas, notes, code, terminals, agents, validation,
       memory, and next actions into one coherent workspace loop. The canonical
@@ -95,6 +95,36 @@
       awaiting-review state into the deterministic next-action recommendation
       and, if needed, opening the exact Cowork session rather than only the
       Cowork surface.
+- [x] Cowork review continuity is now wired end to end. Awaiting workspace
+      sessions take priority in the deterministic next-action recommendation,
+      activity rows and the next-action button select the exact Cowork session
+      through the existing `codeState.currentSessionId` field, and opening a
+      finished/failed session records `reviewedAt` so it does not remain the
+      top action forever. The shared window manager now re-clamps normal and
+      restore bounds when the viewport resizes, keeping Power Workspace fully
+      visible at narrow desktop widths. Validation: 14 focused tests pass,
+      `npm run build` passes with the existing Vite chunk-size warnings, and
+      live Playwright checks at 1440x1000 and 800x900 confirmed exact-session
+      selection, zero horizontal overflow, and no page errors. The first
+      coherent idea/context/Cowork/Mission/Git Shells loop is now implemented;
+      next work should begin only after deciding whether to close this first
+      milestone or extend it with workspace-scoped Chat, validation, and memory
+      actions.
+- [x] Workspace-scoped Chat, validation, and memory actions complete the first
+      Power User Workspace milestone. New workspace chats persist workspace
+      id/folder metadata, open by exact conversation id, and receive a
+      goal/folder/context prompt without auto-sending. Mission runs now expose
+      their real validation state in the workspace; `Validate in Git Shells`
+      arms the existing Mission validation target before opening the matching
+      project terminal. Pending Mission memory candidates can be saved or
+      discarded directly, using one resolver shared with Mission Control;
+      explicit user-approved saves bypass the automatic ingestion quality
+      threshold and persist as scoped harness memory. Validation: 16 focused
+      tests pass, `npm run build` passes with existing Vite chunk-size warnings,
+      and live Playwright checks confirmed exact chat reopening, prefilled chat
+      context, Mission validation targeting, memory save/discard persistence,
+      zero page errors, and no horizontal overflow at 800x900. Treat subsequent
+      Power Workspace expansion as a new milestone.
 - [x] Hermes dashboard tile now crops its baked-in pale artwork margin with a
       tile-scoped 116% background height, leaving the other launch-tile images
       unchanged. Renderer-only; `npm run build` and a live 1972x1280 visual
