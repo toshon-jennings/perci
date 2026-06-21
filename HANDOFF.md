@@ -2,6 +2,99 @@
 
 ## Current Milestone
 
+- [ ] Power User Workspace planning is now the active product direction. The
+      goal is to improve Perci for technical founder/operator/builder power
+      users by connecting ideas, notes, code, terminals, agents, validation,
+      memory, and next actions into one coherent workspace loop. The canonical
+      pickup plan is `docs/product/POWER_USER_WORKSPACE_PLAN.md`. Start with
+      the workspace model plus window skeleton before deeper BARS/Notes/Mission
+      integrations. Do not treat enterprise warehouse/BI setup as the default
+      persona for this milestone.
+- [x] Power Workspace first slice started: `src/lib/powerWorkspace.js` defines
+      the minimal persisted workspace model, legacy working-directory/Git
+      Shells fallback, recent BARS/Mission snapshot reads, and deterministic
+      next-action selection. `src/components/PowerWorkspaceMode.jsx` adds the
+      first renderer-only workspace window. The mode is wired through
+      `ModeContext`, `App`, Dashboard, Dock, and persistence keys. Validation:
+      `npm test -- --run test/powerWorkspace.test.js` and `npm run build` pass.
+      Next implementation step is linking BARS/Notes/Mission records to an
+      active workspace instead of only showing recent/fallback summaries.
+- [x] Power Workspace explicit context linking landed. Workspace records now
+      persist `linkedIdeaIds`, `linkedMissionRunIds`, and `linkedNoteRefs`;
+      `setWorkspaceLink()` stores links on the workspace record instead of
+      mutating BARS ideas, Mission runs, or note files. The Power Workspace
+      window can link/unlink recent BARS ideas and Mission runs, and can pin
+      manual note references such as `Index.md` or `[[Power User Brief]]`.
+      Linked items sort ahead of merely recent items. Validation:
+      `npm test -- --run test/powerWorkspace.test.js` and `npm run build` pass.
+      Follow-up completed below: workspace actions now start Cowork/Git Shells
+      with the active workspace goal/folder context.
+- [x] Power Workspace action handoff landed. `prepareWorkspaceCoworkHandoff()`
+      saves the active workspace, writes `working_directory`, stores a pending
+      Cowork prompt under `perci_power_workspace_cowork_handoff`, and emits an
+      in-app handoff event for already-mounted Cowork windows. Cowork consumes
+      the handoff by registering the folder, setting its working directory, and
+      pre-filling the composer with the workspace goal/context without
+      auto-running. `prepareWorkspaceProjectHandoff()` writes
+      `working_directory`, selects an existing matching Git Shells project and
+      first terminal via `supaterm_active_*`, or opens Git Shells with a
+      pre-filled registration draft for the workspace folder. Validation:
+      `npm test -- --run test/powerWorkspace.test.js` and `npm run build` pass.
+      Follow-up completed below: BARS, Notes, and Mission now expose
+      workspace-aware filters and link/unlink actions.
+- [x] Workspace-aware BARS/Notes/Mission actions landed. `powerWorkspace.js`
+      now has shared matching helpers for note refs and Mission runs, so
+      `Index.md`, `Index.enc.md`, and `[[Index]]` resolve to the same workspace
+      note identity and Mission runs match either explicit links or the active
+      workspace folder. BARS shows a workspace count, workspace-only filter, and
+      per-idea "Use in workspace" action. Notes shows a workspace-only note
+      filter and active-note link/unlink action without editing note contents or
+      weakening encrypted-note behavior. Mission Control has a Workspace filter,
+      workspace run count, and selected-run link/unlink action. Validation:
+      `npm test -- --run test/powerWorkspace.test.js` and `npm run build` pass
+      with the existing Vite chunk-size warnings. Next step is making the Power
+      Workspace home open directly into linked BARS ideas, Notes pages, and
+      Mission runs instead of only opening the parent surfaces.
+- [x] Power Workspace direct record navigation landed. A single renderer-only
+      `perci_power_workspace_surface_handoff` record plus
+      `perci-power-workspace-surface-handoff` event handles both newly opened
+      and already-mounted windows. Power Workspace idea/run titles and explicit
+      actions now open BARS or Mission with the requested record selected;
+      linked note chips open Notes on the resolved page, including wikilink,
+      `.md`, and `.enc.md` forms. Destination filters are cleared when needed so
+      the requested record is visible. The handoff is consumed once and covered
+      by `test/powerWorkspace.test.js`. Validation:
+      `npm test -- --run test/powerWorkspace.test.js` passes with 11 tests and
+      `npm run build` passes with the existing Vite chunk-size warnings. Next
+      step completed below: selected BARS and Notes context can now be carried
+      into Cowork for planning.
+- [x] Selected workspace context can now start a focused Cowork planning handoff.
+      BARS records expose `Plan in Cowork`; linked note chips expose a compact
+      Cowork action. The existing Cowork handoff remains non-destructive and
+      non-automatic: it registers the workspace folder and pre-fills the
+      composer, but does not submit. The generated prompt includes the workspace
+      goal/folder plus selected BARS title/status/next action or the selected
+      note reference, then asks Cowork for the next smallest executable plan
+      after inspecting current state. Validation:
+      `npm test -- --run test/powerWorkspace.test.js` passes with 12 tests and
+      `npm run build` passes with the existing Vite chunk-size warnings. Next
+      step is surfacing recent/current Cowork session activity in Power
+      Workspace so the home shows whether workspace-scoped agent work is ready,
+      active, or awaiting user action.
+- [x] Power Workspace now shows live workspace-scoped Cowork activity from the
+      existing persisted `codeState.sessions` collection. Workspace handoffs
+      create a non-running `Started` session with the workspace id/folder and a
+      pre-filled composer; submitting it transitions the session to
+      `In progress` without auto-running beforehand. New manual and routine
+      sessions also retain their working directory. The workspace execution
+      panel classifies matching sessions as ready, active, or awaiting user
+      review/attention and lists the three most recent matching sessions.
+      Validation: `npm test -- --run test/powerWorkspace.test.js` passes with
+      13 tests, `npm run build` passes with the existing Vite chunk-size
+      warnings, and `git diff --check` passes. Next step is feeding Cowork's
+      awaiting-review state into the deterministic next-action recommendation
+      and, if needed, opening the exact Cowork session rather than only the
+      Cowork surface.
 - [x] Hermes dashboard tile now crops its baked-in pale artwork margin with a
       tile-scoped 116% background height, leaving the other launch-tile images
       unchanged. Renderer-only; `npm run build` and a live 1972x1280 visual
@@ -148,6 +241,7 @@
 - [x] Agents panel can run OpenClaw through the gateway agent bridge.
 - [x] Cowork exposes `delegate_to_openclaw` for long-running or multi-step gateway delegation.
 - [x] Perci web search now uses the desktop `web-search` bridge/native provider search path instead of Tavily.
+- [x] Eidos integrated as a first-class Perci window (`EIDOS_WINDOW_ID`, `EI` dock chip). Perci manages the full Docker/OrbStack lifecycle: auto-detects OrbStack, starts Docker runtime, runs `docker compose up -d --wait`, polls memU API health, starts Next.js dashboard, renders in `<webview>`. Includes progress polling (`eidos:progress`), error states with OrbStack install link, and retry. Standalone Eidos stack is reused if already running. Assets: `src/assets/eidos-logo.png`, `src/assets/eidos-bg.jpg`. **Per ci version is now ahead of standalone Eidos** — the standalone `~/eidos` repo needs to be caught up. See `~/eidos/CLAUDE.md` and `~/eidos/HANDOFF.md` for the divergence note.
 - [x] Search is now intent-aware. `IntelligentSearchTool.planSearch()` classifies each
       message (intent / reason / searchQueries / freshness / expectedSourceTypes) using the
       selected model when available, deterministic local-fact detection for clock/calendar
