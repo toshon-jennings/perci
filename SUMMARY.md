@@ -27,7 +27,7 @@
 |-------|------------|
 | Frontend | React 18, Tailwind CSS, Framer Motion |
 | Backend | None (client-side app, shells out to OpenClaw/Hermes CLIs) |
-| Database | localStorage (persistence via `persistentStore.js`) |
+| Database | Electron app-data file via `persistentStore.js` (encrypted, atomic writes) |
 | Build | Vite 5 |
 | Desktop Shell | Electron 39 |
 | Testing | None (no test suite yet) |
@@ -66,14 +66,14 @@
 | Mission control events | `src/lib/missionControl.js` — `appendMissionRunEvent()` central event bus |
 | Terminal IPC | `src/lib/terminalBridge.js` — WebSocket bridge to terminal server |
 | Artifact security | `src/lib/previewSecurity.js` + `src/lib/budgetGovernor.js` — sandboxed iframes, CSP |
-| Persistence | `src/lib/persistentStore.js` — localStorage + Electron store hydration |
+| Persistence | `src/lib/persistentStore.js` — Electron app-data file (encrypted, atomic writes); localStorage web fallback |
 | Theme | `src/context/ThemeContext.jsx` — light/dark/system theme switching |
 
 ---
 
 ## Key Architectural Patterns
 
-1. **Window system (desktop metaphor):** The Dashboard (`MODES.DASHBOARD`) is the always-mounted "desktop." Every other mode (Chat, Code, Cowork, Mission, Build, Agents, etc.) opens as a floating window on top, surfaced by the bottom Dock. Windows are managed by `ModeContext` and persist across reloads via localStorage. See `src/components/windows/` for `DesktopHost`, `Dock`, `WindowFrame`.
+1. **Window system (desktop metaphor):** The Dashboard (`MODES.DASHBOARD`) is the always-mounted "desktop." Every other mode (Chat, Code, Cowork, Mission, Build, Agents, etc.) opens as a floating window on top, surfaced by the bottom Dock. Windows are managed by `ModeContext` and persist across reloads via the Electron app-data file. See `src/components/windows/` for `DesktopHost`, `Dock`, `WindowFrame`.
 
 2. **Mode routing:** `App.jsx` maps each `MODES` key to a component. Adding a new mode means: (a) add key to `MODES` in `ModeContext.jsx`, (b) add component import + route in `App.jsx`, (c) add window title in `WINDOW_TITLES`. Non-mode windows (OpenClaw, Hermes, YouTube) use the same window system but are registered separately with `OPENCLAW_WINDOW_ID`, etc.
 
@@ -101,7 +101,7 @@
 
 2. **React compiler memo cache** — Adding deps to memoized blocks shifts ALL subsequent `$[N]` indices. Use Python replacements, never hand-edit. Verify with `grep -n '\$\['` after.
 
-3. **localStorage state hydration** — `ModeContext.jsx` hydrates window state, code state, chat state, and OpenClaw config from localStorage on mount. If state shape changes between versions, add a normalization function (see `hydrateWindows`, `normalizeCodeState`).
+3. **App-data state hydration** — `ModeContext.jsx` hydrates window state, code state, chat state, and OpenClaw config from the Electron app-data file on mount via `persistentStore.ensureHydrated()`. If state shape changes between versions, add a normalization function (see `hydrateWindows`, `normalizeCodeState`).
 
 4. **Artifact iframe security** — AI-generated code previews run in sandboxed iframes with CSP. `src/lib/previewSecurity.js` enforces this. Don't relax CSP without understanding the implications.
 
