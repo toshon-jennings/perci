@@ -2,6 +2,123 @@
 
 ## Current Milestone
 
+- [x] Perci Map first-class surface landed (2026-06-24). Added
+      `MODES.SURFACE_MAP` / `Perci Map` as a native window, routed through
+      `App.jsx`, `ModeContext.jsx`, Dashboard/Sir Perci shared catalog, the
+      top `ModeSwitcher`, and the Dock glyph set. `src/lib/perciSurfaceMap.js`
+      defines a stable Beck-inspired conceptual graph of Perci surfaces with
+      multiple route types: Movement, Shared context, Agent work, Build output,
+      Research, Local runtime, Governance, and Expenses. Bill Board belongs on
+      the Expenses route, not Governance, because it is for user expense/spend
+      tracking. `PerciMapMode.jsx` renders the map as an SVG transit surface
+      with filterable route types, station
+      inspection, keyboard-accessible stations, and click-to-open/focus
+      navigation for mapped surfaces. Styling lives in `PerciMapMode.css` and
+      keeps the view responsive by collapsing the inspector below the map on
+      narrower windows. Added `test/perciSurfaceMap.test.js` to guard route
+      references, launch targets, filtering, and summary counts. Validation:
+      `npx vitest run test/perciSurfaceMap.test.js`, focused ESLint for the
+      new map files, `npm run build`, `git diff --check`, and `curl -I
+      http://localhost:5173` all passed. Note: broad ESLint over touched legacy
+      files still reports pre-existing repo rules/issues such as missing
+      `React` imports in old JSX files, Electron `webview` prop warnings, and
+      an existing unused destructure in `ModeContext.jsx`; the new map files
+      pass focused lint.
+- [x] Perci Map district model tightened (2026-06-24). The map now uses
+      planner-style districts instead of loose node scatter:
+      `SURFACE_MAP_DISTRICTS` defines Core Concourse, Knowledge Quarter,
+      Creation Yard, Operations Terminal, Local Systems Depot, and Business
+      Office. Every station carries a `districtId`, is positioned inside its
+      district, and the SVG renders district boundaries/labels behind the route
+      lines. The station inspector now shows the selected station's district.
+      Added `CONTEXT.md` glossary entries for Perci Map District, Route, and
+      Station so future changes preserve the planning model. Tests now assert
+      every station belongs to a known district and that the map retains the
+      expected district set.
+- [x] Perci Map zoom and district spacing pass landed (2026-06-24). The map
+      canvas grew from the initial compact plan into a wider 1320x860 SVG,
+      with districts and stations spread farther apart for legibility. Added a
+      sticky zoom toolbar inside the map pane with zoom out, range slider, zoom
+      in, reset, and visible percentage. Zoom changes the rendered SVG size and
+      keeps the map pane scrollable, so users can zoom out for the whole system
+      shape or zoom in and pan for station-level inspection. Added a test that
+      every station coordinate remains inside its assigned planner district.
+- [x] Perci Map flow patterns and lighter route lines landed (2026-06-24).
+      Route type metadata now includes `linePattern` definitions so flow types
+      are encoded by stroke pattern as well as color: solid, long dash,
+      dash-dot, short dash, dotted, rail dash, fine dotted, and ledger dash.
+      The SVG route strokes are lighter (`4px` with a slimmer underlay), and
+      filter chips plus inspector route rows show a small line sample for each
+      flow type. Tests now assert every route type has a unique line pattern.
+- [x] Sir Perci launcher merged into the persistent bottom Dock (2026-06-24).
+      `Dock.jsx` no longer returns `null` with zero windows open — it now
+      always renders, with window chips wrapped in `.perci-dock-chips` and a
+      new `SirPerciLauncher.jsx` pinned to the right end. Clicking the Sir
+      Perci mascot button opens a searchable flyout (categories: Perci
+      Native, System & External, Guides) sourced from a new
+      `src/lib/appCatalog.js` (extracted verbatim from `DashboardMode.jsx`,
+      which now imports `NATIVE_TILES`/`SYSTEM_TILES` from there instead of
+      declaring them inline). Guide entries open the real
+      `BeginnerGuideModal`/`MissionControlGuideModal`/`ModeGuideModal`
+      directly. The flyout footer has an "Auto-hide dock" switch, persisted
+      as `perci_dock_autohide` (added to `persistentStore.js`
+      `PERSISTED_KEYS`, default `false`): on, the dock translates off-screen
+      except a 6px peeking sliver and reveals on hover/focus via a CSS
+      adjacent-sibling selector (`.perci-dock-hover-zone`); off, the dock
+      stays always-visible and `App.jsx` reserves its layout space
+      (`perci-dock-reserved` now keys off the autohide preference instead of
+      `windows.length`). Positioning for both this flyout and the existing
+      `WindowContextMenu.jsx` now shares `src/lib/useFlipPosition.js`
+      (extracted from `WindowContextMenu`'s inline flip-to-fit math).
+      **Real bug found and fixed during verification**: the hook only
+      recomputed position on open/anchor-change, not on window resize, so a
+      popup left open across a viewport resize could end up positioned
+      entirely below the visible viewport (confirmed via
+      `getBoundingClientRect()` placing the autohide switch at `y:838` in a
+      720px-tall viewport, with `elementFromPoint` returning nothing at that
+      point) — clicks would silently miss and register as an outside-click
+      instead. Fixed by adding a `window resize` listener that re-runs the
+      same positioning calculation. Validation: full preview-browser pass at
+      1280x800 confirmed flyout open/search/filter/category-empty-hiding,
+      guide modal wiring, autohide toggle on/off (verified
+      `data-autohide`/`transform`/`localStorage` directly), and the CSS
+      hover-reveal selector matches the actual DOM sibling structure; a
+      760px-wide resize check confirmed no layout breakage and the flyout
+      stays within viewport bounds. Note: the MCP preview tool's
+      coordinate-based `preview_click` proved unreliable against the small
+      trigger button in this session (real DOM `.click()` via `preview_eval`
+      worked every time) — likely a tool quirk, not an app bug; worth
+      remembering for future preview-driven verification of small targets.
+- [x] Dashboard native-tool modals landed (2026-06-24). The Perci native
+      section in `DashboardMode.jsx` now includes compact buttons for
+      Chronicle and `graphify-diff`, each opening a shared polished modal that
+      describes purpose, CLI shape, evidence model, and role in the GitHub
+      story workflow. Styling lives in `DashboardMode.css` and follows the
+      dashboard token system with responsive modal layouts. Validation:
+      `./node_modules/.bin/eslint src/components/DashboardMode.jsx`,
+      `npm run build`, `git diff --check`, and a headless Chrome interaction
+      test against `http://localhost:5173` passed. Screenshots captured at
+      `/private/tmp/perci-chronicle-modal.png` and
+      `/private/tmp/perci-graphify-diff-modal.png`.
+- [x] Perci Chronicle first CLI landed (2026-06-24). `scripts/perci-chronicle.mjs`
+      builds an evidence-backed product story from Git history, path/surface
+      clustering, GitHub commit links, and the local Graphify graph/manifest
+      when available. The CLI now also scans changed file content and added
+      diff lines for deterministic semantic observations such as first-class
+      mode components, mode routing references, Electron IPC handlers,
+      persistent storage keys, test assertions, visual assets, and shared
+      library exports. `npm run story -- --range v0.28.1..HEAD --out
+      docs/history/PERCI_CHANGE_STORY.md --json
+      docs/history/PERCI_CHANGE_STORY.json` generated the first story for the
+      recent large grouped commits. The output reports Graphify coverage so a
+      stale index is visible before over-trusting architectural summaries.
+      Validation: `node --check scripts/perci-chronicle.mjs`, `npm run story
+      -- --range v0.28.1..HEAD --out docs/history/PERCI_CHANGE_STORY.md --json
+      docs/history/PERCI_CHANGE_STORY.json`, `npm run build`, and
+      `git diff --check` pass. Full `npm test` currently fails in existing
+      `test/harnessMemory.test.js` and `test/powerWorkspace.test.js` cases
+      unrelated to this CLI change; those source files were not modified in
+      this slice.
 - [x] Mission Control render crash fixed (2026-06-24). `MissionControl.jsx`
       now imports the persistent storage string helpers it already used, and
       the run context menu is rendered from `MissionControl` instead of
