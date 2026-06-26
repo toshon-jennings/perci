@@ -2,6 +2,278 @@
 
 ## Current Milestone
 
+- [x] Cleanmac Perci surface UI safety pass (2026-06-26). Updated
+      `src/components/CleanmacMode.jsx` from a terminal-only panel into a
+      first-class Perci tool surface with runtime/source status, cleanup-area
+      summary, a structured streaming output panel, and internal scrolling for
+      smaller windows. Added a real Docker/OrbStack safety review flow:
+      `electron/main.cjs` now exposes read-only `cleanmac:inspect-docker`,
+      `electron/preload.cjs` exposes `cleanmacInspectDocker()`, and the surface
+      keeps Run locked until Perci has listed the current Docker context's
+      unused volumes (`docker volume ls --filter dangling=true --quiet` +
+      `docker volume inspect`). If candidates exist, the UI shows names,
+      driver/Compose labels/created time where available, explains how to
+      decide what they are (`docker volume inspect <name>`, match labels to a
+      project, back up/migrate, or remove `--volumes`), and only then allows an
+      informed confirmation. Also fixed repeated-run output duplication by
+      removing the prior `cleanmac:output` listener before registering a new one
+      and cleaning it up on completion/error. Important coupling: Perci still
+      executes `~/cleanmac/cleanmac` at runtime; this pass changed the Perci UI
+      and Electron bridge only and did not modify the separate
+      `/Users/toshonjennings/cleanmac` repository. While validating,
+      `electron/main.cjs` had an unrelated syntax bug in `getFiles` (`});`
+      ending a function); fixed it to `}` so the main process parses. Also
+      passed through `writeOpenClawConfig(config)` in preload, matching its
+      existing IPC handler and callers. Validation: `node --check
+      electron/main.cjs`, `node --check electron/preload.cjs`, `npx eslint
+      src/components/CleanmacMode.jsx electron/preload.cjs`, `npm run build`,
+      and a Playwright render/DOM check against the existing Vite server on
+      port 5173 confirmed the Cleanmac surface sections render. Whole-file
+      ESLint on `electron/main.cjs` still reports pre-existing lint debt.
+
+- [ ] MarkItDownUI image-upload "first attempt fails" — continued
+      investigation (2026-06-26). Continues the open entry below. User
+      clarified the failure is the **actual upload/conversion** (first
+      attempt fails, second succeeds), NOT the file picker — the picker opens
+      fine — and the file is an **image**. Two evidence-backed leads, both
+      still UNCONFIRMED:
+      1. **Images in the embedded `<webview>` go to the local `/api/convert`
+         server, not the OpenRouter vision path.** In an Electron `<webview>`
+         the guest is its own top-level frame, so `window.parent === window`;
+         app.js's `isPerciEmbedded` check (`perci=1 && window.parent !==
+         window`, `markitdown-ui/webui/static/app.js`) is therefore **false**,
+         `shouldUsePerciVision` is false, and images never take the
+         `markitdown:vision-request` postMessage path. So the "OpenRouter
+         vision via Perci" feature (see the older entry below, written for the
+         **iframe** embed) is effectively **dead in the webview** —
+         `window.parent.postMessage` can't cross the webview boundary (would
+         need `ipcRenderer.sendToHost`). This is a strong inference from
+         Electron semantics + the fact that renderer-side logging added to
+         `MarkItDownMode`'s vision handler captured ZERO events during image
+         uploads; it was NOT directly confirmed — a `dom-ready`
+         `executeJavaScript` probe of the guest's `window.parent===window` was
+         added but never fired before being reverted. Confirm next time by
+         checking whether the MarkItDownUI panel even shows "OpenRouter vision
+         via Perci".
+      2. **Perci's dev renderer force-reloads itself repeatedly during
+         MarkItDown use.** `renderer.log` shows full top-frame reloads
+         (`[stray-navigation]` beforeunload → `did-navigate
+         url=http://localhost:5173/`) caught 4+ times with the MarkItDownUI
+         `<webview>` as `document.activeElement`, two ~1.5 min apart (03:52,
+         03:54) after 23 min idle, with no file edit and nothing in `src/`
+         calling `location.reload` (only `webviewRef.reload()`). These are
+         Vite-client `location.reload()` calls — they bypass the
+         `will-navigate` guard, which is why the ~518 `blocked-self-navigation`
+         log entries are a red herring (those are a *different*, harmlessly
+         blocked source). A reload mid-upload tears the webview down and kills
+         the in-flight conversion → exactly "first attempt fails, second
+         works." This is a **Vite dev-only artifact** (a packaged build has no
+         HMR/ws); not yet tied to a specific failed upload in the act.
+      Exonerated along the way: the app.js double-fire fix (entry below) still
+      holds live (one dropzone click → exactly one `#fileInput` click), and
+      `/api/convert` converts on the FIRST try when driven standalone — so
+      app.js page logic is not the cause; the failure lives in the
+      embedding/runtime. Bug currently not reproducing ("working now", cause
+      unknown). Cheap confirmation for the reload lead: when an upload fails,
+      does the WHOLE Perci window flash/reload (not just the upload area)? All
+      diagnostic edits to `MarkItDownMode.jsx` were reverted; nothing was
+      committed this session.
+
+- [x] Restored missing Perci Notes after update repointed the app to the new
+      default folder (2026-06-25). User reported Notes missing after updating
+      Perci. Found the real notes still intact at
+      `/Users/toshonjennings/opal/notes/notes` with 19 Markdown files, while
+      Perci app-data had `perci_notes_folder` set to
+      `/Users/toshonjennings/Documents/Perci Notes`, which only contained the
+      new default `Index.md`/`Note.md`. Repointed
+      `/Users/toshonjennings/Library/Application Support/Perci/perci-data.json`
+      to the real folder without moving or deleting any note files. Patched
+      `src/lib/persistentStore.js` so `perci_notes_folder` is included in
+      persisted snapshots/migrations, and patched `NotesMode.jsx` so a default
+      Documents fallback is not immediately persisted as if the user chose it;
+      the folder is persisted when a user chooses a folder or initializes
+      Notes. Validation: `npm run build`, `git diff --check --`
+      `src/components/NotesMode.jsx src/lib/persistentStore.js`, and a Node
+      assertion confirmed app-data points at
+      `/Users/toshonjennings/opal/notes/notes` with 19 Markdown files.
+
+- [ ] MarkItDownUI upload bug: user retested the app.js double-click fix
+      (previous entry below) and reports it's still happening, now described
+      as "the file manager window just refreshes, and after that I can
+      upload." Investigated and ruled out: any Electron-side navigation
+      guard, dialog handler, or window focus/blur effect causing a remount
+      (none found in `electron/main.cjs`, `electron/preload.cjs`,
+      `ModeContext.jsx`, or `WindowFrame.jsx`); re-confirmed the app.js fix
+      itself is correct by instrumenting `fileInput`'s click event directly
+      against the live `127.0.0.1:8920` server (fires once now, fired twice
+      with the old code re-added as a control). Found and fixed a real gap
+      while chasing this: the MarkItDownUI `<webview>` in
+      `MarkItDownMode.jsx` has no explicit `partition` attribute, so per
+      Electron's docs it falls back to the **app's persistent default
+      session** — the same one `win.webContents.session` uses — meaning its
+      HTTP cache survives reloads and app restarts. `electron/main.cjs`'s
+      existing `onHeadersReceived` hook for `127.0.0.1:8920`/`localhost:8920`
+      (added earlier for CORS/frame headers) now also sets `Cache-Control:
+      no-store`, so this local dev server's static assets can never be served
+      stale to the embed again — but **this is a main-process change and
+      needs a full Perci quit+relaunch to take effect**; a renderer-only
+      Reload click won't re-register the header rule. Genuinely unresolved:
+      whether the user's "first attempt fails" symptom was actually the
+      already-fixed app.js bug being masked by this exact stale cache (most
+      likely, given the timeline), or a third mechanism neither this session
+      nor the prior one (see below) found. Next step: have the user fully
+      quit and relaunch Perci, retest, and if it still reproduces, get a
+      precise description of what visibly "refreshes" — the native OS file
+      dialog flashing, or the MarkItDownUI panel's own content going
+      blank/reloading — since that distinguishes an OS/dialog-level issue
+      from a Perci-window-level one and neither has been directly observed
+      yet (only tested against the standalone server in a plain browser tab,
+      not the real Electron `<webview>`).
+
+- [x] Fixed MarkItDownUI's "first upload attempt always fails" bug (2026-06-25).
+      Root cause: `static/index.html` nests `<input id="fileInput" hidden>`
+      inside `<label id="dropzone">`, so a click on the dropzone already gets
+      natively forwarded to the file input by the browser — but
+      `static/app.js` also had `dropzone.addEventListener("click", () =>
+      fileInput.click())`, an explicit second trigger. One user click on the
+      dropzone fired the input's click handling twice; the resulting two
+      file-picker-open requests raced (worse over Electron's `<webview>` IPC
+      than in a plain tab), so the first request routinely lost and the
+      picker silently failed to deliver a selection — the user had to click
+      again for a request to win cleanly. Fixed by deleting the redundant
+      listener in `/Users/toshonjennings/markitdown-ui/webui/static/app.js`
+      (a separate local project, not part of this repo) and relying solely
+      on native label-to-input forwarding; kept the existing `keydown`
+      handler since `<label tabindex="0">` doesn't get free Enter/Space
+      activation. Also removed a now-dead `webview.executeJavaScript(...)`
+      no-op in `src/components/MarkItDownMode.jsx`'s `handleDomReady` that
+      had — per its own comment — already correctly diagnosed this exact
+      double-trigger mechanism but concluded "no patching needed," which is
+      what let the bug ship; `git diff HEAD` on that file showed a *prior*
+      uncommitted version had a real `preventDefault`/`stopPropagation`
+      patch attempt that was later reverted back to the no-op, so this has
+      apparently been investigated and incorrectly closed out before — if a
+      future change to `MarkItDownMode.jsx`'s `handleDomReady` looks like
+      it's reintroducing upload-patch code, check whether the upstream
+      `app.js` fix is still in place before assuming a Perci-side patch is
+      needed again. Validation: `node --check` on the patched `app.js`,
+      focused ESLint on `MarkItDownMode.jsx` (clean aside from the
+      pre-existing repo-wide missing-`React`-import warnings), `npm run
+      build`, and a live browser test against the running
+      `127.0.0.1:8920` server — instrumented `fileInput`'s `click` event to
+      count firings per dropzone click: 1 with the fix, reproduced 2 by
+      temporarily re-adding the old listener to confirm the test
+      methodology actually catches the bug.
+
+- [x] Perci Map / Perci Now district layout regularized (2026-06-25). The six
+      `SURFACE_MAP_DISTRICTS` boxes previously had wildly inconsistent gaps
+      between neighbors (measured: 10px, 30px, 40px, 50px, 110px, even 130px
+      depending on the pair), which read as scattered rather than planned.
+      Districts are now derived from the same 120x80 grid `MapGrid` already
+      draws (vertical lines at 80,200,...,1280; horizontal at 80,160,...,800):
+      every district spans whole grid cells inset by a uniform 20px margin
+      per side, so any two adjacent districts are exactly 40px apart and
+      every edge lands on a real grid line. `PERCI_SURFACE_STATIONS`
+      coordinates were redone to match: each district's stations sit on an
+      evenly-spaced internal row/column grid (e.g. Core Concourse is a clean
+      2x2, Operations Terminal and Local Systems Depot are matching 3x2 grids
+      that line up in the same columns across their shared boundary). No
+      station/district ids, labels, descriptions, kinds, or route
+      definitions changed — only `x`/`y`/`width`/`height` values. Both Perci
+      Map and Perci Now's Map tab pick this up automatically since they share
+      `PerciSurfaceCanvas.jsx` and `src/lib/perciSurfaceMap.js`. Validation:
+      `npx vitest run test/perciSurfaceMap.test.js test/perciNow.test.js`
+      (11/11), `npm run build`, focused ESLint on `perciSurfaceMap.js`
+      (clean), and a live preview pass scrolling/zooming through both maps
+      confirmed no overlaps and consistent spacing everywhere.
+
+- [x] Resolved the flagged `perciSurfaceMap.js` drift (2026-06-25). The
+      previous session's uncommitted test bump (Core Concourse expected to
+      have 4 stations) and dead icon import turned out to be a half-finished
+      attempt at the `Perci Now` station this same milestone's HANDOFF entry
+      already claimed was done. Finished it for real: added the `perci-now`
+      station to `PERCI_SURFACE_STATIONS` (`core-concourse`, x:740 y:415,
+      beside `dashboard`/`workspace`/`perci-map`) and wired it into the
+      `circle-line` (movement) and `agent-rail` (automation) routes per the
+      existing HANDOFF description; removed the unused `lucide-react` icon
+      import block (confirmed dead — no station anywhere sets `.icon`, so
+      `PerciSurfaceCanvas.jsx`'s `getLabelProps` branch for it is unreached).
+      Also fixed `src/lib/perciNow.js`: `createPerciNowSnapshot` was counting
+      its own `Perci Now` window in `openWindows`/`visibleWindows` when the
+      surface is open and live (confirmed via `PerciNowMode.jsx`, which feeds
+      the app-wide `windows` list — including itself — into the snapshot);
+      now filters out `modeId === MODES.PERCI_NOW` before counting, so Now
+      reports on everything else happening in Perci, not itself. Validation:
+      `npx vitest run test/perciSurfaceMap.test.js test/perciNow.test.js`
+      (11/11 passing) and `npm run build`. Note: a full `npx vitest run`
+      shows 10 pre-existing failures in `test/powerWorkspace.test.js`,
+      unrelated to this fix — that test and `src/lib/powerWorkspace.js` are
+      both untouched/identical to HEAD, so the breakage predates this session
+      and any uncommitted Perci Now work; flagged separately, not fixed here.
+- [x] Perci Now gained a live activity Map tab (2026-06-25). Extracted the
+      SVG rendering primitives shared by the map (`Districts`, `MapGrid`,
+      `Station`, the zoom hook/toolbar) out of `PerciMapMode.jsx` into new
+      `src/components/PerciSurfaceCanvas.jsx`/`.css`, then refactored
+      `PerciMapMode.jsx` to import them (no visual/behavior change — verified
+      in-app). `PerciNowMode.jsx` now has an Overview/Map tab switch; the Map
+      tab renders the same station/district geometry as Perci Map but drives
+      station state from live data instead of route filters: stations glow
+      green (`is-active`) for open windows or active mission/agent work, pulse
+      red (`is-attention`) for blocked/attention items or an offline gateway,
+      dim (`is-idle`) otherwise, and a `is-docked` state for minimized
+      windows. District rectangles get a heat glow derived from
+      `districtActivity` plus a weight bump for districts containing
+      attention/active stations, so e.g. Operations Terminal visibly glows
+      when Mission has a blocked run even with no window open there. Clicking
+      a station opens/focuses that surface exactly like Perci Map; the
+      inspector panel shows a live status badge and reuses the existing
+      `WorkRow` component to list "Happening here now" items for the Mission
+      and Agents stations. Validation: `npx vitest run test/perciNow.test.js
+      test/perciSurfaceMap.test.js`, focused ESLint on
+      `PerciNowMode.jsx`/`PerciMapMode.jsx`/`PerciSurfaceCanvas.jsx` (clean
+      except pre-existing harmless fast-refresh warnings on the new shared
+      file), `npm run build`, and a live preview pass confirmed Perci Map is
+      visually unchanged post-refactor and the new Map tab correctly
+      lights up Mission/OpenClaw in red with a glowing Operations Terminal
+      district, navigates on click, and updates the inspector. Note: found
+      pre-existing, unrelated uncommitted drift in `src/lib/perciSurfaceMap.js`
+      / `test/perciSurfaceMap.test.js` (test expects 4 Core Concourse
+      stations, only 3 exist; a dead unused icon import was added) — not
+      touched, flagged separately.
+- [x] Dashboard Perci Now glance landed (2026-06-24). Replaced the old
+      right-of-clock mascot card in `DashboardMode.jsx` with
+      `DashboardPerciNowGlance.jsx`, a compact pictorial live-state panel that
+      reuses `createPerciNowSnapshot()` plus the Perci Map station/district
+      catalog. The widget shows Perci Now status, live surface nodes, active
+      work and attention counts, gateway state, and active districts; clicking
+      it opens the full Perci Now window. Styling lives in
+      `DashboardMode.css`, keeps the panel beside the clock on desktop, and
+      wraps cleanly on tablet/mobile. Validation: focused ESLint for
+      `src/components/DashboardPerciNowGlance.jsx` and
+      `src/components/DashboardMode.jsx`, `npx vitest run test/perciNow.test.js
+      test/perciSurfaceMap.test.js`, `npm run build`, and a Playwright DOM /
+      screenshot pass against the existing Vite server on port 5173 all passed.
+- [x] Perci Now live-awareness surface landed (2026-06-24). Added
+      `MODES.PERCI_NOW` / `Perci Now` as a native window for the product space
+      between Mission Control and Perci Map: Map explains relationships,
+      Mission owns run accountability/history, and Now answers what is
+      happening across Perci at the current moment. `src/lib/perciNow.js`
+      derives state from open windows, Mission runs, agent jobs, OpenClaw
+      health, and the Perci Map station/district model without appending a
+      rolling log. The only persisted record is user-triggered snapshots under
+      `perci_now_snapshots`, capped to a short shelf. `PerciNowMode.jsx` renders
+      visible surfaces, active work, local runtime, district pressure, and
+      saved snapshots. The surface is launchable through the top ModeSwitcher,
+      Dashboard/Sir Perci shared catalog, Dock glyphs, and App routing; Perci
+      Map now includes a `Perci Now` station on the Movement and Agent Rail
+      routes. Mode guide and onboarding wording now distinguish Now as live
+      awareness from Mission as validation/accountability. Validation:
+      `npx vitest run test/perciNow.test.js test/perciSurfaceMap.test.js`,
+      focused ESLint for `src/components/PerciNowMode.jsx` and
+      `src/lib/perciNow.js`, `npm run build`, and `git diff --check` passed.
+      Broad ESLint over touched legacy files still reports pre-existing repo
+      rules/issues such as missing `React` imports, Electron `webview` prop
+      warnings, and the existing unused destructure in `ModeContext.jsx`.
 - [x] Perci Map first-class surface landed (2026-06-24). Added
       `MODES.SURFACE_MAP` / `Perci Map` as a native window, routed through
       `App.jsx`, `ModeContext.jsx`, Dashboard/Sir Perci shared catalog, the
