@@ -2,6 +2,50 @@
 
 ## Current Milestone
 
+- [x] Dashboard tile ordering controls landed (2026-06-27). Each launch
+      section now has its own compact A-Z toggle in `DashboardMode.jsx`; while
+      A-Z is active the section is rendered alphabetically, and toggling back
+      returns to the manual order. Manual mode supports drag-reordering tiles
+      within the same section only, persists the order under
+      `perci_dashboard_tile_order`, and keeps the shared `appCatalog.js`
+      ordering untouched for Sir Perci. Styling lives in `DashboardMode.css`.
+      Validation: focused ESLint on `DashboardMode.jsx`/`persistentStore.js`,
+      `git diff --check`, `npm run build`, and Playwright checks against the
+      existing Vite server on port 5173 for independent native/system A-Z
+      toggles, manual restore, section-confined drag reorder, and persistence.
+
+- [x] Perci secret/security audit pass (2026-06-26). High-confidence scans of
+      tracked source, git history, and the freshly generated `dist/` bundle
+      found no live provider API keys, private key blocks, `.env` commits, or
+      hardcoded OpenAI/OpenRouter/Anthropic/Gemini/Groq/GitHub/AWS/Slack-style
+      secrets. Hardening applied in-place: added encrypted-at-rest coverage and
+      read-time migration for `github_key`, `gdash_google_client_secret`, and
+      AgentMail credentials; stopped AgentMail credential reads from returning
+      the saved API key to the renderer; redacted renderer crash logs before
+      disk writes; authenticated the local terminal websocket with a per-process
+      token and loopback bind; removed `rehypeRaw` from chat/code markdown;
+      converted AgentMail message HTML to text; routed HTML/SVG artifact
+      previews through the existing CSP/sandbox wrapper; moved Gemini API keys
+      from query params to `x-goog-api-key` headers; enforced the advertised
+      tool allowlist at execution time; removed shell string interpolation from
+      `run-terminal-command`; and disabled shell mode for agent CLI spawns.
+      Validation: `node --check electron/main.cjs`,
+      `node --check electron/preload.cjs`, `node --check terminal-server.cjs`,
+      `npm run build`, tracked/source/bundle secret scans. Residual follow-ups:
+      provider keys still enter the renderer by design for browser-side LLM
+      calls, so continuing to keep model/email HTML out of DOM is critical;
+      local app preview iframes still allow scripts/same-origin for generated
+      app previews; `.mcp.json` remains tracked with machine-local paths; and
+      AgentMail's root `scripts/agentmail_bridge.py` dependency is not included
+      by the current electron-builder `files` list unless packaging is updated.
+      Follow-up compatibility fixes after the audit: AgentMail bridge startup
+      now consumes the initial configure response before queueing `list-inboxes`
+      so inbox/message loading is not swallowed by the setup handshake, and
+      TimesFM keeps argv-safe execution while preferring the workspace
+      `timesfm-venv/bin/python` before falling back to `python3`. Functional
+      impact checklist added at
+      `docs/security/HARDENING_FUNCTIONAL_IMPACT_2026-06-26.md`.
+
 - [x] Cleanmac Perci surface UI safety pass (2026-06-26). Updated
       `src/components/CleanmacMode.jsx` from a terminal-only panel into a
       first-class Perci tool surface with runtime/source status, cleanup-area
