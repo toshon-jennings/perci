@@ -2,6 +2,53 @@
 
 ## Current Milestone
 
+- [x] Perci Desk first slice landed (2026-06-27). Added a first-class
+      `MODES.PERCI_DESK` native surface that treats the requested
+      chief-of-staff/to-do concept as a Perci-wide operating layer rather
+      than a Chat feature. New `src/lib/perciContext.js` defines the shared
+      context contract/snapshot shape and reads real local source-of-truth
+      data from BARS (`perci_bars_ideas:v1`) and Bill Board
+      (`perci_concerns:v1`), plus live Mission/Agent/OpenClaw state and
+      manual Desk tasks (`perci_desk_tasks:v1`). New
+      `src/components/PerciDeskMode.jsx`/`.css` renders the action desk with
+      Now/Overdue/Waiting/Done metrics, a deterministic natural-language ask
+      box for questions like "last thing in BARS" and "what bills need
+      action", manual task entry/toggling, context-provider cards, and a BARS
+      last-entry widget. Wired the surface through `ModeContext.jsx`,
+      `App.jsx`, `appCatalog.js`, `ModeSwitcher.jsx`, `Dock.jsx`,
+      `ModeIcons.jsx`, and `perciSurfaceMap.js`; Perci Desk is a Core
+      Concourse station on movement/context/expense routes because it reads
+      across surfaces instead of belonging to one silo. Also added Bill Board
+      and Desk keys to `persistentStore.js`'s persisted key list. While
+      validating the updated map, fixed an existing out-of-bounds
+      `open-notebook` station coordinate in `perciSurfaceMap.js` because it
+      blocked the planner-district invariant. Validation:
+      `npx vitest run test/perciContext.test.js test/perciSurfaceMap.test.js`,
+      focused ESLint on the new/touched Perci Desk files, `npm run build`,
+      and `git diff --check` for the touched slice. Note: the worktree still
+      contains unrelated pre-existing edits in shared files such as
+      `App.jsx`, `ModeContext.jsx`, `appCatalog.js`, dashboard files,
+      Electron files, and Open Notebook/Chat Guide assets; do not treat all
+      current diffs as part of Perci Desk.
+
+- [x] Perci Desk dark-theme response added (2026-06-27). The refactored Desk
+      surface now has `:root.dark .perci-desk-*` overrides for the shell,
+      sidebars, cards, hero, filters, inputs, queue items, status chips, and
+      accent indicators, so it follows Perci's existing system/manual theme
+      resolution from `ThemeContext.jsx`. Validation: `npx eslint
+      src/components/PerciDeskMode.jsx`, `git diff --check --`
+      `src/components/PerciDeskMode.jsx src/components/PerciDeskMode.css`,
+      `npm run build`, and a Playwright render against the existing Vite
+      server on port 5173 with `theme=system` plus emulated dark color scheme.
+      The Playwright console still reports unrelated local LM Studio/Jan model
+      discovery failures during app boot.
+      Follow-up: removed the top-right monthly price pill from the Desk
+      header and normalized the Desk palette to Perci's neutral/orange design
+      tokens in both light and dark modes, replacing the earlier
+      teal/purple/pink treatment that made the surface feel like a different
+      app. Rechecked with Playwright light/dark renders and verified `/ mo`
+      text is absent in both themes.
+
 - [x] Dashboard tile ordering controls landed (2026-06-27). Each launch
       section now has its own compact A-Z toggle in `DashboardMode.jsx`; while
       A-Z is active the section is rendered alphabetically, and toggling back
