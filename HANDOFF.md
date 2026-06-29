@@ -2,6 +2,39 @@
 
 ## Current Milestone
 
+- [x] Hermes Chat now mirrors the Perci Chat surface while staying Hermes-only
+      (2026-06-28). Reworked `src/components/ChatTab.jsx` from its separate
+      bubble/start-screen UI into a Perci Chat-style shell with the same
+      artwork used by the Hermes dashboard tile
+      (`/artwork/design-01kv2y38zh-1781436378.png`) with the chat background
+      zoomed to `background-size: auto 140%` so the image edge is cropped out,
+      centered transcript, Perci-style composer, New chat action, light/dark
+      theme-aware filtering, and local Hermes session status. It auto-starts/resumes
+      `hermes:chat-start`, sends only through `hermes:chat-send`, cancels
+      through `hermes:chat-cancel`, and starts a fresh Hermes session through
+      `hermes:chat-stop` + `hermes:chat-start`; no Perci provider picker,
+      search, artifact, or shared chat-history request path was wired into
+      Hermes Chat. `ChatMessage.jsx` now accepts optional assistant identity
+      props with Perci defaults so Hermes can reuse the shared renderer but
+      label replies as Hermes. Follow-up dock fix: `App.jsx` now always keeps
+      the shared desktop host in a dock-reserved wrapper, and `index.css`
+      gives auto-hide mode a 20px reserved lane so maximized windows do not
+      occupy the dock reveal strip while normal dock mode keeps its 64px
+      reserve. Follow-up for windows being pushed past the top of Perci's
+      screen: `ModeContext.jsx` now calculates window defaults/clamping from
+      the actual `.perci-desktop-host` or dock-reserved surface instead of
+      `window.innerHeight`, reclamps once after mount, and `App.jsx` dispatches
+      a resize pass when dock auto-hide changes. Validation: focused ESLint on
+      `ModeContext.jsx`/`ChatTab.jsx`/`ChatMessage.jsx`, `git diff --check` for
+      the touched files, `npm run build`, and Playwright smoke checks against
+      the Vite dev server with stubbed Hermes IPC in both light and dark mode
+      plus auto-hide dock geometry and oversized-window bounds checks
+      (`/private/tmp/hermes-chat-light.png`, `/private/tmp/hermes-chat-dark.png`,
+      `/private/tmp/hermes-chat-tile-bg-autohide.png`,
+      `/private/tmp/perci-dock-bounds-smoke.png`).
+      Note: an unrelated pre-existing `electron/main.cjs` modification remains
+      in the worktree and was not touched for this slice.
+
 - [x] Perci Desk first slice landed (2026-06-27). Added a first-class
       `MODES.PERCI_DESK` native surface that treats the requested
       chief-of-staff/to-do concept as a Perci-wide operating layer rather
