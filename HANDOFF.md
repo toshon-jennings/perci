@@ -2,6 +2,181 @@
 
 ## Current Milestone
 
+- [x] Perci Desk left rail is draggable (2026-07-02). User asked to slightly
+      widen the left column or make it draggable after the Ask/Send/Add task
+      pass, then clarified that hard refresh still showed no resizeable column.
+      Added a real 10px separator handle between the left rail and the main Desk
+      content in `PerciDeskMode.jsx`/`.css`. Width is stored under
+      `perci_desk_left_width`, defaults to 268px, clamps between 240px and
+      380px, supports pointer drag and keyboard left/right arrow resizing, and
+      hides when the Desk collapses to the single-column mobile layout.
+      Validation: focused ESLint on `PerciDeskMode.jsx`, `git diff --check`
+      for the touched Desk files, `npx vitest run test/perciContext.test.js`,
+      and `npm run build` all passed. Playwright DOM smoke against the existing
+      Vite server confirmed the rail changed from 268px to 312px by drag,
+      persisted `perci_desk_left_width=312`, arrow-left adjusted it to 300px,
+      and the Send button remained visible.
+
+- [x] Perci Desk Ask/Capture affordance clarified (2026-07-02). User reported
+      that the Ask Perci field had no Send button and asked what CAPTURE is
+      for. Confirmed `PerciDeskMode.jsx` was applying the answer live while
+      typing and preventing form submit, and that CAPTURE was the manual task
+      intake. Added an explicit Send button with draft/submit semantics for
+      Ask Perci, so typing no longer changes the active answer until submit.
+      Renamed CAPTURE to Add task and added an accessible label on the icon
+      submit button. CSS in `PerciDeskMode.css` now lays out the Ask input and
+      Send button responsively with dark-mode support. Validation: focused
+      ESLint on `PerciDeskMode.jsx`, `git diff --check` for the touched Desk
+      files, `npx vitest run test/perciContext.test.js`, and `npm run build`
+      all passed. Playwright DOM smoke against the existing Vite server on
+      `localhost:5173` confirmed Send is visible, Add task input/button are
+      visible, and submitting a question switches to the Answer view.
+
+- [x] Perci Now Map open-window halo landed (2026-07-02). User asked that all
+      open windows indicated on the Perci Now Map tab have a pulsing light
+      behind them. Added an independent `is-open-window` station class in
+      `PerciNowMode.jsx` from `liveSnapshot.openWindows`, so visible, docked,
+      and attention-precedence stations can all show the open-window affordance
+      without changing the snapshot model. Added transparent default styling
+      for the shared `perci-station-hit`/`perci-station-halo` SVG circles in
+      `PerciSurfaceCanvas.css`, then animated the halo in `PerciNowMode.css`
+      with a reduced-motion opt-out. Validation: focused ESLint on
+      `PerciNowMode.jsx`, `git diff --check` for the touched files, and
+      `npm run build` passed. Playwright DOM smoke against the existing Vite
+      server on `localhost:5173` with seeded browser fallback window state
+      found three open-window station halos and all three using
+      `perci-now-open-window-light`. Caveat: the focused
+      `npx vitest run test/perciNow.test.js test/perciSurfaceMap.test.js`
+      run still has `test/perciNow.test.js` failing because the current map
+      model now reports district activity for both `core-concourse` and
+      `operations-terminal`, while the older test expects only
+      `core-concourse`; `test/perciSurfaceMap.test.js` passed.
+
+- [x] Fixed stuck Start/Stop/Restart controls on the Eidos Supermemory tab
+      (2026-07-01). User reported the Supermemory tab was left in an unknown
+      state after a Codex session ran out of usage mid-task. Verified live
+      against the running dev Electron instance (`npm run electron:dev`, not
+      the packaged `/Applications/Perci.app`, which is stale): syntax,
+      ESLint, and `npm run build` all passed, and the binary/IPC wiring was
+      structurally sound, but clicking Start in the actual app left the UI
+      permanently stuck — Start spun forever and Stop/Restart stayed
+      disabled, surviving window navigation. Root cause in
+      `SupermemoryPanel.jsx`: `start()` and `restart()` only cleared the
+      `busy` state on the failure branch; success relied entirely on the
+      `pollProgress()` interval noticing `status.running`, which did not
+      reliably happen since `supermemory:start`/`supermemory:restart` in
+      `electron/lib/supermemory-process.cjs` already block until the server
+      is healthy (or fails) before resolving, so there was nothing left for
+      polling to catch. Fixed by clearing `busy` unconditionally after both
+      calls resolve. Also fixed a real UX bug found alongside it: the
+      "Supermemory is running." success message rendered inside the same
+      red/error-styled banner (`.supermemory-error`) as genuine errors;
+      split into `.supermemory-notice` with `.is-success`/error variants
+      driven by a structured `{ text, error }` message state instead of a
+      bare string. Verified live: Start/Stop/Restart now transition cleanly
+      and the running-state message renders green. Validation: focused
+      ESLint on `SupermemoryPanel.jsx` and `npm run build`, both clean.
+      Not investigated/left as-is: the Model field showed
+      `deepseek/deepseek-v4-flas...` while Model Provider was set to
+      "Ollama" — looks like it's inheriting Perci's global default model
+      (an OpenRouter-style id) rather than an Ollama-appropriate tag; worth
+      checking if a user actually tries to run Supermemory against Ollama.
+      Also observed twice during this session that clicking inside the
+      Eidos window unexpectedly raised unrelated background windows
+      (Cleanmac, then Localhost) instead of registering the intended click
+      — possibly related to the "Window body activation hardened" entry
+      below; not reproduced deliberately or root-caused, flagging in case it
+      recurs.
+
+- [x] Supermemory backend Phase 1 slice landed (2026-07-01). Installed
+      `supermemory-server` 0.0.3 with the official installer; binary path is
+      `/Users/toshonjennings/.supermemory/bin/supermemory-server` and the PATH
+      wrapper is `/Users/toshonjennings/.local/bin/supermemory-server`.
+      Added `electron/lib/supermemory-process.js` plus `supermemory:*` IPC in
+      `electron/main.cjs`/`electron/preload.cjs` for binary discovery, managed
+      child-process start/stop/restart, health/progress, config persistence,
+      destructive-data wipe after renderer confirmation, and a constrained
+      localhost API proxy for `/health`, `/v3/*`, and `/v4/*`. Supermemory API
+      keys and the OpenRouter key are persisted through the encrypted app-data
+      path. Added `src/lib/supermemory.js`, `SupermemoryPanel.jsx`, and
+      `SupermemoryPanel.css`, then exposed a Supermemory surface inside
+      `EidosMode.jsx` without removing the Docker/memU dashboard flow. Added a
+      Settings → Memory Backend section to toggle memU vs Supermemory, edit the
+      OpenRouter key/model/data-dir/container tag, view binary/status/storage
+      size, and wipe memories with confirmation. Registered the new
+      `perci_supermemory_*` keys plus `perci_memory_backend` in
+      `persistentStore.js`. Follow-up conflict fix: Supermemory now defaults
+      to `localhost:6768` and persists `perci_supermemory_port`; `6767` remains
+      available for the existing Hermes Jan proxy. Runtime caveat:
+      `localhost:6767` was already
+      answering with HTTP 503 from a Hermes Jan proxy process before this work,
+      so the manager reports a port-conflict state instead of killing that
+      unrelated process. The installer also created a 215 MB repo-local
+      `.supermemory/` data/cache directory while auto-starting from the repo;
+      it contains local auth/data files and is now gitignored. Follow-up UI
+      clarification: removed the duplicate visible OpenRouter/Supermemory API
+      key fields from the Supermemory surfaces. Supermemory now presents the
+      provider key as "uses Perci's saved OpenRouter key"; the local `sm_...`
+      instance key is described as auto-generated/captured by the binary.
+      Normal Supermemory setting saves no longer copy the fallback
+      `openrouter_key` into `perci_supermemory_openrouter_key`. Follow-up
+      routing fix: Eidos now loads the active memory backend from Electron
+      Supermemory config, listens for `perci-memory-backend-change`, and keeps
+      the Supermemory panel as the primary Eidos surface when Supermemory is
+      active. The Supermemory panel now mirrors the backend selector itself,
+      while the old webview is labeled as the legacy Eidos/memU Docker
+      dashboard. Follow-up provider fix: Supermemory now stores a model
+      provider and model API base URL, derives the model key from Perci's
+      existing Models settings instead of prompting for a second OpenRouter
+      key, and mirrors those settings in both Eidos and Settings. Git
+      Visualizer now shows a fallback when the external GitHub contribution
+      graph SVG fails to render in the desktop surface. Validation:
+      `node --check` for
+      `electron/lib/supermemory-process.js`, `electron/main.cjs`, and
+      `electron/preload.cjs`; focused ESLint for `SupermemoryPanel.jsx`,
+      `EidosMode.jsx`, and `src/lib/supermemory.js`; `git diff --check` for
+      touched files; and `npm run build`. Focused ESLint on
+      `SettingsModal.jsx` still fails on pre-existing unused/unescaped-text
+      issues unrelated to this slice.
+      Follow-up routing correction (2026-07-01): Eidos no longer defaults to
+      the Supermemory screen just because Supermemory is the active memory
+      backend. `EidosMode.jsx` now treats backend selection as state only;
+      the regular Eidos dashboard remains the default surface after reload,
+      while Supermemory stays available as a toolbar tab.
+
+- [x] Localhost pinned tab persistence landed (2026-07-01). Added a real pin
+      toggle to the Localhost browser tab strip in `LocalhostMode.jsx`; pinned
+      tabs sort to the front and persist as a compact tab group under
+      `perci_localhost_pinned_tabs` (with Klipit-scoped storage supported by
+      the same key helper). The child webview now reports live URL/title
+      changes back to the parent tab list, so restored pinned tabs use the
+      actual navigated page instead of only the tab's initial URL. Added the
+      new Localhost/Klipit bookmark, search, and pinned-tab keys to
+      `persistentStore.js`'s persisted-key manifest for web fallback/snapshots.
+      Also fixed the Localhost error banner rendering a string as
+      `loadError.desc` and split the discovered-servers header into separate
+      controls to remove the React nested-button warning. Validation:
+      `npm run build`, `git diff --check -- src/components/LocalhostMode.jsx
+      src/lib/persistentStore.js`, and a Playwright smoke against
+      `http://localhost:5173` with a mocked Electron bridge confirmed pinning
+      `localhost:3000` writes `perci_localhost_pinned_tabs`, reload restores an
+      `Unpin tab` control with `localhost:3000` in the address field, and
+      `validateDOMNesting` warnings remain at zero.
+
+- [x] Window body activation hardened (2026-07-01). Replaced the fragile
+      webview-only focus overlay with a universal inactive-window body shield in
+      `WindowFrame.jsx`, so clicking the body of any background window raises it
+      before embedded iframe/webview content can swallow the event. `DesktopHost.jsx`
+      now keeps a native window-level capture fallback for normal DOM clicks and
+      dashboard-background clicks, with pointer/mouse duplicate guards to avoid
+      extra z-index bumps. Styling lives in `index.css` as
+      `.perci-window-focus-shield`, body-only below the 40px titlebar and below
+      resize handles. Validation: focused ESLint on `DesktopHost.jsx` and
+      `WindowFrame.jsx`, `git diff --check` for touched files, `npm run build`,
+      and Playwright against the live Vite server on `localhost:5173` confirmed
+      Chat+Code body focus, empty dashboard minimization, and an embedded-surface
+      window body click raising the inactive window.
+
 - [x] Hermes Chat now mirrors the Perci Chat surface while staying Hermes-only
       (2026-06-28). Reworked `src/components/ChatTab.jsx` from its separate
       bubble/start-screen UI into a Perci Chat-style shell with the same
