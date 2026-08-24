@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.50.0] - 2026-08-23
+### Added
+- **Dotenvx GUI window** — first-class Perci window embedding the local Dotenvx GUI (`~/dotenvx-gui`, port 7843) via an isolated `persist:perci-dotenvx` Electron webview, since Dotenvx blocks iframe embedding to protect local environment files (`src/components/DotenvxMode.jsx`, `src/context/ModeContext.jsx`, `src/components/windows/Dock.jsx` "DX" chip, `src/lib/perciSurfaceMap.js` local-runtime station).
+- **Dotenvx auto-install** — when `~/dotenvx-gui` doesn't exist, the window's offline screen offers **Install Dotenvx**, cloning the public repo over HTTPS and running `npm install` (`electron/main.cjs` `dotenvx:check-install` / `dotenvx:install`, `electron/preload.cjs`), with **View on GitHub** as a manual fallback. Previously a fresh Perci install had no path to a working Dotenvx window at all.
+
 ## [0.49.0] - 2026-08-22
 ### Added
 - **Apfel Harness auto-start** — opening the Apfel window now auto-launches `node ~/apfel-harness/server.js` via `localhost:start-now` (`src/components/ApfelMode.jsx:82`, `src/lib/localServices.js:29`, `electron/main.cjs:4993`) and polls `localhostCheckHealth` before reloading, mirroring `GithubOverviewMode`. Offline screen shows a **Start Apfel Harness** button on Electron with a starting spinner; browser/non-Mac falls back to manual `cd ~/apfel-harness && npm start`. No terminal workaround needed for Apple Silicon users — the harness supervises `apfel --serve` on `:6272` and reports `on-device` vs `ui only` correctly. Change kept in sync with `~/apfel-harness/perci/ApfelMode.jsx` per `AGENTS.md`.
