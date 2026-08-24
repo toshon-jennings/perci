@@ -41,6 +41,17 @@ describe('local service catalog', () => {
         });
     });
 
+    it('launches dotenvx GUI on its registered loopback service', () => {
+        expect(findLocalService('dotenvx-gui')).toMatchObject({
+            port: 7843,
+            url: 'http://127.0.0.1:7843',
+        });
+        expect(launchArgsFor('dotenvx-gui')).toEqual({
+            command: 'npm start',
+            cwd: '~/dotenvx-gui',
+        });
+    });
+
     it('returns no launch args for services without a start command', () => {
         // Surfaces use this to hide a Start button rather than offer one that fails.
         const unstartable = LOCAL_SERVICES.filter(s => !s.startCommand);

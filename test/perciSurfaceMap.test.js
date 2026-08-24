@@ -29,6 +29,18 @@ describe('perciSurfaceMap', () => {
         }
     });
 
+    it('includes dotenvx GUI on the local runtime route', () => {
+        const dotenvx = PERCI_SURFACE_STATIONS.find(station => station.id === 'dotenvx-gui');
+        const runtime = PERCI_SURFACE_ROUTES.find(route => route.id === 'local-runtime');
+
+        expect(dotenvx).toMatchObject({
+            label: 'Dotenvx',
+            kind: 'system',
+            districtId: 'local-systems-depot',
+        });
+        expect(runtime.stationIds).toContain('dotenvx-gui');
+    });
+
     it('places every station inside a known district', () => {
         const districtIds = new Set(SURFACE_MAP_DISTRICTS.map(district => district.id));
 

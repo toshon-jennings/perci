@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, Component } from 'react';
 import perciLogo from './assets/perci-logo.png';
-import { useMode, MODES, OPENCLAW_WINDOW_ID, HERMES_WINDOW_ID, YOUTUBE_WINDOW_ID, GDASH_WINDOW_ID, ARTIFACT_WINDOW_ID, RESEARCH_WINDOW_ID, EIDOS_WINDOW_ID, LOCALHOST_WINDOW_ID, KLIPIT_WINDOW_ID, SKILLS_WINDOW_ID, CLEANMAC_WINDOW_ID, PACKAGES_WINDOW_ID, AGENTMAIL_WINDOW_ID, AUTOFORGE_WINDOW_ID, OPEN_NOTEBOOK_WINDOW_ID, IPTV_WINDOW_ID, SIMPLEX_WINDOW_ID, PXPIPE_WINDOW_ID, KEYSAFE_WINDOW_ID, APFEL_WINDOW_ID, OPENCODE_WINDOW_ID, ALIAS_MANAGER_WINDOW_ID, DOCKER_WINDOW_ID, DB_INSPECTOR_WINDOW_ID, GITHUB_OVERVIEW_WINDOW_ID } from './context/ModeContext';
+import { useMode, MODES, OPENCLAW_WINDOW_ID, HERMES_WINDOW_ID, YOUTUBE_WINDOW_ID, GDASH_WINDOW_ID, ARTIFACT_WINDOW_ID, RESEARCH_WINDOW_ID, EIDOS_WINDOW_ID, LOCALHOST_WINDOW_ID, KLIPIT_WINDOW_ID, SKILLS_WINDOW_ID, CLEANMAC_WINDOW_ID, PACKAGES_WINDOW_ID, AGENTMAIL_WINDOW_ID, AUTOFORGE_WINDOW_ID, OPEN_NOTEBOOK_WINDOW_ID, IPTV_WINDOW_ID, SIMPLEX_WINDOW_ID, PXPIPE_WINDOW_ID, KEYSAFE_WINDOW_ID, APFEL_WINDOW_ID, DOTENVX_WINDOW_ID, OPENCODE_WINDOW_ID, ALIAS_MANAGER_WINDOW_ID, DOCKER_WINDOW_ID, DB_INSPECTOR_WINDOW_ID, GITHUB_OVERVIEW_WINDOW_ID } from './context/ModeContext';
 import ModeSwitcher from './components/ModeSwitcher';
 import ChatMode from './components/ChatMode';
 import CodeMode from './components/CodeMode';
@@ -39,6 +39,7 @@ import SimplexMode from './components/SimplexMode';
 import PxpipeMode from './components/PxpipeMode';
 import KeysafeMode from './components/KeysafeMode';
 import ApfelMode from './components/ApfelMode';
+import DotenvxMode from './components/DotenvxMode';
 import OpencodeMode from './components/OpencodeMode';
 import DockerMode from './components/DockerMode';
 import DbInspectorMode from './components/DbInspectorMode';
@@ -676,6 +677,7 @@ function AppContent() {
             case PXPIPE_WINDOW_ID: return <PxpipeMode />;
             case KEYSAFE_WINDOW_ID: return <KeysafeMode />;
             case APFEL_WINDOW_ID: return <ApfelMode />;
+            case DOTENVX_WINDOW_ID: return <DotenvxMode />;
             case OPENCODE_WINDOW_ID: return <OpencodeMode />;
             case DOCKER_WINDOW_ID: return <DockerMode />;
             case DB_INSPECTOR_WINDOW_ID: return <DbInspectorMode />;

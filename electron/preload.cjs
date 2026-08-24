@@ -134,6 +134,8 @@ contextBridge.exposeInMainWorld('electron', {
   localhostStartNow: (opts) => ipcRenderer.invoke('localhost:start-now', opts),
   localhostCheckHealth: (url) => ipcRenderer.invoke('localhost:check-health', { url }),
   localhostStopNow: (opts) => ipcRenderer.invoke('localhost:stop-now', opts),
+  dotenvxCheckInstall: () => ipcRenderer.invoke('dotenvx:check-install'),
+  dotenvxInstall: () => ipcRenderer.invoke('dotenvx:install'),
   opencodeCheckInstall: () => ipcRenderer.invoke('opencode:check-install'),
   opencodeProbe: () => ipcRenderer.invoke('opencode:probe'),
   opencodeStart: () => ipcRenderer.invoke('opencode:start'),

@@ -5036,6 +5036,41 @@ ipcMain.handle('localhost:check-health', async (event, { url } = {}) => {
   return probeLocalHttp(url);
 });
 
+const DOTENVX_GUI_DIR = path.join(app.getPath('home'), 'dotenvx-gui');
+
+ipcMain.handle('dotenvx:check-install', async () => {
+  return { installed: fsSync.existsSync(DOTENVX_GUI_DIR) };
+});
+
+// User-initiated only — never called automatically, since it clones a repo
+// onto the user's disk. Public repo, so plain HTTPS needs no credentials;
+// GIT_TERMINAL_PROMPT=0 keeps a renamed/private fork from hanging on a
+// credential prompt instead of failing fast.
+ipcMain.handle('dotenvx:install', async () => {
+  if (fsSync.existsSync(DOTENVX_GUI_DIR)) return { ok: true };
+
+  const cloneResult = spawnSync(
+    'git',
+    ['clone', 'https://github.com/toshonjennings/dotenvx-gui.git', DOTENVX_GUI_DIR],
+    { encoding: 'utf8', timeout: 120000, env: { ...process.env, GIT_TERMINAL_PROMPT: '0' } },
+  );
+  if (cloneResult.status !== 0) {
+    return { ok: false, error: `Failed to clone Dotenvx GUI: ${cloneResult.stderr || cloneResult.stdout || 'unknown error'}` };
+  }
+
+  const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+  const installResult = spawnSync(npmCmd, ['install'], {
+    cwd: DOTENVX_GUI_DIR,
+    encoding: 'utf8',
+    timeout: 180000,
+  });
+  if (installResult.status !== 0) {
+    return { ok: false, error: `Cloned, but npm install failed: ${installResult.stderr || installResult.stdout || 'unknown error'}` };
+  }
+
+  return { ok: true };
+});
+
 // Perci OS (Phase 2) — inert everywhere except the Linux OS-shell image.
 // isPerciOS itself is always safe to answer (it's how the renderer decides
 // whether to show OS-only surfaces at all); the rest gate on it explicitly

@@ -24,6 +24,7 @@ export const LOCAL_SERVICES = [
     { id: 'markitdown', name: 'MarkItDownUI', port: 8920, url: 'http://localhost:8920', startCommand: '', cwd: '', autoStart: false },
     { id: 'hermes-dash', name: 'Hermes Dashboard', port: 8642, url: 'http://localhost:8642', startCommand: 'hermes dashboard --port 8642 --no-open', cwd: '', autoStart: false },
     { id: 'keysafe', name: 'KeySafe', port: 4100, url: 'http://127.0.0.1:4100', startCommand: 'npm run dev', cwd: '~/keysafe', autoStart: false },
+    { id: 'dotenvx-gui', name: 'Dotenvx', port: 7843, url: 'http://127.0.0.1:7843', startCommand: 'npm start', cwd: '~/dotenvx-gui', autoStart: false },
     { id: 'super-memory', name: 'Supermemory', port: 6768, url: 'http://localhost:6768', startCommand: '', cwd: '', autoStart: false },
     { id: 'lfm-harness', name: 'LFM Harness', port: 6270, url: 'http://localhost:6270', startCommand: 'node ~/lfm-harness/server.js', cwd: '~/lfm-harness', autoStart: false },
     { id: 'apfel-harness', name: 'Apfel Harness', port: 6271, url: 'http://localhost:6271', startCommand: 'node ~/apfel-harness/server.js', cwd: '~/apfel-harness', autoStart: false },
