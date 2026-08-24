@@ -115,7 +115,7 @@ export const WINDOW_TITLES = {
     [PXPIPE_WINDOW_ID]: 'pxpipe',
     [KEYSAFE_WINDOW_ID]: 'KeySafe',
     [APFEL_WINDOW_ID]: 'Apfel',
-    [DOTENVX_WINDOW_ID]: 'Dotenvx',
+    [DOTENVX_WINDOW_ID]: 'Dotenvx GUI',
     [OPENCODE_WINDOW_ID]: 'OpenCode Rig',
     [DOCKER_WINDOW_ID]: 'Docker',
     [DB_INSPECTOR_WINDOW_ID]: 'DB Inspector',

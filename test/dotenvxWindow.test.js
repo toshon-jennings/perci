@@ -7,11 +7,14 @@ describe('Dotenvx first-class window', () => {
         const tile = SYSTEM_TILES.find(item => item.id === DOTENVX_WINDOW_ID);
 
         expect(DOTENVX_WINDOW_ID).toBe('dotenvx-gui');
-        expect(WINDOW_TITLES[DOTENVX_WINDOW_ID]).toBe('Dotenvx');
+        expect(WINDOW_TITLES[DOTENVX_WINDOW_ID]).toBe('Dotenvx GUI');
         expect(tile).toMatchObject({
-            title: 'Dotenvx',
+            title: 'Dotenvx GUI',
             desc: 'Edit, encrypt, and run local environment files',
+            hue: '#2f5d42',
+            artwork: true,
         });
-        expect(tile.logo).toBeTruthy();
+        expect(tile.logo).toContain('dotenvx-logo.svg');
+        expect(tile.bgImage).toContain('dotenvx-bg.svg');
     });
 });

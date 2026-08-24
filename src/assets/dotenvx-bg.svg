@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="896" viewBox="0 0 1200 896">
+  <defs>
+    <linearGradient id="field" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1c1710"/>
+      <stop offset="1" stop-color="#332a1e"/>
+    </linearGradient>
+    <linearGradient id="desk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c6bda6"/>
+      <stop offset="1" stop-color="#b6a992"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ece2cf"/>
+      <stop offset="0.5" stop-color="#f6f3ec"/>
+      <stop offset="1" stop-color="#ece2cf"/>
+    </linearGradient>
+    <pattern id="fibres" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M0 7h28M0 21h28" stroke="#6e6455" stroke-width="0.7" opacity="0.16"/>
+      <path d="M8 0v28M22 0v28" stroke="#f6f3ec" stroke-width="0.6" opacity="0.12"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="896" fill="url(#desk)"/>
+  <rect width="1200" height="360" fill="url(#field)"/>
+  <rect y="690" width="1200" height="206" fill="url(#paper)"/>
+  <rect width="1200" height="896" fill="url(#fibres)"/>
+  <path d="M0 359.5h1200M0 689.5h1200" stroke="#8b7f6a" stroke-width="2" opacity="0.72"/>
+
+  <g fill="#c6bda6" opacity="0.68">
+    <path d="M690 142h176v18H690zm196 0h24v18h-24zm44 0h212v18H930z"/>
+    <path d="M690 204h118v18H690zm138 0h24v18h-24zm44 0h270v18H872z"/>
+    <path d="M690 266h92v18h-92zm112 0h24v18h-24zm44 0h296v18H846z"/>
+  </g>
+
+  <g fill="none" stroke="#2f5d42" stroke-linecap="round" stroke-linejoin="round" opacity="0.82">
+    <path d="M710 524h286" stroke-width="8"/>
+    <path d="M966 496l34 28-34 28" stroke-width="8"/>
+    <circle cx="850" cy="524" r="38" fill="#b6a992" stroke-width="6"/>
+    <circle cx="850" cy="515" r="11" fill="#2f5d42" stroke="none"/>
+    <path d="M842 526h16l7 25h-30z" fill="#2f5d42" stroke="none"/>
+  </g>
+
+  <path d="M58 746h1084M58 818h1084" stroke="#c6bda6" stroke-width="3"/>
+</svg>

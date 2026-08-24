@@ -34,7 +34,7 @@ describe('perciSurfaceMap', () => {
         const runtime = PERCI_SURFACE_ROUTES.find(route => route.id === 'local-runtime');
 
         expect(dotenvx).toMatchObject({
-            label: 'Dotenvx',
+            label: 'Dotenvx GUI',
             kind: 'system',
             districtId: 'local-systems-depot',
         });

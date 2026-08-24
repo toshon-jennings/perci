@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AlertCircle, Download, ExternalLink, Play, RefreshCw } from 'lucide-react';
-import dotenvxLogo from '../assets/dotenvx-logo.png';
+import dotenvxLogo from '../assets/dotenvx-logo.svg';
 import { launchArgsFor } from '../lib/localServices';
 
 export const DOTENVX_ORIGIN = 'http://127.0.0.1:7843';

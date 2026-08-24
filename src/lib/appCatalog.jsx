@@ -41,7 +41,8 @@ import simplexBg from '../assets/simplex-bg.jpg';
 import keysafeLogo from '../assets/keysafe-logo.jpeg';
 import keysafeBg from '../assets/keysafe-bg.jpeg';
 import apfelBg from '../assets/apfel-bg.jpeg';
-import dotenvxLogo from '../assets/dotenvx-logo.png';
+import dotenvxLogo from '../assets/dotenvx-logo.svg';
+import dotenvxBg from '../assets/dotenvx-bg.svg';
 import pxpipeBg from '../assets/pxpipe-bg.jpeg';
 import opencodeIcon from '../assets/opencode-icon.png';
 import opencodeBg from '../assets/opencode-bg.jpeg';
@@ -139,7 +140,7 @@ export const NATIVE_TILES = [
 // Perci launcher, so both render the same artwork (white backing vs.
 // edge-to-edge cover) instead of drifting apart.
 export const LOGO_WHITE_BOX_IDS = new Set([GDASH_WINDOW_ID, MODES.STUDIOOS, MODES.LIGHTHOUSE, HERMES_WINDOW_ID, CLEANMAC_WINDOW_ID, GITHUB_OVERVIEW_WINDOW_ID]);
-export const LOGO_FILL_COVER_IDS = new Set([EIDOS_WINDOW_ID, KLIPIT_WINDOW_ID, MODES.BARS, MODES.MARKITDOWN, MODES.CONCERNS, AUTOFORGE_WINDOW_ID, AGENTMAIL_WINDOW_ID, OPEN_NOTEBOOK_WINDOW_ID, IPTV_WINDOW_ID, SIMPLEX_WINDOW_ID, KEYSAFE_WINDOW_ID, OPENCODE_WINDOW_ID, MODES.CODEX_MICRO]);
+export const LOGO_FILL_COVER_IDS = new Set([EIDOS_WINDOW_ID, KLIPIT_WINDOW_ID, MODES.BARS, MODES.MARKITDOWN, MODES.CONCERNS, AUTOFORGE_WINDOW_ID, AGENTMAIL_WINDOW_ID, OPEN_NOTEBOOK_WINDOW_ID, IPTV_WINDOW_ID, SIMPLEX_WINDOW_ID, KEYSAFE_WINDOW_ID, DOTENVX_WINDOW_ID, OPENCODE_WINDOW_ID, MODES.CODEX_MICRO]);
 
 // OS-level tools and external runtimes. Bars belongs here when its Perci
 // surface is wired, not in the native Perci app group.
@@ -164,7 +165,7 @@ export const SYSTEM_TILES = [
     { id: PXPIPE_WINDOW_ID, icon: SphereIcon, title: 'pxpipe', desc: 'Token-compression proxy dashboard', hue: '#a855f7', artwork: true, bgImage: pxpipeBg },
     { id: KEYSAFE_WINDOW_ID, icon: null, logo: keysafeLogo, title: 'KeySafe', desc: 'Secure local API keys & recovery codes', hue: '#0ea5e9', artwork: true, bgImage: keysafeBg },
     { id: APFEL_WINDOW_ID, icon: ApfelTileIcon, logo: null, title: 'Apfel', desc: 'GUI harness for Apple Intelligence via the apfel CLI', hue: '#60a5fa', artwork: true, bgImage: apfelBg, iconSize: 26 },
-    { id: DOTENVX_WINDOW_ID, icon: null, logo: dotenvxLogo, title: 'Dotenvx', desc: 'Edit, encrypt, and run local environment files', hue: '#2cbdd0' },
+    { id: DOTENVX_WINDOW_ID, icon: null, logo: dotenvxLogo, title: 'Dotenvx GUI', desc: 'Edit, encrypt, and run local environment files', hue: '#2f5d42', artwork: true, bgImage: dotenvxBg },
     { id: OPENCODE_WINDOW_ID, icon: null, logo: opencodeIcon, title: 'OpenCode Rig', desc: 'AI coding agent — terminal, web, & desktop', hue: '#8b5cf6', artwork: true, bgImage: opencodeBg },
     { id: GITHUB_OVERVIEW_WINDOW_ID, icon: null, logo: githubOverviewLogo, title: 'GitHub Overview', desc: 'Commits, CI, alerts, & PRs for your repos', hue: '#6e5494', artwork: true, bgImage: githubOverviewBg },
     { id: DOCKER_WINDOW_ID, icon: Container, title: 'Containers', desc: 'Containers, images, & volumes with backup-gated removal', hue: '#2496ed', artwork: true, bgImage: dockerBg },
