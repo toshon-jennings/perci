@@ -24,6 +24,22 @@ This is not a chat app. It's a **command center**.
 
 ---
 
+## What this isn't
+
+- **Not a model provider.** Cloud providers need your own API keys. They're stored
+  locally in the Electron app-data file, encrypted via OS `safeStorage`, and never sent
+  to a server of mine — but the output quality and the bill are between you and the
+  provider. Local models (Ollama, LM Studio, vLLM) need no key at all.
+- **Not a hosted service.** There's no Perci account, no sync, no server side. Install
+  the app and it runs on your machine; uninstall it and nothing of yours is left
+  somewhere else.
+- **Not equally cross-platform.** macOS (Apple Silicon and Intel, 12 Monterey or newer)
+  and Windows have prebuilt installers. Linux you build yourself with
+  `npm run electron:build:linux` — it works, but no one is shipping you a binary.
+- **Not a lightweight chat window.** This is a desktop command center with agent
+  orchestration, a research agent and a code workbench attached. If all you want is a
+  fast box to type a prompt into, Perci is more than you need.
+
 ## Features
 
 ### Multi-Provider AI Chat
