@@ -177,10 +177,13 @@ function renderSection(label, desc, services) {
 
     const header = document.createElement('div');
     header.className = 'section-header';
-    header.innerHTML = `
-        <h2 class="section-title">${label}</h2>
-        <span class="section-desc">${desc}</span>
-    `;
+    const titleEl = document.createElement('h2');
+    titleEl.className = 'section-title';
+    titleEl.textContent = label;
+    const descEl = document.createElement('span');
+    descEl.className = 'section-desc';
+    descEl.textContent = desc;
+    header.append(titleEl, descEl);
     section.appendChild(header);
 
     const cardsGrid = document.createElement('div');
@@ -328,8 +331,20 @@ function renderSearchTools(query, liveMatches) {
             const item = document.createElement('button');
             item.type = 'button';
             item.className = 'live-item';
-            item.innerHTML = `<span class="file-icon">${m.icon}</span><span class="file-name">${escapeHtml(m.label)}</span>`;
-            item.addEventListener('click', () => window.open(m.url || '#', '_blank'));
+            const iconEl = document.createElement('span');
+            iconEl.className = 'file-icon';
+            iconEl.textContent = m.icon;
+            const nameEl = document.createElement('span');
+            nameEl.className = 'file-name';
+            nameEl.textContent = m.label;
+            item.append(iconEl, nameEl);
+            try {
+                const parsed = new URL(m.url || '');
+                if (parsed.protocol === 'https:' || parsed.protocol === 'http:') {
+                    const safeHref = parsed.href;
+                    item.addEventListener('click', () => window.open(safeHref, '_blank'));
+                }
+            } catch (_) { /* Ignore malformed links from remote records. */ }
             list.appendChild(item);
         });
         section.appendChild(list);
@@ -728,6 +743,52 @@ function renderSlidesWidget() {
 }
 
 // Helper: Generic Service Activity Renderer
+function createActivityWidget(widgetArea, label, color) {
+    widgetArea.replaceChildren();
+    const widget = document.createElement('div');
+    widget.className = 'widget-container stats activity';
+    const header = document.createElement('div');
+    header.className = 'activity-header';
+    const badge = document.createElement('span');
+    badge.className = 'plan-badge';
+    badge.style.backgroundColor = color;
+    badge.style.color = 'white';
+    badge.textContent = label;
+    header.appendChild(badge);
+    const list = document.createElement('div');
+    list.className = 'activity-list';
+    widget.append(header, list);
+    widgetArea.appendChild(widget);
+    return list;
+}
+
+function appendActivityItem(list, icon, name, url) {
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    const iconEl = document.createElement('span');
+    iconEl.className = 'file-icon';
+    iconEl.textContent = icon;
+    const nameEl = document.createElement('span');
+    nameEl.className = 'file-name';
+    nameEl.textContent = name;
+    item.append(iconEl, nameEl);
+    if (url) {
+        try {
+            const parsed = new URL(url);
+            if (parsed.protocol === 'https:' || parsed.protocol === 'http:') {
+                const safeHref = parsed.href;
+                item.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    window.open(safeHref, '_blank');
+                });
+            }
+        } catch (_) { /* Ignore malformed links from remote records. */ }
+    } else {
+        item.style.cursor = 'default';
+    }
+    list.appendChild(item);
+}
+
 function renderServiceActivity(serviceId, files, color, label) {
     const card = document.querySelector(`.service-card[data-id="${serviceId}"]`);
     if (!card) return;
@@ -737,40 +798,13 @@ function renderServiceActivity(serviceId, files, color, label) {
     const widgetArea = card.querySelector('.widget-area');
     if (!widgetArea) return;
 
+    const list = createActivityWidget(widgetArea, label, color);
     if (files.length === 0) {
-        widgetArea.innerHTML = `
-            <div class="widget-container stats activity">
-                <div class="activity-header">
-                    <span class="plan-badge" style="background:${color};color:white;">${label}</span>
-                </div>
-                <div class="activity-list">
-                    <div class="activity-item" style="cursor: default; opacity: 0.6;">
-                        <span class="file-icon">📂</span>
-                        <span class="file-name">No recent items found</span>
-                    </div>
-                </div>
-            </div>
-        `;
+        appendActivityItem(list, '📂', 'No recent items found');
+        list.firstChild.style.opacity = '0.6';
         return;
     }
-
-    const fileListHtml = files.map(file => `
-        <div class="activity-item" ${getOpenItemAttributes(file.webViewLink)}>
-            <span class="file-icon">${getFileEmoji(file.mimeType || '')}</span>
-            <span class="file-name">${escapeHtml(file.name)}</span>
-        </div>
-    `).join('');
-
-    widgetArea.innerHTML = `
-        <div class="widget-container stats activity">
-            <div class="activity-header">
-                <span class="plan-badge" style="background:${color};color:white;">${label}</span>
-            </div>
-            <div class="activity-list">
-                ${fileListHtml}
-            </div>
-        </div>
-    `;
+    files.forEach(file => appendActivityItem(list, getFileEmoji(file.mimeType || ''), file.name, file.webViewLink));
 }
 
 function renderDriveWidget() {
@@ -953,23 +987,30 @@ function renderCalendarWidget() {
     const widgetArea = card.querySelector('.widget-area');
     if (!widgetArea) return;
 
-    const eventListHtml = (events || []).map(event => `
-        <div class="activity-item" ${getOpenItemAttributes(event.htmlLink)}>
-            <span class="file-icon">📅</span>
-            <span class="file-name"><strong>${escapeHtml(formatEventWhen(event))}</strong> ${escapeHtml(event.summary || '(No title)')}</span>
-        </div>
-    `).join('');
-
-    widgetArea.innerHTML = `
-        <div class="widget-container stats activity">
-            <div class="activity-header">
-                <span class="plan-badge" style="background:#4285F4;color:white;">Upcoming</span>
-            </div>
-            <div class="activity-list">
-                ${eventListHtml || '<div class="activity-item" style="cursor: default; opacity: 0.6;"><span class="file-icon">📅</span><span class="file-name">No upcoming events</span></div>'}
-            </div>
-        </div>
-    `;
+    const list = createActivityWidget(widgetArea, 'Upcoming', '#4285F4');
+    const eventsOrEmpty = events || [];
+    if (!eventsOrEmpty.length) {
+        const empty = document.createElement('div');
+        empty.className = 'activity-item';
+        empty.style.cssText = 'cursor: default; opacity: 0.6;';
+        const emptyIcon = document.createElement('span');
+        emptyIcon.className = 'file-icon';
+        emptyIcon.textContent = '📅';
+        const emptyName = document.createElement('span');
+        emptyName.className = 'file-name';
+        emptyName.textContent = 'No upcoming events';
+        empty.append(emptyIcon, emptyName);
+        list.appendChild(empty);
+    }
+    eventsOrEmpty.forEach(event => appendActivityItem(list, '📅', formatEventWhen(event), event.htmlLink));
+    list.querySelectorAll('.activity-item').forEach(item => {
+        if (item.dataset.hasLink === 'true') {
+            const strong = document.createElement('strong');
+            strong.textContent = item.firstChild.textContent;
+            item.firstChild.textContent = '';
+            item.firstChild.appendChild(strong);
+        }
+    });
 }
 
 function renderGmailWidget() {
@@ -984,29 +1025,28 @@ function renderGmailWidget() {
     if (!widgetArea) return;
 
     const count = gmail?.unreadCount || 0;
-    const msgListHtml = (gmail?.messages || []).map(rawMessage => {
+    const list = createActivityWidget(widgetArea, `${count} Unread`, '#EA4335');
+    const messages = gmail?.messages || [];
+    if (!messages.length) {
+        const empty = document.createElement('div');
+        empty.className = 'activity-item';
+        empty.style.cssText = 'cursor: default; opacity: 0.6;';
+        const emptyIcon = document.createElement('span');
+        emptyIcon.className = 'file-icon';
+        emptyIcon.textContent = '📭';
+        const emptyName = document.createElement('span');
+        emptyName.className = 'file-name';
+        emptyName.textContent = 'No unread messages';
+        empty.append(emptyIcon, emptyName);
+        list.appendChild(empty);
+    }
+    messages.forEach(rawMessage => {
         const msg = normalizeGmailMessage(rawMessage);
         const subject = msg.subject || '(No Subject)';
         const from = msg.from || 'Unknown';
         const sender = from.split('<')[0].trim();
-        return `
-            <div class="activity-item" ${getOpenItemAttributes(`https://mail.google.com/mail/u/0/#inbox/${msg.id || ''}`)}>
-                <span class="file-icon">✉️</span>
-                <span class="file-name"><strong>${escapeHtml(sender)}</strong>: ${escapeHtml(subject)}</span>
-            </div>
-        `;
-    }).join('');
-
-    widgetArea.innerHTML = `
-        <div class="widget-container stats activity">
-            <div class="activity-header">
-                <span class="plan-badge" style="background:#EA4335;color:white;">${count} Unread</span>
-            </div>
-            <div class="activity-list">
-                ${msgListHtml || '<div class="activity-item" style="cursor: default; opacity: 0.6;"><span class="file-icon">📭</span><span class="file-name">No unread messages</span></div>'}
-            </div>
-        </div>
-    `;
+        appendActivityItem(list, '✉️', `${sender}: ${subject}`, `https://mail.google.com/mail/u/0/#inbox/${encodeURIComponent(msg.id || '')}`);
+    });
 }
 
 function renderDriveQuota(quota, widgetArea) {
