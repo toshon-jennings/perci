@@ -5,7 +5,7 @@
 // (Fable 5 by default). The proxy compresses requests only — responses
 // stream through untouched, and non-allowlisted models pass through
 // byte-identical.
-import { readStringStorage, writeStringStorage } from './persistentStore';
+import { readStringStorage, writeStringStorage } from './persistentStore.js';
 
 export const PXPIPE_ORIGIN = 'http://127.0.0.1:47821';
 export const PXPIPE_MESSAGES_URL = `${PXPIPE_ORIGIN}/v1/messages`;

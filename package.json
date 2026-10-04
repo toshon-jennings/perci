@@ -1,7 +1,7 @@
 {
   "name": "perci",
   "private": true,
-  "version": "0.50.0",
+  "version": "0.50.1",
   "description": "A desktop AI workspace for chat, coding, coworking, and agent tools.",
   "homepage": "https://github.com/toshon-jennings/perci",
   "author": "Toshon Jennings",
@@ -19,9 +19,12 @@
     "og": "node scripts/build-og-image.mjs",
     "preview": "vite preview",
     "electron:dev": "NODE_ENV=development concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
-    "electron:build": "npm run build && electron-builder",
-    "dist": "npm run build && electron-builder",
-    "dist:linux": "npm run build && electron-builder --linux"
+    "build:keysafe": "node scripts/prepare-keysafe-runtime.mjs",
+    "electron:build": "npm run build:keysafe && npm run build && electron-builder",
+    "dist": "npm run dist:mac",
+    "dist:mac": "bash scripts/build-mac-dmg.sh",
+    "dist:linux": "npm run build:keysafe && npm run build && electron-builder --linux",
+    "bundle:keysafe": "npm --prefix ../keysafe run build && node scripts/prepare-keysafe-runtime.mjs --refresh"
   },
   "build": {
     "appId": "com.perci.ai",
@@ -35,11 +38,33 @@
     "files": [
       "dist/**/*",
       "electron/**/*",
+      "src/lib/llm/clients.js",
+      "src/lib/llm/ModelService.js",
+      "src/lib/pxpipe.js",
+      "src/lib/persistentStore.js",
       "terminal-server.cjs"
     ],
     "asarUnpack": [
       "node_modules/node-pty/**/*",
       "electron/extensions/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "vendor/keysafe-runtime/dist",
+        "to": "keysafe/dist"
+      },
+      {
+        "from": "vendor/keysafe-runtime/server.mjs",
+        "to": "keysafe/server.mjs"
+      },
+      {
+        "from": "vendor/keysafe-runtime/server-auth.mjs",
+        "to": "keysafe/server-auth.mjs"
+      },
+      {
+        "from": "vendor/keysafe-runtime/package.json",
+        "to": "keysafe/package.json"
+      }
     ],
     "mac": {
       "artifactName": "${productName}-${version}-${arch}.${ext}",
@@ -52,6 +77,27 @@
       "extendInfo": {
         "NSMicrophoneUsageDescription": "Perci uses the microphone only when you start voice dictation."
       }
+    },
+    "dmg": {
+      "background": "installer/background.png",
+      "window": {
+        "width": 540,
+        "height": 380
+      },
+      "iconSize": 100,
+      "contents": [
+        {
+          "x": 140,
+          "y": 225,
+          "type": "file"
+        },
+        {
+          "x": 400,
+          "y": 225,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
     },
     "win": {
       "target": [

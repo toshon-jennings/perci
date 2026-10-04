@@ -222,7 +222,7 @@ export default function DbInspectorMode() {
                                         key={path}
                                         type="button"
                                         title={path}
-                                        onClick={() => openDatabase(path)}
+                                        onClick={pickFile}
                                         className={`flex w-full items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-xs transition-colors ${
                                             path === selectedPath ? 'bg-emerald-500/15 text-emerald-400' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
                                         }`}
@@ -245,7 +245,7 @@ export default function DbInspectorMode() {
                                         <button
                                             key={path}
                                             type="button"
-                                            onClick={() => openDatabase(path)}
+                                            onClick={pickFile}
                                             className={`group flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-xs transition-colors ${
                                                 path === selectedPath ? 'bg-emerald-500/15 text-emerald-400' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
                                             }`}

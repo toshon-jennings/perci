@@ -30,10 +30,18 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - run: npm run build:keysafe
       - run: npm run build
       - run: npx electron-builder --mac --${{ matrix.arch }} --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Fix DMG Finder background
+        shell: bash
+        run: |
+          for image in dist_electron/*.dmg; do
+            bash scripts/fix-dmg-background.sh "$image"
+            node scripts/refresh-mac-artifact-metadata.mjs "$image"
+          done
       - name: Smoke-test packaged terminal
         shell: bash
         env:
@@ -96,6 +104,7 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - run: npm run build:keysafe
       - run: npm run build
       - run: npx electron-builder --win --publish never
         env:

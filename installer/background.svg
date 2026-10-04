@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="380" viewBox="0 0 540 380">
+  <defs>
+    <linearGradient id="field" x2="0" y2="1">
+      <stop stop-color="#17191d"/>
+      <stop offset="1" stop-color="#2d2725"/>
+    </linearGradient>
+    <linearGradient id="shelf" x2="0" y2="1">
+      <stop stop-color="#aaa39b"/>
+      <stop offset="0.5" stop-color="#aaa39b"/>
+      <stop offset="1" stop-color="#9f9890"/>
+    </linearGradient>
+  </defs>
+  <rect width="540" height="380" fill="url(#field)"/>
+  <path d="M0 155 Q270 136 540 155 L540 308 Q270 321 0 308Z" fill="url(#shelf)"/>
+  <path d="M0 155 Q270 136 540 155" fill="none" stroke="#c5692d" stroke-width="2" opacity=".75"/>
+  <path d="M0 308 Q270 321 540 308" fill="none" stroke="#705a4d" stroke-width="2"/>
+  <text x="270" y="80" text-anchor="middle" fill="#f3efeb" font-family="Avenir Next, Helvetica Neue, sans-serif" font-size="41" font-weight="600" letter-spacing="9">PERCI</text>
+  <text x="270" y="111" text-anchor="middle" fill="#c5b9b0" font-family="Avenir Next, Helvetica Neue, sans-serif" font-size="12" letter-spacing="2">YOUR DESKTOP WORKSPACE</text>
+  <path d="M220 224 H306" fill="none" stroke="#5a3325" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="225" cy="224" r="5" fill="#c5692d"/>
+  <circle cx="257" cy="224" r="5" fill="#c5692d"/>
+  <circle cx="289" cy="224" r="5" fill="#c5692d"/>
+  <path d="M304 215 L316 224 304 233" fill="none" stroke="#5a3325" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

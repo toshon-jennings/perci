@@ -150,11 +150,7 @@ export function findPointerTarget(section, notes, currentEntry) {
 
 async function resolveNotesFolder() {
     let folder = readStringStorage(NOTES_FOLDER_KEY, '');
-    if (folder) {
-        // Custom folders must be re-registered with the main process each
-        // session before file IPC will accept them (same as NotesMode).
-        await window.electron.registerWorkspace?.(folder);
-    } else if (window.electron.getDefaultNotesPath) {
+    if (!folder && window.electron.getDefaultNotesPath) {
         folder = await window.electron.getDefaultNotesPath();
     }
     if (!folder) throw new Error('No Perci Notes folder is configured. Open Notes mode once to set one.');

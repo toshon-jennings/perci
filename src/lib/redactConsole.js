@@ -28,8 +28,7 @@ export function redactSecrets(value, seen = new WeakSet(), depth = 0) {
     if (value instanceof Error) {
         return {
             name: value.name,
-            message: redactString(value.message || ''),
-            stack: value.stack ? redactString(value.stack) : undefined
+            category: value.code || value.name || 'Error'
         };
     }
 

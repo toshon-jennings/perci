@@ -558,9 +558,6 @@ export function ModeProvider({ children }) {
                     writeStringStorage('perci_code_state', electronData.perci_code_state);
                     if (typeof electronData.working_directory === 'string') {
                         writeStringStorage('working_directory', electronData.working_directory);
-                        if (window.electron?.registerWorkspace && electronData.working_directory) {
-                            window.electron.registerWorkspace(electronData.working_directory);
-                        }
                     }
                     const parsed = readJsonStorage('perci_code_state', null);
                     setCodeState(parsed ? normalizeCodeState(parsed) : createDefaultCodeState());
@@ -594,9 +591,6 @@ export function ModeProvider({ children }) {
         writeStringStorage('perci_code_state', serializedCodeState);
         if (codeState.workingDirectory) {
             writeStringStorage('working_directory', codeState.workingDirectory);
-            if (window.electron?.registerWorkspace) {
-                window.electron.registerWorkspace(codeState.workingDirectory);
-            }
         }
         if (electronPersistenceReadyRef.current) {
             saveElectronPersistence({

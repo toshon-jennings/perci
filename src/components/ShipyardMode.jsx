@@ -22,7 +22,6 @@ const PRIORITY_HUES = { low: '#94a3b8', medium: '#f59e0b', high: '#ef4444' };
 async function detectRepo(repoPath) {
     if (!window.electron?.runLocalCommand || !repoPath) return {};
     try {
-        await window.electron.registerWorkspace?.(repoPath);
         const remote = await window.electron.runLocalCommand('git', ['remote', 'get-url', 'origin'], repoPath);
         const branch = await window.electron.runLocalCommand('git', ['branch', '--show-current'], repoPath);
         const url = (remote?.output || '').trim();

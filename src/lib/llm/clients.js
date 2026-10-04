@@ -1,7 +1,7 @@
 // LLM Client Factory with Industry-Standard Thinking Detection
 // Based on Open-WebUI and LobeChat implementations
 
-import { isPxpipeEnabled, PXPIPE_MESSAGES_URL } from '../pxpipe';
+import { isPxpipeEnabled, PXPIPE_MESSAGES_URL } from '../pxpipe.js';
 
 // UNIVERSAL Configuration - Works across ALL providers and models
 const THINKING_CONFIG = {
@@ -118,7 +118,10 @@ function extractThinking(apiResponse, providerConfig = null) {
     // Method 3: No structured thinking found
     return {
         thinking: null,
-        content: apiResponse.content || apiResponse.text || null
+        content: apiResponse.delta?.content || apiResponse.message?.content
+            || (typeof apiResponse.content === 'string' ? apiResponse.content : null)
+            || apiResponse.content?.parts?.filter(part => typeof part.text === 'string' && !part.thought).map(part => part.text).join('')
+            || apiResponse.text || null
     };
 }
 
@@ -238,6 +241,9 @@ function normalizeStreamOptions(options) {
 
 export class LLMFactory {
     static getClient(provider, apiKey, options = {}) {
+        if (globalThis.window?.electron?.models?.stream) {
+            return new ElectronBrokerClient(provider, options);
+        }
         switch (provider) {
             case 'openai':
                 return new OpenAIClient(apiKey);
@@ -256,7 +262,7 @@ export class LLMFactory {
             case 'deepinfra':
                 return new DeepInfraClient(apiKey);
             case 'anthropic':
-                return new AnthropicClient(apiKey);
+                return new AnthropicClient(apiKey, options);
             case 'mistral':
                 return new MistralClient(apiKey);
             default:
@@ -378,6 +384,8 @@ class BaseClient {
                             }
                         }
 
+                        const tokens = extractThinkingTokens(data, config);
+                        if (tokens) onChunk('', { thinkingTokens: tokens });
                         const finishReason = data.choices?.[0]?.finish_reason;
                         if (finishReason) onChunk('', { finishReason });
                     } catch { /* ignore malformed chunks */ }
@@ -508,107 +516,52 @@ class BaseClient {
     }
 }
 
+class ElectronBrokerClient extends BaseClient {
+    constructor(provider, clientOptions = {}) {
+        super('');
+        this.provider = provider;
+        this.clientOptions = clientOptions;
+    }
+
+    async _stream(messages, tools, onChunk, modelId, options = {}) {
+        const requestId = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        const { signal, ...serializableOptions } = normalizeStreamOptions(options);
+        const abort = () => globalThis.window.electron.models.abort(requestId);
+        if (signal?.aborted) throw new DOMException('Model request aborted.', 'AbortError');
+        signal?.addEventListener?.('abort', abort, { once: true });
+        try {
+            const response = await globalThis.window.electron.models.stream({
+                requestId,
+                provider: this.provider,
+                model: modelId,
+                messages,
+                tools,
+                options: serializableOptions,
+                clientOptions: this.clientOptions,
+            }, event => onChunk(event.chunk, event.metadata));
+            return response?.result;
+        } finally {
+            signal?.removeEventListener?.('abort', abort);
+        }
+    }
+
+    streamChat(messages, onChunk, modelId, options = {}) {
+        return this._stream(messages, null, onChunk, modelId, options);
+    }
+
+    streamChatWithTools(messages, tools, onChunk, modelId, options = {}) {
+        return this._stream(messages, tools, onChunk, modelId, options);
+    }
+}
+
 // OpenAI Client with comprehensive detection
 export class OpenAIClient extends BaseClient {
     async streamChat(messages, onChunk, modelId = 'gpt-4o', options = {}) {
         if (!this.apiKey) throw new Error('OpenAI API Key missing');
-
-        const streamOptions = normalizeStreamOptions(options);
-        const config = THINKING_CONFIG.fields.openai;
-        const tagParser = new StreamingTagParser();
-
-        // Format messages - handle images if present
-        const formattedMessages = messages.map(m => {
-            // Check if message has images
-            if (m.images && m.images.length > 0) {
-                const content = [
-                    { type: 'text', text: m.content || '' }
-                ];
-
-                // Add images in OpenAI format
-                for (const img of m.images) {
-                    content.push({
-                        type: 'image_url',
-                        image_url: {
-                            url: img.dataUrl || `data:${img.type || 'image/png'};base64,${img.base64}`
-                        }
-                    });
-                }
-
-                return { role: m.role, content };
-            }
-
-            return { role: m.role, content: m.content };
-        });
-
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.apiKey}`
-            },
-            body: JSON.stringify({
-                model: modelId,
-                messages: formattedMessages,
-                stream: true
-            }),
-            signal: streamOptions.signal
-        });
-
-        if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.error?.message || 'OpenAI API Error');
-        }
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            const chunk = decoder.decode(value);
-            const lines = chunk.split('\n');
-
-            for (const line of lines) {
-                if (line.startsWith('data: ') && line !== 'data: [DONE]') {
-                    try {
-                        const data = JSON.parse(line.slice(6));
-
-                        // LAYER 1: Check API-level thinking fields
-                        const extracted = extractThinking(data.choices?.[0], config);
-
-                        if (extracted.thinking) {
-                            // Found API-level thinking
-                            onChunk(extracted.thinking, { isThinking: true });
-                        }
-
-                        if (extracted.content) {
-                            // LAYER 2: Parse content for embedded tags
-                            const tagResults = tagParser.processChunk(extracted.content);
-                            for (const result of tagResults) {
-                                onChunk(result.content, { isThinking: result.isThinking });
-                            }
-                        }
-
-                        // Extract thinking tokens
-                        const tokens = extractThinkingTokens(data, config);
-                        if (tokens) {
-                            onChunk('', { thinkingTokens: tokens });
-                        }
-
-                        // Extract finish reason
-                        const finishReason = data.choices?.[0]?.finish_reason;
-                        if (finishReason) {
-                            onChunk('', { finishReason });
-                        }
-                    } catch (e) {
-                        console.error('Error parsing chunk', e);
-                    }
-                }
-            }
-        }
-        flushUnclosedThinking(tagParser, onChunk);
+        return this._openAICompatibleStream(
+            'https://api.openai.com/v1/chat/completions',
+            { Authorization: `Bearer ${this.apiKey}` }, messages, onChunk, modelId, options, 'OpenAI API Error'
+        );
     }
 
     async streamChatWithTools(messages, tools, onChunk, modelId = 'gpt-4o', options = {}) {
@@ -625,87 +578,10 @@ export class OpenAIClient extends BaseClient {
 export class GroqClient extends BaseClient {
     async streamChat(messages, onChunk, modelId = 'llama-3.3-70b-versatile', options = {}) {
         if (!this.apiKey) throw new Error('Groq API Key missing');
-
-        const streamOptions = normalizeStreamOptions(options);
-        const tagParser = new StreamingTagParser();
-
-        // Format messages - handle images if present (Groq uses OpenAI-compatible format)
-        const formattedMessages = messages.map(m => {
-            if (m.images && m.images.length > 0) {
-                const content = [
-                    { type: 'text', text: m.content || '' }
-                ];
-
-                for (const img of m.images) {
-                    content.push({
-                        type: 'image_url',
-                        image_url: {
-                            url: img.dataUrl || `data:${img.type || 'image/png'};base64,${img.base64}`
-                        }
-                    });
-                }
-
-                return { role: m.role, content };
-            }
-
-            return { role: m.role, content: m.content };
-        });
-
-        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.apiKey}`
-            },
-            body: JSON.stringify({
-                model: modelId,
-                messages: formattedMessages,
-                stream: true
-            }),
-            signal: streamOptions.signal
-        });
-
-        if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.error?.message || 'Groq API Error');
-        }
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            const chunk = decoder.decode(value);
-            const lines = chunk.split('\n');
-
-            for (const line of lines) {
-                if (line.startsWith('data: ') && line !== 'data: [DONE]') {
-                    try {
-                        const data = JSON.parse(line.slice(6));
-                        const content = data.choices[0]?.delta?.content || '';
-
-                        if (content) {
-                            // Parse for thinking tags in real-time
-                            const results = tagParser.processChunk(content);
-                            for (const result of results) {
-                                onChunk(result.content, { isThinking: result.isThinking });
-                            }
-                        }
-
-                        // Extract finish reason
-                        const finishReason = data.choices?.[0]?.finish_reason;
-                        if (finishReason) {
-                            onChunk('', { finishReason });
-                        }
-                    } catch (e) {
-                        console.error('Error parsing chunk', e);
-                    }
-                }
-            }
-        }
-        flushUnclosedThinking(tagParser, onChunk);
+        return this._openAICompatibleStream(
+            'https://api.groq.com/openai/v1/chat/completions',
+            { Authorization: `Bearer ${this.apiKey}` }, messages, onChunk, modelId, options, 'Groq API Error'
+        );
     }
 
     async streamChatWithTools(messages, tools, onChunk, modelId = 'llama-3.3-70b-versatile', options = {}) {
@@ -729,8 +605,14 @@ export class GeminiClient extends BaseClient {
         const config = THINKING_CONFIG.fields.google;
         const tagParser = new StreamingTagParser();
 
+        const systemInstruction = messages
+            .filter(message => message.role === 'system')
+            .map(message => message.content)
+            .filter(Boolean)
+            .join('\n\n');
+
         // Format messages - handle images with Gemini's format
-        const contents = messages.map(m => {
+        const contents = messages.filter(message => message.role !== 'system').map(m => {
             const parts = [];
 
             // Add text part
@@ -763,7 +645,8 @@ export class GeminiClient extends BaseClient {
                 'x-goog-api-key': this.apiKey,
             },
             body: JSON.stringify({
-                contents: contents
+                contents: contents,
+                ...(systemInstruction ? { system_instruction: { parts: [{ text: systemInstruction }] } } : {})
             }),
             signal: streamOptions.signal
         });
@@ -984,13 +867,15 @@ export class OllamaClient extends BaseClient {
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
+        let buffer = '';
 
         while (true) {
             const { done, value } = await reader.read();
-            if (done) break;
 
-            const chunk = decoder.decode(value);
-            const lines = chunk.split('\n');
+            buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+            if (done && buffer.trim()) lines.push(buffer);
 
             for (const line of lines) {
                 if (line.trim()) {
@@ -1010,6 +895,7 @@ export class OllamaClient extends BaseClient {
                     }
                 }
             }
+            if (done) break;
         }
         flushUnclosedThinking(tagParser, onChunk);
     }
@@ -1073,92 +959,9 @@ export class LMStudioClient extends BaseClient {
     }
 
     async streamChat(messages, onChunk, modelId, options = {}) {
-        const streamOptions = normalizeStreamOptions(options);
-        const tagParser = new StreamingTagParser();
-
-        // Format messages - LM Studio uses OpenAI-compatible format
-        const formattedMessages = messages.map(m => {
-            if (m.images && m.images.length > 0) {
-                const content = [
-                    { type: 'text', text: m.content || '' }
-                ];
-
-                for (const img of m.images) {
-                    content.push({
-                        type: 'image_url',
-                        image_url: {
-                            url: img.dataUrl || `data:${img.type || 'image/png'};base64,${img.base64}`
-                        }
-                    });
-                }
-
-                return { role: m.role, content };
-            }
-
-            return { role: m.role, content: m.content };
-        });
-
-        let response;
-        try {
-            response = await fetch(`${this.baseUrl}/v1/chat/completions`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    model: modelId || 'local-model',
-                    messages: formattedMessages,
-                    stream: true
-                }),
-                signal: streamOptions.signal
-            });
-        } catch (err) {
-            if (err?.name === 'AbortError') throw err;
-            throw new Error(`LM Studio is not reachable at ${this.baseUrl}. Use http://localhost:1234 when LM Studio is running on this Mac.`);
-        }
-
-        if (!response.ok) {
-            const message = await this._readErrorMessage(response, 'LM Studio API Error');
-            throw new Error(`LM Studio API Error: ${message}`);
-        }
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            const chunk = decoder.decode(value);
-            const lines = chunk.split('\n');
-
-            for (const line of lines) {
-                if (line.startsWith('data: ') && line !== 'data: [DONE]') {
-                    try {
-                        const data = JSON.parse(line.slice(6));
-                        const choice = data.choices?.[0];
-                        const content = choice?.delta?.content || '';
-
-                        if (content) {
-                            // Parse for thinking tags
-                            const results = tagParser.processChunk(content);
-                            for (const result of results) {
-                                onChunk(result.content, { isThinking: result.isThinking });
-                            }
-                        }
-
-                        // Surface finish_reason so callers can detect context overflow
-                        const finishReason = choice?.finish_reason;
-                        if (finishReason) {
-                            onChunk('', { finishReason });
-                        }
-                    } catch (e) {
-                        console.error('Error parsing LM Studio chunk', e);
-                    }
-                }
-            }
-        }
-        flushUnclosedThinking(tagParser, onChunk);
+        return this._openAICompatibleStream(
+            `${this.baseUrl}/v1/chat/completions`, {}, messages, onChunk, modelId || 'local-model', options, 'LM Studio API Error'
+        );
     }
 
     async streamChatWithTools(messages, tools, onChunk, modelId, options = {}) {
@@ -1209,7 +1012,7 @@ export class OpenRouterClient extends BaseClient {
             'https://openrouter.ai/api/v1/chat/completions',
             {
                 'Authorization': `Bearer ${this.apiKey}`,
-                'HTTP-Referer': window.location.origin,
+                'HTTP-Referer': globalThis.window?.location?.origin || 'https://github.com/toshon-jennings/perci',
                 'X-Title': 'Perci'
             },
             messages, tools, onChunk, modelId, options
@@ -1250,8 +1053,8 @@ const ANTHROPIC_MESSAGES_URL = 'https://api.anthropic.com/v1/messages';
 
 // Routes through the local pxpipe proxy when the Settings toggle is on; a
 // dead proxy falls back to the direct API instead of breaking chat.
-async function fetchAnthropicMessages(init) {
-    if (isPxpipeEnabled()) {
+async function fetchAnthropicMessages(init, useProxy = isPxpipeEnabled()) {
+    if (useProxy) {
         try {
             return await fetch(PXPIPE_MESSAGES_URL, init);
         } catch (err) {
@@ -1263,6 +1066,10 @@ async function fetchAnthropicMessages(init) {
 }
 
 export class AnthropicClient extends BaseClient {
+    constructor(apiKey, options = {}) {
+        super(apiKey);
+        this.pxpipeEnabled = options.pxpipeEnabled;
+    }
     async streamChat(messages, onChunk, modelId = 'claude-sonnet-4-5', options = {}) {
         if (!this.apiKey) throw new Error('Anthropic API Key missing');
 
@@ -1309,7 +1116,7 @@ export class AnthropicClient extends BaseClient {
             },
             body: JSON.stringify(body),
             signal: streamOptions.signal
-        });
+        }, this.pxpipeEnabled);
 
         if (!response.ok) {
             const err = await response.json();
@@ -1420,7 +1227,7 @@ export class AnthropicClient extends BaseClient {
             },
             body: JSON.stringify(body),
             signal: streamOptions.signal
-        });
+        }, this.pxpipeEnabled);
 
         if (!response.ok) {
             const err = await response.json().catch(() => ({}));
@@ -1484,51 +1291,10 @@ export class AnthropicClient extends BaseClient {
 export class MistralClient extends BaseClient {
     async streamChat(messages, onChunk, modelId = 'mistral-large-latest', options = {}) {
         if (!this.apiKey) throw new Error('Mistral API Key missing');
-
-        const streamOptions = normalizeStreamOptions(options);
-        const tagParser = new StreamingTagParser();
-
-        const formattedMessages = messages.map(m => ({ role: m.role, content: m.content }));
-
-        const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.apiKey}`
-            },
-            body: JSON.stringify({ model: modelId, messages: formattedMessages, stream: true }),
-            signal: streamOptions.signal
-        });
-
-        if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.error?.message || err.message || 'Mistral API Error');
-        }
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            for (const line of decoder.decode(value).split('\n')) {
-                if (line.startsWith('data: ') && line !== 'data: [DONE]') {
-                    try {
-                        const data = JSON.parse(line.slice(6));
-                        const content = data.choices?.[0]?.delta?.content || '';
-                        if (content) {
-                            for (const r of tagParser.processChunk(content)) {
-                                onChunk(r.content, { isThinking: r.isThinking });
-                            }
-                        }
-                        const finishReason = data.choices?.[0]?.finish_reason;
-                        if (finishReason) onChunk('', { finishReason });
-                    } catch (e) { /* ignore */ }
-                }
-            }
-        }
-        flushUnclosedThinking(tagParser, onChunk);
+        return this._openAICompatibleStream(
+            'https://api.mistral.ai/v1/chat/completions',
+            { Authorization: `Bearer ${this.apiKey}` }, messages, onChunk, modelId, options, 'Mistral API Error'
+        );
     }
 
     async streamChatWithTools(messages, tools, onChunk, modelId = 'mistral-large-latest', options = {}) {

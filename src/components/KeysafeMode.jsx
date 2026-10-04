@@ -1,18 +1,24 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { RefreshCw, ExternalLink, ShieldAlert, Play, Loader2 } from 'lucide-react';
+import { RefreshCw, ShieldAlert, Play, Loader2 } from 'lucide-react';
 import keysafeLogo from '../assets/keysafe-logo.jpeg';
-import { launchArgsFor } from '../lib/localServices';
 import './KeysafeMode.css';
 
 const KEYSAFE_ORIGIN = 'http://127.0.0.1:4100';
 
 export default function KeysafeMode() {
     const [status, setStatus] = useState('checking'); // checking | running | offline | starting
+    const [statusDetail, setStatusDetail] = useState('');
     const webviewRef = useRef(null);
     const [frameKey, setFrameKey] = useState(0);
-    const pollIntervalRef = useRef(null);
 
     const checkAlive = useCallback(async () => {
+        if (window.electron?.keysafeStatus) {
+            const result = await window.electron.keysafeStatus();
+            if (!result?.ok && result?.reason === 'unauthorized-listener') {
+                setStatusDetail('Port 4100 is occupied by a service this Perci launch cannot authenticate. KeySafe will not attach to it.');
+            }
+            return result?.ok === true && result?.productId === 'keysafe';
+        }
         try {
             await fetch(`${KEYSAFE_ORIGIN}/`, {
                 mode: 'no-cors',
@@ -25,38 +31,10 @@ export default function KeysafeMode() {
         }
     }, []);
 
-    const startPolling = useCallback(() => {
-        if (pollIntervalRef.current) return;
-        pollIntervalRef.current = setInterval(async () => {
-            const isAlive = await checkAlive();
-            if (isAlive) {
-                setStatus('running');
-                if (pollIntervalRef.current) {
-                    clearInterval(pollIntervalRef.current);
-                    pollIntervalRef.current = null;
-                }
-            }
-        }, 1500);
-    }, [checkAlive]);
-
-    const stopPolling = useCallback(() => {
-        if (pollIntervalRef.current) {
-            clearInterval(pollIntervalRef.current);
-            pollIntervalRef.current = null;
-        }
-    }, []);
-
     // Initial check
     useEffect(() => {
         let active = true;
         (async () => {
-            // Electron's renderer can block a no-cors localhost probe under
-            // COEP even when the webview can load the same service. Let the
-            // webview report its own load result instead.
-            if (window.electron) {
-                setStatus('running');
-                return;
-            }
             const isAlive = await checkAlive();
             if (!active) return;
             if (isAlive) {
@@ -67,9 +45,8 @@ export default function KeysafeMode() {
         })();
         return () => {
             active = false;
-            stopPolling();
         };
-    }, [checkAlive, stopPolling]);
+    }, [checkAlive]);
 
     useEffect(() => {
         const webview = webviewRef.current;
@@ -83,27 +60,22 @@ export default function KeysafeMode() {
     }, [frameKey, status]);
 
     const handleLaunch = useCallback(async () => {
-        const launch = launchArgsFor('keysafe');
-        if (!launch || !window.electron?.localhostStartNow) return;
+        if (!window.electron?.keysafeStart) return;
         setStatus('starting');
         try {
-            const result = await window.electron.localhostStartNow(launch);
+            const result = await window.electron.keysafeStart();
             if (!result?.ok) throw new Error(result?.error || 'KeySafe did not start.');
-            startPolling();
+            setStatusDetail('');
+            setStatus('running');
         } catch (err) {
-            console.error('[KeySafe] Failed to auto-start server:', err);
+            console.error('[KeySafe] Authenticated server launch failed');
+            setStatusDetail(err instanceof Error ? err.message : 'KeySafe failed its authenticated identity check.');
             setStatus('offline');
         }
-    }, [startPolling]);
+    }, []);
 
     const handleReload = useCallback(() => {
         setFrameKey((prev) => prev + 1);
-    }, []);
-
-    const handleOpenExternal = useCallback(() => {
-        if (window.electron?.openExternal) {
-            window.electron.openExternal(KEYSAFE_ORIGIN);
-        }
     }, []);
 
     // ── 1. Checking state ───────────────────────────────────────────
@@ -124,8 +96,8 @@ export default function KeysafeMode() {
             <div className="keysafe-status-container">
                 <div className="keysafe-status-card">
                     <Loader2 size={32} className="keysafe-spinner animate-spin text-[var(--accent)]" />
-                    <p className="keysafe-status-text">Starting local KeySafe dev server...</p>
-                    <p className="keysafe-status-subtext">Waiting for http://127.0.0.1:4100 to respond.</p>
+                    <p className="keysafe-status-text">Starting authenticated KeySafe server...</p>
+                    <p className="keysafe-status-subtext">Verifying product identity and this Perci launch.</p>
                 </div>
             </div>
         );
@@ -143,7 +115,7 @@ export default function KeysafeMode() {
                     <div className="keysafe-header-group">
                         <h2 className="keysafe-offline-title">KeySafe is Offline</h2>
                         <p className="keysafe-offline-desc">
-                            KeySafe is a local-first, serverless credential manager. All your credentials, custom tags, and screenshot data are stored securely on your local device in IndexedDB.
+                            {statusDetail || 'KeySafe is a local-first credential manager. Vault records are encrypted before they are written to IndexedDB and unlocked only inside this window.'}
                         </p>
                     </div>
 
@@ -157,10 +129,10 @@ export default function KeysafeMode() {
                     <div className="keysafe-instructions">
                         <p className="keysafe-instruction-title">Start Local Server</p>
                         <p className="keysafe-instruction-body">
-                            Perci can automatically launch the KeySafe Vite dev server in the background, or you can run it manually from the terminal.
+                            Perci launches KeySafe&apos;s production build with a private per-launch token, then verifies its product ID, version, and launch nonce.
                         </p>
                         <div className="keysafe-command-box">
-                            <code>cd ~/keysafe && npm run dev</code>
+                            <code>Authenticated launch required</code>
                         </div>
                     </div>
 
@@ -210,18 +182,12 @@ export default function KeysafeMode() {
                     <span className="keysafe-url-text">{KEYSAFE_ORIGIN}</span>
                 </div>
 
-                <button
-                    type="button"
-                    onClick={handleOpenExternal}
-                    className="keysafe-nav-btn"
-                    title="Open in external browser"
-                >
-                    <ExternalLink size={14} />
-                </button>
+                <span className="keysafe-status-badge">Authenticated</span>
             </div>
 
             {window.electron ? (
                 React.createElement('webview', {
+                    useragent: 'Perci-KeySafe-Guest/1',
                     ref: webviewRef,
                     key: frameKey,
                     src: KEYSAFE_ORIGIN,
@@ -229,7 +195,7 @@ export default function KeysafeMode() {
                     // KeySafe originally lived in Perci's localhost profile.
                     // Keep that durable profile so existing IndexedDB records remain visible.
                     partition: 'persist:perci-localhost',
-                    allowpopups: 'true',
+                    webpreferences: 'contextIsolation=yes, nodeIntegration=no, sandbox=yes, webSecurity=yes',
                 })
             ) : (
                 <iframe
@@ -237,7 +203,7 @@ export default function KeysafeMode() {
                     key={frameKey}
                     src={KEYSAFE_ORIGIN}
                     className="keysafe-webview"
-                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                    sandbox="allow-scripts allow-same-origin allow-forms"
                     title="KeySafe"
                 />
             )}

@@ -112,6 +112,8 @@ export function SettingsModal({ isOpen, onClose }) {
     const [setupMessage, setSetupMessage] = useState('');
     const [pxpipeOn, setPxpipeOn] = useState(() => isPxpipeEnabled());
     const [pxpipeAlive, setPxpipeAlive] = useState(null);
+    const [credentialDrafts, setCredentialDrafts] = useState({});
+    const [credentialPersistence, setCredentialPersistence] = useState(() => window.electron?.credentials ? 'secure' : 'session-only');
 
     // Local OpenClaw Gateway Config & Sandbox/Dreaming States
     const [localOpenClawConfig, setLocalOpenClawConfig] = useState(null);
@@ -152,6 +154,9 @@ export function SettingsModal({ isOpen, onClose }) {
             setEditingName(userName || '');
             setEditingInstructions(customInstructions || '');
             setModelSearch('');
+            window.electron?.credentials?.status?.()
+                .then(status => setCredentialPersistence(status?.persistence || 'session-only'))
+                .catch(() => setCredentialPersistence('session-only'));
 
             // Load local openclaw config if in electron environment
             if (window.electron?.readOpenClawConfig) {
@@ -178,8 +183,6 @@ export function SettingsModal({ isOpen, onClose }) {
                 window.electron.getAppData()
                     .then((data) => {
                         setGdashClientId(data?.gdash_google_client_id || '');
-                        setGdashClientSecret(data?.gdash_google_client_secret || '');
-                        setJulesApiKey(data?.jules_api_key || '');
                         const backend = data?.perci_memory_backend || (data?.perci_supermemory_enabled === 'true' ? 'supermemory' : 'memu');
                         setMemoryBackend(backend === 'supermemory' ? 'supermemory' : 'memu');
                     })
@@ -203,6 +206,27 @@ export function SettingsModal({ isOpen, onClose }) {
         }
     }, [apiKeys.openrouter, isOpen, userName, customInstructions]);
 
+    const saveCredentialDraft = async (provider) => {
+        const value = credentialDrafts[provider]?.trim();
+        if (!value) return;
+        try {
+            const result = await updateApiKey(provider, value);
+            setCredentialPersistence(result?.persistence || credentialPersistence);
+            setCredentialDrafts(prev => ({ ...prev, [provider]: '' }));
+        } catch (err) {
+            setSetupMessage(err?.message || 'Could not store that credential.');
+        }
+    };
+
+    const deleteCredential = async (provider) => {
+        try {
+            await updateApiKey(provider, '');
+            setCredentialDrafts(prev => ({ ...prev, [provider]: '' }));
+        } catch (err) {
+            setSetupMessage(err?.message || 'Could not remove that credential.');
+        }
+    };
+
     const saveGdashClientId = async () => {
         if (!window.electron?.setAppData) return;
         try {
@@ -213,18 +237,22 @@ export function SettingsModal({ isOpen, onClose }) {
     };
 
     const saveGdashClientSecret = async () => {
-        if (!window.electron?.setAppData) return;
+        if (!window.electron?.setGdashClientSecret) return;
+        if (!gdashClientSecret.trim()) return;
         try {
-            await window.electron.setAppData({ gdash_google_client_secret: gdashClientSecret.trim() });
+            await window.electron.setGdashClientSecret(gdashClientSecret.trim());
+            setGdashClientSecret('');
         } catch (err) {
             console.error('Failed to save G-Dash client secret:', err);
         }
     };
 
     const saveJulesApiKey = async () => {
-        if (!window.electron?.setAppData) return;
+        if (!window.electron?.setJulesApiKey) return;
+        if (!julesApiKey.trim()) return;
         try {
-            await window.electron.setAppData({ jules_api_key: julesApiKey.trim() });
+            await window.electron.setJulesApiKey(julesApiKey.trim());
+            setJulesApiKey('');
         } catch (err) {
             console.error('Failed to save Jules API key:', err);
         }
@@ -1171,19 +1199,37 @@ export function SettingsModal({ isOpen, onClose }) {
                                         <div className="relative">
                                             <input
                                                 type="password"
-                                                value={apiKeys[selectedProvider] || ''}
-                                                onChange={e => updateApiKey(selectedProvider, e.target.value)}
+                                                value={credentialDrafts[selectedProvider] || ''}
+                                                onChange={e => setCredentialDrafts(prev => ({ ...prev, [selectedProvider]: e.target.value }))}
+                                                onBlur={() => saveCredentialDraft(selectedProvider)}
+                                                onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur(); }}
                                                 className={`w-full px-4 py-2.5 rounded-xl border transition-all outline-none text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] ${
                                                     apiKeys[selectedProvider]
                                                         ? 'border-[var(--accent)]/40 bg-[var(--accent)]/5 focus:ring-2 ring-[var(--accent)]'
                                                         : 'border-[var(--border)] bg-[var(--bg-primary)] focus:ring-2 ring-[var(--accent)]'
                                                 }`}
-                                                placeholder={`${selectedProviderMeta.name} API key`}
+                                                placeholder={apiKeys[selectedProvider]
+                                                    ? `${credentialPersistence === 'secure' ? 'Stored with OS protection' : 'Stored for this session'} — enter to replace`
+                                                    : `${selectedProviderMeta.name} API key`}
+                                                autoComplete="off"
+                                                spellCheck={false}
                                             />
                                             {apiKeys[selectedProvider] && (
                                                 <div className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-emerald-400" title="Key set" />
                                             )}
                                         </div>
+                                        {apiKeys[selectedProvider] && (
+                                            <div className="flex items-center justify-between gap-3 text-xs text-[var(--text-secondary)]">
+                                                <span>{credentialPersistence === 'secure' ? 'Stored with OS protection.' : window.electron ? 'Session only; secure storage is unavailable.' : 'Browser mode: held in memory until this tab closes.'}</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => deleteCredential(selectedProvider)}
+                                                    className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] underline underline-offset-2"
+                                                >
+                                                    Remove stored key
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
 
@@ -1462,19 +1508,37 @@ export function SettingsModal({ isOpen, onClose }) {
                             <div className="relative">
                                 <input
                                     type="password"
-                                    value={apiKeys.github || ''}
-                                    onChange={e => updateApiKey('github', e.target.value)}
+                                    value={credentialDrafts.github || ''}
+                                    onChange={e => setCredentialDrafts(prev => ({ ...prev, github: e.target.value }))}
+                                    onBlur={() => saveCredentialDraft('github')}
+                                    onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur(); }}
                                     className={`w-full px-4 py-2.5 rounded-xl border transition-all outline-none text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] ${
                                         apiKeys.github
                                             ? 'border-[var(--accent)]/40 bg-[var(--accent)]/5 focus:ring-2 ring-[var(--accent)]'
                                             : 'border-[var(--border)] bg-[var(--bg-tertiary)] focus:ring-2 ring-[var(--accent)]'
                                     }`}
-                                    placeholder="GitHub personal access token"
+                                    placeholder={apiKeys.github
+                                        ? `${credentialPersistence === 'secure' ? 'Stored with OS protection' : 'Stored for this session'} — enter to replace`
+                                        : 'GitHub personal access token'}
+                                    autoComplete="off"
+                                    spellCheck={false}
                                 />
                                 {apiKeys.github && (
                                     <div className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-emerald-400" title="Token set" />
                                 )}
                             </div>
+                            {apiKeys.github && (
+                                <div className="flex items-center justify-between gap-3 text-xs text-[var(--text-secondary)]">
+                                    <span>{credentialPersistence === 'secure' ? 'Stored with OS protection.' : window.electron ? 'Session only; secure storage is unavailable.' : 'Browser mode: held in memory until this tab closes.'}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => deleteCredential('github')}
+                                        className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] underline underline-offset-2"
+                                    >
+                                        Remove stored key
+                                    </button>
+                                </div>
+                            )}
                             <p className="text-[10px] text-[var(--text-tertiary)]">Used for GitHub integrations, not for model access.</p>
                         </div>
                     </Section>

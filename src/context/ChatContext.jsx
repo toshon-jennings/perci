@@ -9,7 +9,6 @@ import {
     loadElectronPersistence,
     readJsonStorage,
     readStringStorage,
-    removeStorageKey,
     saveElectronPersistence,
     serializeJson,
     writePersistenceSnapshot,
@@ -38,37 +37,6 @@ function normalizeLocalServerUrl(url, fallback = DEFAULT_LM_STUDIO_URL) {
         return trimmedUrl.replace(/\/$/, '');
     }
     return `http://${trimmedUrl.replace(/\/$/, '')}`;
-}
-
-function readApiKeysFromStorage() {
-    return Object.entries(API_KEY_PROVIDERS).reduce((keys, [provider, storageKey]) => {
-        keys[provider] = readStringStorage(storageKey, '');
-        return keys;
-    }, {});
-}
-
-function readApiKeysFromSnapshot(snapshot = {}, fallbackSnapshot = {}) {
-    return Object.entries(API_KEY_PROVIDERS).reduce((keys, [provider, storageKey]) => {
-        keys[provider] = snapshot[storageKey] || fallbackSnapshot[storageKey] || '';
-        return keys;
-    }, {});
-}
-
-function apiKeysToStorageSnapshot(keys) {
-    return Object.entries(API_KEY_PROVIDERS).reduce((snapshot, [provider, storageKey]) => {
-        snapshot[storageKey] = keys?.[provider] || '';
-        return snapshot;
-    }, {});
-}
-
-function nonEmptyApiKeysToStorageSnapshot(keys) {
-    return Object.entries(API_KEY_PROVIDERS).reduce((snapshot, [provider, storageKey]) => {
-        const value = keys?.[provider];
-        if (typeof value === 'string' && value.length > 0) {
-            snapshot[storageKey] = value;
-        }
-        return snapshot;
-    }, {});
 }
 
 // Merge user-added custom models into the fetched model map (dedupe by id)
@@ -310,11 +278,16 @@ export function ChatProvider({ children }) {
             try {
                 const electronData = await loadElectronPersistence();
                 if (!isMounted) return;
-                const localApiKeys = getApiKeySnapshot();
+                const credentialStatus = await window.electron.credentials?.status?.();
+                const nextApiKeys = Object.fromEntries(
+                    Object.keys(API_KEY_PROVIDERS).map(provider => [
+                        provider,
+                        credentialStatus?.providers?.[provider] ? 'stored' : '',
+                    ])
+                );
 
                 if (hasPersistedUserData(electronData)) {
                     writePersistenceSnapshot(electronData);
-                    const nextApiKeys = readApiKeysFromSnapshot(electronData, localApiKeys);
 
                     const persistedChats = readJsonStorage('chat_history', null);
                     const nextChats = Array.isArray(persistedChats) && persistedChats.length > 0
@@ -340,15 +313,10 @@ export function ChatProvider({ children }) {
                     setSelectedProvider(readStringStorage('selected_provider', 'groq'));
                     setSelectedModel(readStringStorage('selected_model'));
                     setApiKeys(nextApiKeys);
-                    await saveElectronPersistence({
-                        ...getPersistenceSnapshot(),
-                        ...nonEmptyApiKeysToStorageSnapshot(nextApiKeys)
-                    });
+                    await saveElectronPersistence(getPersistenceSnapshot());
                 } else {
-                    await saveElectronPersistence({
-                        ...getPersistenceSnapshot(),
-                        ...nonEmptyApiKeysToStorageSnapshot(readApiKeysFromSnapshot(localApiKeys))
-                    });
+                    setApiKeys(nextApiKeys);
+                    await saveElectronPersistence(getPersistenceSnapshot());
                 }
             } catch (err) {
                 console.error('Failed to hydrate Electron persistence:', err);
@@ -567,16 +535,21 @@ export function ChatProvider({ children }) {
     }, [artifacts]);
 
     // API Keys
-    const [apiKeys, setApiKeys] = useState(readApiKeysFromStorage);
+    const [apiKeys, setApiKeys] = useState(() => hasElectronStore() ? {} : Object.fromEntries(
+        Object.entries(getApiKeySnapshot()).map(([storageKey, secret]) => [storageKey.replace(/_key$/, ''), secret])
+    ));
 
-    const updateApiKey = (provider, key) => {
-        setApiKeys(prev => ({ ...prev, [provider]: key }));
-        const storageKey = API_KEY_PROVIDERS[provider] || `${provider}_key`;
-        if (hasElectronStore()) {
-            removeStorageKey(storageKey);
-            saveElectronPersistence({ [storageKey]: key }).catch(err => console.error(`Failed to persist ${provider} API key:`, err));
+    const updateApiKey = async (provider, key) => {
+        if (window.electron?.credentials) {
+            const normalized = typeof key === 'string' ? key.trim() : '';
+            const result = normalized
+                ? await window.electron.credentials.set(provider, normalized)
+                : await window.electron.credentials.delete(provider);
+            setApiKeys(prev => ({ ...prev, [provider]: normalized ? 'stored' : '' }));
+            return result;
         } else {
-            writeStringStorage(storageKey, key);
+            setApiKeys(prev => ({ ...prev, [provider]: key }));
+            return { stored: Boolean(key), persistence: 'session-only' };
         }
     };
 
@@ -630,7 +603,9 @@ export function ChatProvider({ children }) {
     const fetchModels = useCallback(async () => {
         setIsLoadingModels(true);
         try {
-            const models = await modelService.getAllModels({ ...apiKeys, lmStudioUrl, janUrl });
+            const models = window.electron?.models?.list
+                ? await window.electron.models.list({ lmStudioUrl, janUrl })
+                : await modelService.getAllModels({ ...apiKeys, lmStudioUrl, janUrl });
             setAvailableModels(models);
 
             // Auto-select a model if none is selected, or if the stored model

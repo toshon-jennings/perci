@@ -110,7 +110,6 @@ export function useAgentTools(workingDirectory, webcontainerInstance, apiKeys = 
                     if (window.electron?.runLocalCommand) {
                         const cwd = workingDirectoryRef.current;
                         if (!cwd) return { error: 'Choose a local workspace folder before running commands.' };
-                        await window.electron.registerWorkspace?.(cwd);
                         const result = await window.electron.runLocalCommand(cmd, args, cwd);
                         if (result.output) log(result.output);
                         if (result.stderr) log(result.stderr);

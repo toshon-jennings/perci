@@ -450,7 +450,6 @@ export default function DocketMode() {
             if (isMounted && savedFolder) {
                 setFolder(savedFolder);
                 if (shouldPersist) writeStringStorage(NOTES_FOLDER_KEY, savedFolder);
-                if (window.electron?.registerWorkspace) await window.electron.registerWorkspace(savedFolder);
             } else if (isMounted) {
                 setLoading(false);
             }

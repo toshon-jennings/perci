@@ -1,11 +1,16 @@
 const SECRET_FIELD_PATTERN = /(api[_-]?key|authorization|x-api-key|token|secret|password|credential)/i;
 const SECRET_VALUE_PATTERNS = [
   /Bearer\s+[A-Za-z0-9._~+/=-]+/gi,
-  /(sk-[A-Za-z0-9_-]{12,})/g,
-  /(sk-or-[A-Za-z0-9_-]{12,})/g,
+  /(sk-(?:proj-|ant-|or-)?[A-Za-z0-9_-]{12,})/g,
   /(gsk_[A-Za-z0-9_-]{12,})/g,
   /(AIza[0-9A-Za-z_-]{20,})/g,
-  /([?&](?:key|api_key|apiKey|x-api-key)=)[^&\s]+/gi
+  /(ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})/g,
+  /(AKIA[0-9A-Z]{16})/g,
+  /(xox[baprs]-[A-Za-z0-9-]{12,})/g,
+  /(sk_(?:live|test)_[A-Za-z0-9]{12,})/g,
+  /-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----/g,
+  /([?&](?:key|api_key|apiKey|x-api-key|token|access_token|secret|password)=)[^&\s]+/gi,
+  /((?:password|secret|token|api[_-]?key|authorization)\s*[:=]\s*)[^\s,;}"]+/gi
 ];
 
 function redactString(value) {
@@ -15,6 +20,9 @@ function redactString(value) {
     }
     if (pattern.source.startsWith('Bearer')) {
       return text.replace(pattern, 'Bearer [REDACTED]');
+    }
+    if (pattern.source.startsWith('((?:password')) {
+      return text.replace(pattern, '$1[REDACTED]');
     }
     return text.replace(pattern, '[REDACTED]');
   }, value);
@@ -28,8 +36,7 @@ function redactSecrets(value, seen = new WeakSet(), depth = 0) {
   if (value instanceof Error) {
     return {
       name: value.name,
-      message: redactString(value.message || ''),
-      stack: value.stack ? redactString(value.stack) : undefined
+      category: value.code || value.name || 'Error'
     };
   }
 

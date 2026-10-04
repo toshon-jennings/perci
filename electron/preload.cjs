@@ -1,19 +1,75 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
+const workspaceGrants = new Map();
+
+function rememberWorkspaceGrant(grant) {
+  if (!grant || typeof grant !== 'object' || typeof grant.grantId !== 'string' || typeof grant.path !== 'string') {
+    return null;
+  }
+  workspaceGrants.set(grant.grantId, grant);
+  return grant.path;
+}
+
+function workspaceGrantFor(targetPath, capability) {
+  if (typeof targetPath !== 'string' || !targetPath.trim()) return null;
+  const resolvedTarget = targetPath.replace(/\\/g, '/');
+  let best = null;
+  for (const grant of workspaceGrants.values()) {
+    if (!grant.capabilities?.includes(capability)) continue;
+    const root = grant.path.replace(/\\/g, '/').replace(/\/$/, '');
+    // Select a remembered grant only; all real-path authorization is in main.
+    if (resolvedTarget !== root && !resolvedTarget.startsWith(`${root}/`)) continue;
+    if (!best || grant.path.length > best.path.length) best = grant;
+  }
+  return best;
+}
+
+function workspacePayload(targetPath, capability, extra = {}) {
+  const grant = workspaceGrantFor(targetPath, capability);
+  return { ...extra, grantId: grant?.grantId || null, targetPath };
+}
+
 contextBridge.exposeInMainWorld('electron', {
-  selectDirectory: () => ipcRenderer.invoke('select-directory'),
-  getDefaultNotesPath: () => ipcRenderer.invoke('get-default-notes-path'),
-  registerWorkspace: (path) => ipcRenderer.invoke('register-workspace', path),
-  runLocalCommand: (command, args, cwd) => ipcRenderer.invoke('run-local-command', { command, args, cwd }),
+  selectDirectory: async (options) => rememberWorkspaceGrant(await ipcRenderer.invoke('select-directory', options)),
+  getDefaultNotesPath: async () => rememberWorkspaceGrant(await ipcRenderer.invoke('get-default-notes-path')),
+  runLocalCommand: (command, args, cwd) => ipcRenderer.invoke('run-local-command', workspacePayload(cwd, 'execute', { command, args, cwd })),
   onMenuAction: (callback) => ipcRenderer.on('menu-action', (event, action) => callback(action)),
   toggleDevTools: () => ipcRenderer.send('toggle-devtools'),
-  listFiles: (path) => ipcRenderer.invoke('list-files', path),
-  readFile: (path) => ipcRenderer.invoke('read-file', path),
-  writeFile: (path, content) => ipcRenderer.invoke('write-file', { filePath: path, content }),
-  deleteFile: (path) => ipcRenderer.invoke('delete-file', path),
-  renameFile: (oldPath, newPath) => ipcRenderer.invoke('rename-file', { oldPath, newPath }),
+  listFiles: (targetPath) => ipcRenderer.invoke('list-files', workspacePayload(targetPath, 'list')),
+  readFile: (targetPath) => ipcRenderer.invoke('read-file', workspacePayload(targetPath, 'read')),
+  writeFile: (targetPath, content) => ipcRenderer.invoke('write-file', workspacePayload(targetPath, 'write', { content })),
+  deleteFile: (targetPath) => ipcRenderer.invoke('delete-file', workspacePayload(targetPath, 'delete')),
+  renameFile: (oldPath, newPath) => ipcRenderer.invoke('rename-file', {
+    old: workspacePayload(oldPath, 'rename'),
+    next: workspacePayload(newPath, 'rename'),
+  }),
+  credentials: {
+    status: () => ipcRenderer.invoke('credentials:status'),
+    set: (provider, secret) => ipcRenderer.invoke('credentials:set', { provider, secret }),
+    delete: (provider) => ipcRenderer.invoke('credentials:delete', { provider }),
+  },
+  models: {
+    list: (options) => ipcRenderer.invoke('models:list', options),
+    stream: (request, onEvent) => {
+      const streamRequest = { ...request, requestId: request?.requestId || globalThis.crypto.randomUUID() };
+      let finish;
+      const completed = new Promise(resolve => { finish = resolve; });
+      const listener = (_event, payload) => {
+        if (payload?.requestId !== streamRequest.requestId) return;
+        if (payload.type === 'complete') finish();
+        else if (typeof onEvent === 'function') onEvent(payload);
+      };
+      ipcRenderer.on('models:stream-event', listener);
+      return ipcRenderer.invoke('models:stream', streamRequest)
+        .then(async result => { await completed; return result; })
+        .finally(() => ipcRenderer.removeListener('models:stream-event', listener));
+    },
+    abort: (requestId) => ipcRenderer.invoke('models:abort', { requestId }),
+  },
   getAppData: () => ipcRenderer.invoke('app-data:get'),
   setAppData: (data) => ipcRenderer.invoke('app-data:set', data),
+  setJulesApiKey: (secret) => ipcRenderer.invoke('jules:set-key', secret),
+  setGdashClientSecret: (secret) => ipcRenderer.invoke('gdash:set-client-secret', secret),
   getAppDataPath: () => ipcRenderer.invoke('app-data:path'),
   getTerminalConnectionInfo: () => ipcRenderer.invoke('terminal:get-connection-info'),
   getKlipitExtensionId: () => ipcRenderer.invoke('get-klipit-extension-id'),
@@ -123,7 +179,7 @@ contextBridge.exposeInMainWorld('electron', {
   lighthouseProcessDetails: (pid) => ipcRenderer.invoke('lighthouse:process-details', { pid }),
   lighthouseKillProcess: (pid) => ipcRenderer.invoke('lighthouse:kill-process', { pid }),
   lighthouseFindReferences: (oldPort, newPort) => ipcRenderer.invoke('lighthouse:find-references', { oldPort, newPort }),
-  lighthouseApplyFix: (filePath, lineNumber, newLine, oldLine) => ipcRenderer.invoke('lighthouse:apply-fix', { filePath, lineNumber, newLine, oldLine }),
+  lighthouseApplyFix: (filePath, lineNumber, newLine, oldLine) => ipcRenderer.invoke('lighthouse:apply-fix', workspacePayload(filePath, 'write', { filePath, lineNumber, newLine, oldLine })),
   // Localhost Manager — launchctl wrappers
   localhostEnableAutostart: (opts) => ipcRenderer.invoke('localhost:enable-autostart', opts),
   localhostDisableAutostart: (opts) => ipcRenderer.invoke('localhost:disable-autostart', opts),
@@ -134,6 +190,8 @@ contextBridge.exposeInMainWorld('electron', {
   localhostStartNow: (opts) => ipcRenderer.invoke('localhost:start-now', opts),
   localhostCheckHealth: (url) => ipcRenderer.invoke('localhost:check-health', { url }),
   localhostStopNow: (opts) => ipcRenderer.invoke('localhost:stop-now', opts),
+  keysafeStatus: () => ipcRenderer.invoke('keysafe:status'),
+  keysafeStart: () => ipcRenderer.invoke('keysafe:start'),
   dotenvxCheckInstall: () => ipcRenderer.invoke('dotenvx:check-install'),
   dotenvxInstall: () => ipcRenderer.invoke('dotenvx:install'),
   opencodeCheckInstall: () => ipcRenderer.invoke('opencode:check-install'),

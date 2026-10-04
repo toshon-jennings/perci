@@ -1,0 +1,103 @@
+{
+  "profile": "/var/folders/x0/vn7xdx5j0zx94nckt50hrnnc0000gn/T/perci-packaged-security-D3tHoY",
+  "sourceCommit": "working-checkout",
+  "credentialBackend": "mock-keychain",
+  "checks": [
+    {
+      "name": "packaged-version",
+      "result": {
+        "version": "0.50.1",
+        "packaged": true,
+        "userData": "/var/folders/x0/vn7xdx5j0zx94nckt50hrnnc0000gn/T/perci-packaged-security-D3tHoY"
+      }
+    },
+    {
+      "name": "ungranted-file-denied",
+      "passed": true
+    },
+    {
+      "name": "native-grant-read-symlink-and-capability",
+      "passed": true
+    },
+    {
+      "name": "packaged-legacy-credentials-migrated-and-concurrent-writes-preserved-mock-keychain",
+      "passed": true
+    },
+    {
+      "name": "credential-encrypted-and-renderer-hidden",
+      "passed": true
+    },
+    {
+      "name": "packaged-provider-broker-main-only-credential-message-boundary",
+      "passed": true
+    },
+    {
+      "name": "packaged-ensemble-send-time-secret-block-no-provider-request",
+      "passed": true
+    },
+    {
+      "name": "packaged-ensemble-panel-judge-synthesis-file-boundary",
+      "passed": true
+    },
+    {
+      "name": "authenticated-keysafe-launch",
+      "passed": true
+    },
+    {
+      "name": "authenticated-guest-no-privileged-preload",
+      "passed": true
+    },
+    {
+      "name": "packaged-encrypted-migration-legacy-preserved",
+      "passed": true
+    },
+    {
+      "name": "packaged-interrupted-migration-resumed",
+      "passed": true
+    },
+    {
+      "name": "packaged-local-search-no-outbound",
+      "passed": true
+    },
+    {
+      "name": "packaged-cloud-disclosure-minimal-payload-intercepted",
+      "passed": true
+    },
+    {
+      "name": "packaged-encrypted-backup-completed",
+      "passed": true
+    },
+    {
+      "name": "packaged-cleanup-tampered-preserved-saved-backup-verified",
+      "passed": true
+    },
+    {
+      "name": "packaged-guest-media-and-popup-denied",
+      "passed": true
+    },
+    {
+      "name": "packaged-keysafe-off-origin-navigation-denied",
+      "passed": true
+    },
+    {
+      "name": "packaged-unapproved-download-denied",
+      "passed": true
+    },
+    {
+      "name": "packaged-generic-keysafe-attachment-denied",
+      "passed": true
+    },
+    {
+      "name": "packaged-generic-shared-partition-cannot-fetch-keysafe",
+      "passed": true
+    },
+    {
+      "name": "packaged-pxpipe-no-preload-media-popup-navigation-denied",
+      "passed": true
+    },
+    {
+      "name": "packaged-log-has-no-fixture-secrets",
+      "passed": true
+    }
+  ]
+}

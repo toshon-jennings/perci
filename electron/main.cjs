@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, Menu, shell, safeStorage, session, nativeImage } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, Menu, shell, safeStorage, session, nativeImage, webContents } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const { installRedactedConsole, redactSecrets } = require('./redact-console.cjs');
 const {
@@ -27,6 +27,12 @@ const path = require('path');
 const fsSync = require('fs');
 const { spawn, spawnSync } = require('child_process');
 const { getKlipitExtensionPath, normalizeKlipitHealth } = require('./lib/klipit.cjs');
+const { createWorkspaceGrantRegistry } = require('./workspace-grants.cjs');
+const { GUEST_POLICIES, KEYSAFE_GUEST_USER_AGENT, isAllowedKeySafeDownload, isNavigationAllowed, policyForOrigin, validateAttachment } = require('./guest-policy.cjs');
+const { createCredentialStore, isSecureStorageAvailable, sanitizeAppData, stripCredentialUpdates } = require('./credential-store.cjs');
+const { createModelBroker, validateLoopbackUrl } = require('./model-broker.cjs');
+const { KEYSAFE_HEALTH_URL, KEYSAFE_ORIGIN, validateKeySafeHealth } = require('./keysafe-service.cjs');
+const { pathToFileURL } = require('url');
 const { randomUUID, randomBytes, createHash } = require('crypto');
 const http = require('http');
 const https = require('https');
@@ -34,40 +40,29 @@ const net = require('net');
 const isDev = process.env.NODE_ENV === 'development';
 const codexAccountClient = new CodexAccountClient();
 
-const allowedPaths = new Set();
+// Packaged security checks use a disposable profile and never open the user's
+// installed Perci profile. This override must run before any userData access.
+if (process.env.PERCI_TEST_USER_DATA_DIR) {
+  const testProfile = process.env.PERCI_TEST_USER_DATA_DIR;
+  if (!path.isAbsolute(testProfile)) throw new Error('Test profile path must be absolute.');
+  fsSync.mkdirSync(testProfile, { recursive: true, mode: 0o700 });
+  app.setPath('userData', testProfile);
+}
 
-function isPathAllowed(targetPath) {
-  if (!targetPath || typeof targetPath !== 'string') return false;
+const workspaceGrants = createWorkspaceGrantRegistry({ fileSystem: fsSync.promises });
+const protectedGuestSessions = new Map();
+const keySafeGuestIds = new Set();
+const selectedDatabasePaths = new Map();
+
+async function isSelectedDatabase(event, dbPath) {
+  assertTrustedMainFrame(event);
+  if (typeof dbPath !== 'string' || !selectedDatabasePaths.get(event.sender.id)?.has(dbPath)) return false;
   try {
-    const resolvedTarget = path.resolve(targetPath);
-    
-    // Always allow paths inside standard app directories
-    const allowedRoots = [
-      app.getPath('temp'),
-      app.getPath('userData'),
-      app.getAppPath()
-    ];
-    
-    for (const root of allowedRoots) {
-      const resolvedRoot = path.resolve(root);
-      const relative = path.relative(resolvedRoot, resolvedTarget);
-      if (relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative))) {
-        return true;
-      }
-    }
-    
-    // Allow paths inside registered workspaces
-    for (const root of allowedPaths) {
-      const resolvedRoot = path.resolve(root);
-      const relative = path.relative(resolvedRoot, resolvedTarget);
-      if (relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative))) {
-        return true;
-      }
-    }
-  } catch (err) {
-    console.error('Error resolving path security check:', err);
+    const resolved = await fsSync.promises.realpath(dbPath);
+    return resolved === dbPath && (await fsSync.promises.lstat(resolved)).isFile();
+  } catch {
+    return false;
   }
-  return false;
 }
 
 installRedactedConsole();
@@ -100,6 +95,7 @@ if (process.platform === 'darwin' || process.platform === 'linux') {
 // Path is logged on startup so users can find it after a blank-screen failure.
 let rendererLogPath = null;
 const terminalServerToken = randomBytes(32).toString('base64url');
+const MAX_RENDERER_LOG_BYTES = 1024 * 1024;
 function getRendererLogPath() {
   if (rendererLogPath) return rendererLogPath;
   try {
@@ -112,33 +108,40 @@ function getRendererLogPath() {
 function appendRendererLog(line) {
   const redactedLine = redactSecrets(String(line || ''));
   const stamped = `[${new Date().toISOString()}] ${redactedLine}\n`;
-  try { fsSync.appendFileSync(getRendererLogPath(), stamped); } catch (_) {}
-  try { console.log(`[renderer] ${redactedLine}`); } catch (_) {}
+  try {
+    const logPath = getRendererLogPath();
+    if (fsSync.existsSync(logPath) && fsSync.statSync(logPath).size + Buffer.byteLength(stamped) > MAX_RENDERER_LOG_BYTES) {
+      fsSync.renameSync(logPath, `${logPath}.1`);
+    }
+    fsSync.appendFileSync(logPath, stamped, { encoding: 'utf8', mode: 0o600 });
+    fsSync.chmodSync(logPath, 0o600);
+  } catch (_) { /* diagnostic logging must never crash the app */ }
+  try { console.log(`[renderer] ${redactedLine}`); } catch (_) { /* stdout may be unavailable */ }
 }
 function attachRendererDiagnostics(win) {
   const wc = win.webContents;
-  wc.on('console-message', (_event, level, message, line, sourceId) => {
+  wc.on('console-message', (_event, level, _message, line) => {
     const levels = ['log', 'warn', 'error', 'info'];
     const label = levels[level] || `lvl${level}`;
-    appendRendererLog(`console.${label} ${sourceId}:${line} — ${message}`);
+    appendRendererLog(`console.${label} source=renderer line=${Number(line) || 0}`);
   });
-  wc.on('did-fail-load', (_e, errorCode, errorDescription, validatedURL) => {
-    appendRendererLog(`did-fail-load ${errorCode} ${errorDescription} url=${validatedURL}`);
+  wc.on('did-fail-load', (_e, errorCode) => {
+    appendRendererLog(`did-fail-load code=${errorCode}`);
   });
   wc.on('render-process-gone', (_e, details) => {
     appendRendererLog(`render-process-gone reason=${details.reason} exitCode=${details.exitCode}`);
   });
-  wc.on('preload-error', (_e, preloadPath, error) => {
-    appendRendererLog(`preload-error path=${preloadPath} error=${error && error.stack || error}`);
+  wc.on('preload-error', () => {
+    appendRendererLog('preload-error category=load-failure');
   });
   wc.on('did-finish-load', () => {
-    appendRendererLog(`did-finish-load url=${wc.getURL()}`);
+    appendRendererLog('did-finish-load');
   });
   wc.on('will-navigate', (event, url) => {
-    appendRendererLog(`will-navigate url=${url}`);
+    appendRendererLog('will-navigate');
     if (!isDev && isBundledAssetDocumentUrl(url)) {
       event.preventDefault();
-      appendRendererLog(`blocked-bundled-asset-navigation url=${url}`);
+      appendRendererLog('blocked-bundled-asset-navigation');
       return;
     }
     // The renderer is a single-page app and must never navigate its own top
@@ -150,23 +153,44 @@ function attachRendererDiagnostics(win) {
     try {
       if (new URL(url).origin === new URL(wc.getURL()).origin) {
         event.preventDefault();
-        appendRendererLog(`blocked-self-navigation url=${url}`);
+        appendRendererLog('blocked-self-navigation');
       }
     } catch {
       /* unparseable URL — leave default behavior */
     }
   });
-  wc.on('did-navigate', (_event, url) => {
-    appendRendererLog(`did-navigate url=${url}`);
+  wc.on('did-navigate', () => {
+    appendRendererLog('did-navigate');
   });
-  wc.on('did-create-window', (_window, details) => {
-    appendRendererLog(`did-create-window url=${details?.url || ''}`);
+  wc.on('did-create-window', () => {
+    appendRendererLog('did-create-window');
   });
 }
 
 let terminalServerProcess = null;
+let keysafeServerProcess = null;
 let mainWindow = null;
 let splashWindow = null;
+const keysafeServerToken = randomBytes(32).toString('base64url');
+const keysafeServerNonce = randomBytes(24).toString('base64url');
+
+function assertTrustedMainFrame(event) {
+  const mainFrame = mainWindow?.webContents?.mainFrame;
+  if (!mainWindow || mainWindow.isDestroyed() || event.sender !== mainWindow.webContents || event.senderFrame !== mainFrame) {
+    throw new Error('Access Denied: privileged IPC requires Perci\'s trusted main frame.');
+  }
+
+  const frameUrl = event.senderFrame?.url || '';
+  try {
+    const parsed = new URL(frameUrl);
+    const trusted = isDev
+      ? parsed.origin === 'http://localhost:5173'
+      : parsed.protocol === 'file:' && decodeURIComponent(parsed.pathname) === path.join(__dirname, '../dist/index.html');
+    if (!trusted) throw new Error('untrusted origin');
+  } catch {
+    throw new Error('Access Denied: privileged IPC requires Perci\'s trusted origin.');
+  }
+}
 
 function reloadPerciWindow(ignoreCache = false) {
   if (!mainWindow || mainWindow.isDestroyed()) return false;
@@ -242,6 +266,73 @@ function requestJson(url, timeoutMs = 2000, headers = {}) {
       resolve({ ok: false, url, error: err.message, latencyMs: Date.now() - startedAt });
     });
   });
+}
+
+function keySafeDirectory() {
+  return app.isPackaged
+    ? path.join(process.resourcesPath, 'keysafe')
+    : path.join(app.getPath('home'), 'keysafe');
+}
+
+function keySafeVersion() {
+  try {
+    const manifest = JSON.parse(fsSync.readFileSync(path.join(keySafeDirectory(), 'package.json'), 'utf8'));
+    return typeof manifest.version === 'string' ? manifest.version : null;
+  } catch {
+    return null;
+  }
+}
+
+async function probeKeySafe() {
+  const version = keySafeVersion();
+  if (!version) return { ok: false, reason: 'installation-missing' };
+  const result = await requestJson(KEYSAFE_HEALTH_URL, 1500, {
+    Authorization: `Bearer ${keysafeServerToken}`,
+  });
+  return validateKeySafeHealth(result, { nonce: keysafeServerNonce, version });
+}
+
+async function startKeySafeServer() {
+  const existing = await probeKeySafe();
+  if (existing.ok) return { ok: true, alreadyRunning: true, identity: existing };
+  if (!['unreachable', 'installation-missing'].includes(existing.reason)) {
+    return { ok: false, error: `Port 4100 did not pass KeySafe identity verification (${existing.reason}). KeySafe was not attached.` };
+  }
+
+  const directory = keySafeDirectory();
+  if (!fsSync.existsSync(path.join(directory, 'server.mjs')) || !fsSync.existsSync(path.join(directory, 'dist', 'index.html'))) {
+    return { ok: false, error: 'KeySafe production files are missing. Run its production build first.' };
+  }
+
+  if (!keysafeServerProcess) {
+    try {
+      keysafeServerProcess = spawn(process.execPath, [path.join(directory, 'server.mjs')], {
+        cwd: directory,
+        env: {
+          ...process.env,
+          ELECTRON_RUN_AS_NODE: '1',
+          KEYSAFE_SERVER_TOKEN: keysafeServerToken,
+          KEYSAFE_SERVER_NONCE: keysafeServerNonce,
+        },
+        shell: false,
+        stdio: ['ignore', 'ignore', 'ignore', 'ipc'],
+      });
+      keysafeServerProcess.unref();
+      keysafeServerProcess.once('exit', () => { keysafeServerProcess = null; });
+      keysafeServerProcess.once('error', () => { keysafeServerProcess = null; });
+    } catch {
+      keysafeServerProcess = null;
+      return { ok: false, error: 'KeySafe could not be started.' };
+    }
+  }
+
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    await new Promise(resolve => setTimeout(resolve, 250));
+    const health = await probeKeySafe();
+    if (health.ok) return { ok: true, alreadyRunning: false, identity: health };
+    if (!keysafeServerProcess) break;
+  }
+  return { ok: false, error: 'KeySafe did not pass its authenticated identity check.' };
 }
 
 function requestText(url, timeoutMs = 8000, headers = {}) {
@@ -950,10 +1041,39 @@ function createWindow() {
       devTools: isDev,
     },
   });
+  const workspaceGrantOwnerId = win.webContents.id;
 
   mainWindow = win;
   attachRendererDiagnostics(win);
   appendRendererLog(`createWindow: renderer log at ${getRendererLogPath()}`);
+
+  win.webContents.on('will-attach-webview', (event, webPreferences, params) => {
+    delete webPreferences.preload;
+    delete webPreferences.preloadURL;
+    delete params.preload;
+    delete params.allowpopups;
+    webPreferences.nodeIntegration = false;
+    webPreferences.contextIsolation = true;
+    webPreferences.sandbox = true;
+    webPreferences.webSecurity = true;
+
+    const decision = validateAttachment({
+      src: params.src,
+      partition: params.partition || webPreferences.partition || '',
+      userAgent: params.useragent,
+    });
+    if (!decision.allowed) {
+      event.preventDefault();
+      appendRendererLog(`blocked-protected-webview id=${decision.policy?.id || 'unknown'} reason=${decision.reason}`);
+    }
+  });
+
+  win.webContents.on('did-attach-webview', (_event, guest) => {
+    if (guest.getUserAgent() === KEYSAFE_GUEST_USER_AGENT) {
+      keySafeGuestIds.add(guest.id);
+      guest.once('destroyed', () => keySafeGuestIds.delete(guest.id));
+    }
+  });
 
   // Grant clipboard access as before, but only let Perci's main renderer request
   // microphone audio. Webviews share this session and must not inherit media access.
@@ -989,9 +1109,9 @@ function createWindow() {
         shell.openExternal(url);
       }
     } catch (err) {
-      appendRendererLog(`blocked-window-open invalid-url=${url}`);
+      appendRendererLog('blocked-window-open reason=invalid-url');
     }
-    appendRendererLog(`blocked-window-open url=${url}`);
+    appendRendererLog('blocked-window-open');
     return { action: 'deny' };
   });
   win.once('ready-to-show', () => {
@@ -999,6 +1119,8 @@ function createWindow() {
     tryRevealMain();
   });
   win.on('closed', () => {
+    workspaceGrants.revokeOwner(workspaceGrantOwnerId);
+    selectedDatabasePaths.delete(workspaceGrantOwnerId);
     if (mainWindow === win) {
       mainWindow = null;
       stopOpenClawLogStream();
@@ -1134,11 +1256,80 @@ function configureOpencodeWebviewSession() {
   );
 }
 
+function configureProtectedGuestSessions() {
+  for (const policy of GUEST_POLICIES) {
+    const guestSession = session.fromPartition(policy.partition);
+    protectedGuestSessions.set(policy.id, guestSession);
+    guestSession.setPermissionCheckHandler(() => false);
+    guestSession.setPermissionRequestHandler((_webContents, _permission, callback) => callback(false));
+  }
+
+  for (const guestSession of new Set(protectedGuestSessions.values())) {
+    guestSession.on('will-download', (event, item, webContents) => {
+      const currentPolicy = protectedPolicyForWebContents(webContents);
+      const downloadPolicy = policyForOrigin(item.getURL());
+      if (currentPolicy?.id === 'keysafe' && isAllowedKeySafeDownload({
+        url: item.getURL(),
+        filename: item.getFilename(),
+        mimeType: item.getMimeType(),
+      })) {
+        item.once('done', (_downloadEvent, state) => {
+          appendRendererLog(`keysafe-download-finished state=${state === 'completed' ? 'completed' : 'interrupted'}`);
+        });
+        return;
+      }
+      if (currentPolicy || downloadPolicy) {
+        event.preventDefault();
+        appendRendererLog(`blocked-protected-webview-download id=${currentPolicy?.id || downloadPolicy?.id || 'unknown'}`);
+      }
+    });
+  }
+}
+
+function configureKeySafeSessionAuthentication() {
+  const keysafeSession = session.fromPartition('persist:perci-localhost');
+  keysafeSession.webRequest.onBeforeSendHeaders(
+    { urls: [`${KEYSAFE_ORIGIN}/*`] },
+    (details, callback) => {
+      const guest = webContents.fromId(details.webContentsId);
+      const currentOrigin = guest ? policyForOrigin(guest.getURL())?.origin : null;
+      const initialMainFrame = details.resourceType === 'mainFrame' && guest?.getType() === 'webview' && !guest.getURL();
+      if (guest?.getType() !== 'webview' || !keySafeGuestIds.has(guest.id) || (currentOrigin !== KEYSAFE_ORIGIN && !initialMainFrame)) {
+        callback({ cancel: true });
+        return;
+      }
+      callback({
+        requestHeaders: {
+          ...(details.requestHeaders || {}),
+          Authorization: `Bearer ${keysafeServerToken}`,
+        },
+      });
+    },
+  );
+}
+
+function protectedPolicyForWebContents(contents) {
+  if (!contents || contents.getType() !== 'webview') return null;
+  const policy = policyForOrigin(contents.getURL());
+  if (!policy) return null;
+  return contents.session === protectedGuestSessions.get(policy.id) ? policy : null;
+}
+
+function blockProtectedGuestNavigation(contents, event, url, eventName) {
+  const policy = protectedPolicyForWebContents(contents);
+  if (!policy || isNavigationAllowed(policy, url)) return false;
+  event.preventDefault();
+  appendRendererLog(`blocked-protected-webview-${eventName} id=${policy.id}`);
+  return true;
+}
+
 app.whenReady().then(() => {
   try {
     configureMarkItDownWebviewSession();
     configureYouTubeWebviewSession();
     configureOpencodeWebviewSession();
+    configureProtectedGuestSessions();
+    configureKeySafeSessionAuthentication();
 
     const localhostSession = session.fromPartition('persist:perci-localhost');
     const klipitSource = app.isPackaged ? 'bundled' : 'development';
@@ -1180,10 +1371,10 @@ app.whenReady().then(() => {
     // with a broken updater for weeks without a single visible symptom.
     // Route it into the same log file the rest of the main process uses.
     autoUpdater.logger = {
-      info: (m) => appendRendererLog(`[updater] ${m}`),
-      warn: (m) => appendRendererLog(`[updater:warn] ${m}`),
-      error: (m) => appendRendererLog(`[updater:error] ${m}`),
-      debug: (m) => appendRendererLog(`[updater:debug] ${m}`),
+      info: () => appendRendererLog('[updater] event=info'),
+      warn: () => appendRendererLog('[updater] event=warning'),
+      error: () => appendRendererLog('[updater] event=error'),
+      debug: () => appendRendererLog('[updater] event=debug'),
     };
 
     // Helper to send state to renderer once mainWindow is ready
@@ -1195,8 +1386,8 @@ app.whenReady().then(() => {
 
     // An EventEmitter with no 'error' listener rethrows, so this handler is
     // what keeps a failed update check from taking down the main process.
-    autoUpdater.on('error', (err) => {
-      appendRendererLog(`[updater:error] ${err && err.stack || err}`);
+    autoUpdater.on('error', () => {
+      appendRendererLog('[updater] event=error');
       sendUpdaterState('error');
     });
 
@@ -1242,7 +1433,7 @@ app.whenReady().then(() => {
       }
     });
 
-    autoUpdater.checkForUpdates();
+    if (!process.env.PERCI_TEST_USER_DATA_DIR) autoUpdater.checkForUpdates();
   }
 
   app.on('web-contents-created', (_event, contents) => {
@@ -1271,24 +1462,30 @@ app.whenReady().then(() => {
       // native dialog (e.g. MarkItDownUI's file picker) is open would look
       // exactly like a visual "flash" without the dialog itself closing.
       contents.on('render-process-gone', (_e, details) => {
-        appendRendererLog(`webview-render-process-gone reason=${details.reason} exitCode=${details.exitCode} url=${contents.getURL()}`);
+        appendRendererLog(`webview-render-process-gone reason=${details.reason} exitCode=${details.exitCode}`);
       });
-      contents.on('did-fail-load', (_e, errorCode, errorDescription, validatedURL) => {
+      contents.on('did-fail-load', (_e, errorCode) => {
         if (errorCode === -3) return; // aborted, usually benign (e.g. navigated away)
-        appendRendererLog(`webview-did-fail-load ${errorCode} ${errorDescription} url=${validatedURL}`);
+        appendRendererLog(`webview-did-fail-load code=${errorCode}`);
       });
     }
 
     contents.setWindowOpenHandler(({ url }) => {
+      const protectedPolicy = protectedPolicyForWebContents(contents);
+      if (protectedPolicy) {
+        appendRendererLog(`blocked-protected-webview-popup id=${protectedPolicy.id}`);
+        return { action: 'deny' };
+      }
+
       if (isBundledAssetDocumentUrl(url)) {
-        appendRendererLog(`blocked-global-bundled-asset-window url=${url}`);
+        appendRendererLog('blocked-global-bundled-asset-window');
         return { action: 'deny' };
       }
 
       // Let Google sign-in popups from embedded webviews open in-app so the
       // token can post back to the opener; everything else is still ejected.
       if (contents.getType() === 'webview' && isGoogleOAuthUrl(url)) {
-        appendRendererLog(`allow-webview-google-oauth-window url=${url}`);
+        appendRendererLog('allow-webview-google-oauth-window');
         return { action: 'allow' };
       }
 
@@ -1302,19 +1499,19 @@ app.whenReady().then(() => {
           const parsed = new URL(url);
           const isLocalhost = parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1' || parsed.hostname === '::1';
           if (isLocalhost) {
-            appendRendererLog(`webview-new-window-routed-to-tab url=${url}`);
+            appendRendererLog('webview-new-window-routed-to-tab');
             if (mainWindow && !mainWindow.isDestroyed()) {
               mainWindow.webContents.send('webview:open-in-tab', url);
             }
             return { action: 'deny' };
           }
           if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
-            appendRendererLog(`webview-new-window-open-external url=${url}`);
+            appendRendererLog('webview-new-window-open-external');
             shell.openExternal(url);
             return { action: 'deny' };
           }
         } catch (err) {
-          appendRendererLog(`blocked-webview-window-open invalid-url=${url}`);
+          appendRendererLog('blocked-webview-window-open reason=invalid-url');
         }
         return { action: 'deny' };
       }
@@ -1325,16 +1522,22 @@ app.whenReady().then(() => {
           shell.openExternal(url);
         }
       } catch (err) {
-        appendRendererLog(`blocked-global-window-open invalid-url=${url}`);
+        appendRendererLog('blocked-global-window-open reason=invalid-url');
       }
-      appendRendererLog(`blocked-global-window-open url=${url}`);
+      appendRendererLog('blocked-global-window-open');
       return { action: 'deny' };
     });
 
     contents.on('will-navigate', (event, url) => {
+      if (blockProtectedGuestNavigation(contents, event, url, 'navigation')) return;
+      if (policyForOrigin(url)?.id === 'keysafe' && policyForOrigin(contents.getURL())?.id !== 'keysafe') {
+        event.preventDefault();
+        appendRendererLog('blocked-keysafe-navigation-from-generic-guest');
+        return;
+      }
       if (!isDev && isBundledAssetDocumentUrl(url)) {
         event.preventDefault();
-        appendRendererLog(`blocked-global-bundled-asset-navigation url=${url}`);
+        appendRendererLog('blocked-global-bundled-asset-navigation');
         return;
       }
 
@@ -1344,12 +1547,20 @@ app.whenReady().then(() => {
       // setWindowOpenHandler above). Google OAuth redirects are also allowed
       // to proceed in place to keep the callback tied to this frame.
       if (contents.getType() === 'webview' && !isGoogleOAuthUrl(url)) {
-        appendRendererLog(`webview-navigation-in-place url=${url}`);
+        appendRendererLog('webview-navigation-in-place');
+      }
+    });
+
+    contents.on('will-redirect', (event, url) => {
+      if (blockProtectedGuestNavigation(contents, event, url, 'redirect')) return;
+      if (policyForOrigin(url)?.id === 'keysafe' && policyForOrigin(contents.getURL())?.id !== 'keysafe') {
+        event.preventDefault();
+        appendRendererLog('blocked-keysafe-redirect-from-generic-guest');
       }
     });
   });
 
-  startTerminalServer();
+  if (!process.env.PERCI_TEST_USER_DATA_DIR) startTerminalServer();
   createMenu();
   createSplashWindow();
   createWindow();
@@ -1408,7 +1619,8 @@ ipcMain.on('splash:done', () => {
 });
 
 // Native folder selection
-ipcMain.handle('select-directory', async (event) => {
+ipcMain.handle('select-directory', async (event, options = {}) => {
+  assertTrustedMainFrame(event);
   const parentWindow = BrowserWindow.fromWebContents(event.sender)
     || (mainWindow && !mainWindow.isDestroyed() ? mainWindow : null)
     || BrowserWindow.getFocusedWindow();
@@ -1433,19 +1645,24 @@ ipcMain.handle('select-directory', async (event) => {
     return null;
   } else {
     const chosenPath = result.filePaths[0];
-    if (chosenPath) {
-      allowedPaths.add(path.resolve(chosenPath));
-    }
-    return chosenPath;
+    if (!chosenPath) return null;
+    const defaultCapabilities = ['list', 'read', 'write', 'rename', 'delete', 'execute'];
+    return workspaceGrants.grantDirectory(chosenPath, event.sender.id, {
+      capabilities: Array.isArray(options?.capabilities) ? options.capabilities : defaultCapabilities,
+      symlinkPolicy: options?.symlinkPolicy,
+    });
   }
 });
 
 // Default notes location — ~/Documents/Perci Notes
 // Safe: always outside any repo/project directory.
-ipcMain.handle('get-default-notes-path', () => {
+ipcMain.handle('get-default-notes-path', async (event) => {
+  assertTrustedMainFrame(event);
   const defaultPath = path.join(app.getPath('documents'), 'Perci Notes');
-  allowedPaths.add(path.resolve(defaultPath));
-  return defaultPath;
+  await fsSync.promises.mkdir(defaultPath, { recursive: true });
+  return workspaceGrants.grantDirectory(defaultPath, event.sender.id, {
+    capabilities: ['list', 'read', 'write', 'rename', 'delete'],
+  });
 });
 
 const fs = require('fs').promises;
@@ -1479,9 +1696,8 @@ function encryptAppDataValue(key, value) {
     return value;
   }
 
-  if (!safeStorage.isEncryptionAvailable()) {
-    console.warn(`OS encryption is unavailable; storing ${key} without safeStorage encryption.`);
-    return value;
+  if (!isSecureStorageAvailable(safeStorage)) {
+    throw new Error(`Secure storage is unavailable; ${key} was not persisted.`);
   }
 
   return {
@@ -1525,7 +1741,7 @@ function hasPlaintextSensitiveAppDataValue(data) {
   ));
 }
 
-async function readAppData() {
+async function readAppDataFromDisk() {
   const filePath = getAppDataPath();
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
@@ -1533,25 +1749,22 @@ async function readAppData() {
       const parsed = JSON.parse(raw);
       if (!parsed || typeof parsed !== 'object') return {};
       const decrypted = decryptAppData(parsed);
-      if (hasPlaintextSensitiveAppDataValue(parsed)) {
-        writeAppData(decrypted).catch(err => console.error('Error migrating encrypted app data:', err));
-      }
-      return decrypted;
+      return { data: decrypted, needsMigration: hasPlaintextSensitiveAppDataValue(parsed) };
     } catch (err) {
-      if (err.code === 'ENOENT') return {};
+      if (err.code === 'ENOENT') return { data: {}, needsMigration: false };
       // Partial write or corrupted data — retry after a short delay
       if (attempt < 2) {
         await new Promise(resolve => setTimeout(resolve, 50 * (attempt + 1)));
         continue;
       }
       console.error('Error reading app data:', err);
-      return {};
+      throw err;
     }
   }
-  return {};
+  return { data: {}, needsMigration: false };
 }
 
-async function writeAppData(data) {
+async function writeAppDataToDisk(data) {
   const filePath = getAppDataPath();
   const safeData = data && typeof data === 'object' ? data : {};
   const payload = {
@@ -1562,10 +1775,50 @@ async function writeAppData(data) {
   await fs.mkdir(path.dirname(filePath), { recursive: true });
   // Atomic write: write to a temp file, then rename to avoid partial reads
   const tmpPath = `${filePath}.${process.pid}.${randomUUID()}.tmp`;
-  await fs.writeFile(tmpPath, JSON.stringify(payload, null, 2), 'utf-8');
+  await fs.writeFile(tmpPath, JSON.stringify(payload, null, 2), { encoding: 'utf-8', mode: 0o600 });
   await fs.rename(tmpPath, filePath);
   return decryptAppData(payload);
 }
+
+let appDataMutationQueue = Promise.resolve();
+function updateAppData(updater) {
+  const task = appDataMutationQueue.then(async () => {
+    const { data } = await readAppDataFromDisk();
+    const next = typeof updater === 'function' ? updater(data) : { ...data, ...updater };
+    return writeAppDataToDisk(next);
+  });
+  appDataMutationQueue = task.catch(() => {});
+  return task;
+}
+
+async function readAppData() {
+  await appDataMutationQueue;
+  const { data, needsMigration } = await readAppDataFromDisk();
+  if (needsMigration) {
+    await updateAppData(current => current);
+    return (await readAppDataFromDisk()).data;
+  }
+  return data;
+}
+
+const credentialStore = createCredentialStore({
+  readData: readAppData,
+  updateData: updateAppData,
+  safeStorage,
+});
+let rendererClientFactoryPromise = null;
+let modelServicePromise = null;
+const modelBroker = createModelBroker({
+  credentialStore,
+  loadClientOptions: async () => ({ pxpipeEnabled: (await readAppData()).perci_pxpipe_enabled === 'true' }),
+  loadFactory: async () => {
+    if (!rendererClientFactoryPromise) {
+      const moduleUrl = pathToFileURL(path.join(__dirname, '../src/lib/llm/clients.js')).href;
+      rendererClientFactoryPromise = import(moduleUrl).then(module => module.LLMFactory);
+    }
+    return rendererClientFactoryPromise;
+  },
+});
 
 // Toggle DevTools (dev builds only)
 ipcMain.on('toggle-devtools', (event) => {
@@ -1620,16 +1873,97 @@ ipcMain.handle('terminal:get-connection-info', async () => ({
   token: terminalServerToken
 }));
 
-ipcMain.handle('app-data:get', async () => readAppData());
+ipcMain.handle('app-data:get', async (event) => {
+  assertTrustedMainFrame(event);
+  return sanitizeAppData(await readAppData());
+});
 
 ipcMain.handle('app-data:set', async (event, data) => {
+  assertTrustedMainFrame(event);
   try {
-    const current = await readAppData();
-    return await writeAppData({ ...current, ...(data || {}) });
+    const updated = await updateAppData(stripCredentialUpdates(data || {}));
+    return sanitizeAppData(updated);
   } catch (err) {
     console.error('Error writing app data:', err);
     throw err;
   }
+});
+
+ipcMain.handle('credentials:status', async (event) => {
+  assertTrustedMainFrame(event);
+  return credentialStore.status();
+});
+
+ipcMain.handle('credentials:set', async (event, { provider, secret } = {}) => {
+  assertTrustedMainFrame(event);
+  return credentialStore.set(provider, secret);
+});
+
+ipcMain.handle('credentials:delete', async (event, { provider } = {}) => {
+  assertTrustedMainFrame(event);
+  return credentialStore.remove(provider);
+});
+
+ipcMain.handle('jules:set-key', async (event, secret) => {
+  assertTrustedMainFrame(event);
+  if (typeof secret !== 'string' || secret.length > 20000) throw new Error('Invalid Jules key.');
+  await updateAppData({ jules_api_key: secret });
+  return { configured: Boolean(secret) };
+});
+
+ipcMain.handle('gdash:set-client-secret', async (event, secret) => {
+  assertTrustedMainFrame(event);
+  if (typeof secret !== 'string' || secret.length > 20000) throw new Error('Invalid G-Dash secret.');
+  await updateAppData({ gdash_google_client_secret: secret });
+  return { configured: Boolean(secret) };
+});
+
+ipcMain.handle('models:stream', async (event, request) => {
+  assertTrustedMainFrame(event);
+  try {
+    const result = await modelBroker.stream(request, payload => {
+      if (!event.sender.isDestroyed()) event.sender.send('models:stream-event', payload);
+    });
+    if (!event.sender.isDestroyed()) {
+      event.sender.send('models:stream-event', { requestId: result.requestId, type: 'complete' });
+    }
+    return result;
+  } catch (error) {
+    if (error?.name === 'AbortError') throw new Error('Model request aborted.');
+    console.error('Model broker request failed:', {
+      category: error?.name || 'Error',
+    });
+    throw new Error('Provider request failed. Check the provider configuration and try again.');
+  }
+});
+
+ipcMain.handle('models:list', async (event, options = {}) => {
+  assertTrustedMainFrame(event);
+  try {
+    if (!modelServicePromise) {
+      const moduleUrl = pathToFileURL(path.join(__dirname, '../src/lib/llm/ModelService.js')).href;
+      modelServicePromise = import(moduleUrl).then(module => new module.ModelService());
+    }
+    const apiKeys = {};
+    for (const provider of ['openai', 'groq', 'gemini', 'openrouter', 'deepinfra', 'anthropic', 'mistral']) {
+      try {
+        apiKeys[provider] = await credentialStore.withCredential(provider, secret => secret);
+      } catch {
+        apiKeys[provider] = '';
+      }
+    }
+    apiKeys.lmStudioUrl = validateLoopbackUrl(options?.lmStudioUrl) || 'http://localhost:1234';
+    apiKeys.janUrl = validateLoopbackUrl(options?.janUrl) || 'http://127.0.0.1:6767';
+    return (await modelServicePromise).getAllModels(apiKeys);
+  } catch (error) {
+    console.error('Model catalog refresh failed:', { category: error?.name || 'Error' });
+    throw new Error('Could not refresh the model catalog.');
+  }
+});
+
+ipcMain.handle('models:abort', async (event, { requestId } = {}) => {
+  assertTrustedMainFrame(event);
+  return { aborted: typeof requestId === 'string' && modelBroker.abort(requestId) };
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1695,14 +2029,11 @@ async function gdashReadTokens() {
 }
 
 async function gdashWriteTokens(tokens) {
-  const current = await readAppData();
-  await writeAppData({ ...current, [GDASH_TOKENS_KEY]: JSON.stringify(tokens) });
+  await updateAppData({ [GDASH_TOKENS_KEY]: JSON.stringify(tokens) });
 }
 
 async function gdashClearTokens() {
-  const current = await readAppData();
-  delete current[GDASH_TOKENS_KEY];
-  await writeAppData(current);
+  await updateAppData({ [GDASH_TOKENS_KEY]: null });
 }
 
 // Spin up a loopback server on an ephemeral 127.0.0.1 port to capture the OAuth
@@ -2670,17 +3001,15 @@ async function saveBarsApiKeys(incoming = {}) {
     if (value) patch[provider.keyName] = value;
   }
   if (Object.keys(patch).length > 0) {
-    const current = await readAppData();
-    await writeAppData({ ...current, ...patch });
+    await updateAppData(patch);
   }
   return getBarsApiKeyStatus();
 }
 
 async function clearBarsApiKeys() {
-  const current = await readAppData();
   const patch = {};
   for (const provider of BARS_CLOUD_PROVIDERS) patch[provider.keyName] = '';
-  await writeAppData({ ...current, ...patch });
+  await updateAppData(patch);
   return getBarsApiKeyStatus();
 }
 
@@ -3048,16 +3377,16 @@ async function startMarkItDownServer() {
   });
 
   markitdownServerProcess.stdout?.on('data', chunk => {
-    appendRendererLog(`[markitdown] ${String(chunk).trim()}`);
+    appendRendererLog(`[markitdown] event=stdout bytes=${Buffer.byteLength(chunk)}`);
   });
   markitdownServerProcess.stderr?.on('data', chunk => {
-    appendRendererLog(`[markitdown:error] ${String(chunk).trim()}`);
+    appendRendererLog(`[markitdown] event=stderr bytes=${Buffer.byteLength(chunk)}`);
   });
   markitdownServerProcess.on('exit', (code, signal) => {
     appendRendererLog(`[markitdown] exited code=${code ?? ''} signal=${signal ?? ''}`);
   });
-  markitdownServerProcess.on('error', err => {
-    appendRendererLog(`[markitdown:error] ${err.message}`);
+  markitdownServerProcess.on('error', () => {
+    appendRendererLog('[markitdown] event=process-error');
   });
 
   const status = await waitForMarkItDownServer();
@@ -3087,7 +3416,7 @@ async function installMarkItDownExifTool() {
     let output = '';
     const append = (chunk) => {
       output = (output + String(chunk)).slice(-12000);
-      appendRendererLog(`[markitdown:exiftool] ${String(chunk).trim()}`);
+      appendRendererLog(`[markitdown:exiftool] event=output bytes=${Buffer.byteLength(chunk)}`);
     };
     child.stdout?.on('data', append);
     child.stderr?.on('data', append);
@@ -4754,14 +5083,15 @@ async function getFiles(dir, baseDir = dir) {
 // Opens an interactive command in the system terminal (macOS Terminal.app).
 // Used for auth flows like `gh auth login` that need a TTY + user interaction.
 ipcMain.handle('run-terminal-command', async (event, command) => {
+  assertTrustedMainFrame(event);
   if (!command || typeof command !== 'string') {
     return { ok: false, error: 'No command provided.' };
   }
 
   // Safety: only allow specific whitelisted commands
-  const allowedPrefixes = ['gh auth', 'gh api', 'git ', 'npm ', 'node ', 'python ', 'python3 '];
+  const allowedCommands = new Set(['gh auth login']);
   const trimmed = command.trim();
-  if (!allowedPrefixes.some(prefix => trimmed.startsWith(prefix))) {
+  if (!allowedCommands.has(trimmed)) {
     return { ok: false, error: `Command not allowed: ${trimmed.split(' ')[0]}` };
   }
 
@@ -4801,14 +5131,8 @@ ipcMain.handle('run-terminal-command', async (event, command) => {
   }
 });
 
-ipcMain.handle('register-workspace', (event, workspacePath) => {
-  if (workspacePath && typeof workspacePath === 'string') {
-    allowedPaths.add(path.resolve(workspacePath));
-  }
-  return true;
-});
-
-ipcMain.handle('run-local-command', async (event, { command, args = [], cwd } = {}) => {
+ipcMain.handle('run-local-command', async (event, { command, args = [], cwd, grantId } = {}) => {
+  assertTrustedMainFrame(event);
   const executable = typeof command === 'string' ? command.trim() : '';
   if (!/^[A-Za-z0-9._+-]+$/.test(executable)) {
     return { error: 'Command must be an executable name without shell syntax.' };
@@ -4816,13 +5140,21 @@ ipcMain.handle('run-local-command', async (event, { command, args = [], cwd } = 
   if (!Array.isArray(args) || args.length > 100 || args.some(arg => typeof arg !== 'string' || arg.length > 10000)) {
     return { error: 'Command arguments must be a JSON array of strings.' };
   }
-  if (!isPathAllowed(cwd)) {
-    return { error: 'Access Denied: Working directory is outside the registered workspace.' };
+  let authorizedCwd;
+  try {
+    authorizedCwd = await workspaceGrants.authorize({
+      grantId,
+      ownerId: event.sender.id,
+      capability: 'execute',
+      targetPath: cwd,
+    });
+  } catch (error) {
+    return { error: error.message };
   }
 
   return new Promise(resolve => {
     const child = spawn(executable, args, {
-      cwd: path.resolve(cwd),
+      cwd: authorizedCwd,
       env: process.env,
       stdio: ['ignore', 'pipe', 'pipe'],
       shell: false
@@ -5030,6 +5362,19 @@ ipcMain.handle('localhost:start-now', async (event, { cwd, command } = {}) => {
       finish({ ok: true });
     });
   });
+});
+
+ipcMain.handle('keysafe:status', async (event) => {
+  assertTrustedMainFrame(event);
+  const health = await probeKeySafe();
+  return health.ok
+    ? { ok: true, productId: health.productId, version: health.version }
+    : { ok: false, reason: health.reason };
+});
+
+ipcMain.handle('keysafe:start', async (event) => {
+  assertTrustedMainFrame(event);
+  return startKeySafeServer();
 });
 
 ipcMain.handle('localhost:check-health', async (event, { url } = {}) => {
@@ -5515,10 +5860,14 @@ ipcMain.handle('get-home-dir', async () => {
   return process.env.HOME || require('os').homedir();
 });
 
-ipcMain.handle('list-files', async (event, dirPath) => {
-  if (!isPathAllowed(dirPath)) {
-    throw new Error('Access Denied: Path is outside the allowed workspace directories.');
-  }
+ipcMain.handle('list-files', async (event, { grantId, targetPath } = {}) => {
+  assertTrustedMainFrame(event);
+  const dirPath = await workspaceGrants.authorize({
+    grantId,
+    ownerId: event.sender.id,
+    capability: 'list',
+    targetPath,
+  });
   try {
     const files = await getFiles(dirPath);
     return files;
@@ -5528,10 +5877,14 @@ ipcMain.handle('list-files', async (event, dirPath) => {
   }
 });
 
-ipcMain.handle('read-file', async (event, filePath) => {
-  if (!isPathAllowed(filePath)) {
-    throw new Error('Access Denied: Path is outside the allowed workspace directories.');
-  }
+ipcMain.handle('read-file', async (event, { grantId, targetPath } = {}) => {
+  assertTrustedMainFrame(event);
+  const filePath = await workspaceGrants.authorize({
+    grantId,
+    ownerId: event.sender.id,
+    capability: 'read',
+    targetPath,
+  });
   try {
     const content = await fs.readFile(filePath, 'utf-8');
     return content;
@@ -5541,10 +5894,15 @@ ipcMain.handle('read-file', async (event, filePath) => {
   }
 });
 
-ipcMain.handle('write-file', async (event, { filePath, content }) => {
-  if (!isPathAllowed(filePath)) {
-    throw new Error('Access Denied: Path is outside the allowed workspace directories.');
-  }
+ipcMain.handle('write-file', async (event, { grantId, targetPath, content } = {}) => {
+  assertTrustedMainFrame(event);
+  const filePath = await workspaceGrants.authorize({
+    grantId,
+    ownerId: event.sender.id,
+    capability: 'write',
+    targetPath,
+    allowMissing: true,
+  });
   try {
     await fs.mkdir(path.dirname(filePath), { recursive: true });
     await fs.writeFile(filePath, content, 'utf-8');
@@ -5555,10 +5913,14 @@ ipcMain.handle('write-file', async (event, { filePath, content }) => {
   }
 });
 
-ipcMain.handle('delete-file', async (event, filePath) => {
-  if (!isPathAllowed(filePath)) {
-    throw new Error('Access Denied: Path is outside the allowed workspace directories.');
-  }
+ipcMain.handle('delete-file', async (event, { grantId, targetPath } = {}) => {
+  assertTrustedMainFrame(event);
+  const filePath = await workspaceGrants.authorize({
+    grantId,
+    ownerId: event.sender.id,
+    capability: 'delete',
+    targetPath,
+  });
   try {
     await fs.unlink(filePath);
     return true;
@@ -5568,10 +5930,21 @@ ipcMain.handle('delete-file', async (event, filePath) => {
   }
 });
 
-ipcMain.handle('rename-file', async (event, { oldPath, newPath }) => {
-  if (!isPathAllowed(oldPath) || !isPathAllowed(newPath)) {
-    throw new Error('Access Denied: Path is outside the allowed workspace directories.');
-  }
+ipcMain.handle('rename-file', async (event, { old, next } = {}) => {
+  assertTrustedMainFrame(event);
+  const oldPath = await workspaceGrants.authorize({
+    grantId: old?.grantId,
+    ownerId: event.sender.id,
+    capability: 'rename',
+    targetPath: old?.targetPath,
+  });
+  const newPath = await workspaceGrants.authorize({
+    grantId: next?.grantId,
+    ownerId: event.sender.id,
+    capability: 'rename',
+    targetPath: next?.targetPath,
+    allowMissing: true,
+  });
   try {
     await fs.rename(oldPath, newPath);
     return true;
@@ -6045,17 +6418,26 @@ ipcMain.handle('lighthouse:find-references', async (event, { oldPort, newPort } 
   return findPortReferences(oldPort, newPort);
 });
 
-ipcMain.handle('lighthouse:apply-fix', async (event, { filePath, lineNumber, newLine, oldLine } = {}) => {
-  if (!isPathAllowed(filePath)) {
-    return { ok: false, error: 'Access Denied: Path is outside the allowed workspace directories.' };
+ipcMain.handle('lighthouse:apply-fix', async (event, { grantId, filePath, lineNumber, newLine, oldLine } = {}) => {
+  assertTrustedMainFrame(event);
+  let authorizedPath;
+  try {
+    authorizedPath = await workspaceGrants.authorize({
+      grantId,
+      ownerId: event.sender.id,
+      capability: 'write',
+      targetPath: filePath,
+    });
+  } catch (error) {
+    return { ok: false, error: error.message };
   }
   try {
-    const lines = fsSync.readFileSync(filePath, 'utf8').split('\n');
+    const lines = fsSync.readFileSync(authorizedPath, 'utf8').split('\n');
     const idx = lineNumber - 1;
     if (idx < 0 || idx >= lines.length) return { ok: false, error: 'Line out of range' };
     if (oldLine != null && lines[idx] !== oldLine) return { ok: false, error: 'File changed since preview; skipped for safety' };
     lines[idx] = newLine;
-    fsSync.writeFileSync(filePath, lines.join('\n'));
+    fsSync.writeFileSync(authorizedPath, lines.join('\n'));
     return { ok: true };
   } catch (e) {
     return { ok: false, error: e.message };
@@ -6088,8 +6470,12 @@ ipcMain.handle('lighthouse:process-details', async (event, { pid } = {}) => {
 });
 
 ipcMain.handle('lighthouse:kill-process', async (event, { pid } = {}) => {
+  assertTrustedMainFrame(event);
+  if (!Number.isSafeInteger(pid) || pid <= 0 || pid === process.pid) {
+    return { ok: false, error: 'Invalid process id' };
+  }
   try {
-    execCmd(`kill -9 ${pid}`);
+    process.kill(pid, 'SIGKILL');
     return { ok: true, message: `Killed ${pid}` };
   } catch (e) {
     return { ok: false, error: e.message };
@@ -6172,7 +6558,7 @@ function eidosCollectCandidateRepoPaths(appData) {
   addCandidate(appData?.working_directory);
   addCandidate(EIDOS_DIR);
   addCandidate(app.getAppPath());
-  for (const workspacePath of allowedPaths) {
+  for (const workspacePath of workspaceGrants.roots()) {
     addCandidate(workspacePath);
   }
 
@@ -6897,31 +7283,33 @@ async function readSupermemoryConfig() {
 }
 
 async function writeSupermemoryConfig(patch = {}) {
-  const currentData = await readAppData();
-  const current = getSupermemoryConfigFromAppData(currentData);
-  const next = supermemoryProcess.normalizeConfig({
-    ...current,
-    ...patch,
-    providerKey: getSupermemoryProviderKeyFromAppData(currentData, patch.provider || current.provider),
-    enabled: patch.enabled !== undefined ? patch.enabled : current.enabled,
-  });
-  const binaryPath = next.binaryPath || supermemoryProcess.discoverBinary(next);
-
-  await writeAppData({
-    ...currentData,
-    perci_supermemory_enabled: next.enabled ? 'true' : 'false',
-    perci_memory_backend: next.enabled ? 'supermemory' : 'memu',
-    perci_supermemory_api_key: next.apiKey || '',
-    perci_supermemory_openrouter_key: Object.prototype.hasOwnProperty.call(patch, 'openrouterKey')
-      ? (next.openrouterKey || '')
-      : (currentData.perci_supermemory_openrouter_key || ''),
-    perci_supermemory_provider: next.provider,
-    perci_supermemory_model_base_url: next.modelBaseURL,
-    perci_supermemory_model: next.model,
-    perci_supermemory_data_dir: next.dataDir,
-    perci_supermemory_container_tag: next.containerTag,
-    perci_supermemory_binary_path: binaryPath || '',
-    perci_supermemory_port: String(next.port),
+  let next;
+  let binaryPath;
+  await updateAppData(currentData => {
+    const current = getSupermemoryConfigFromAppData(currentData);
+    next = supermemoryProcess.normalizeConfig({
+      ...current,
+      ...patch,
+      providerKey: getSupermemoryProviderKeyFromAppData(currentData, patch.provider || current.provider),
+      enabled: patch.enabled !== undefined ? patch.enabled : current.enabled,
+    });
+    binaryPath = next.binaryPath || supermemoryProcess.discoverBinary(next);
+    return {
+      ...currentData,
+      perci_supermemory_enabled: next.enabled ? 'true' : 'false',
+      perci_memory_backend: next.enabled ? 'supermemory' : 'memu',
+      perci_supermemory_api_key: next.apiKey || '',
+      perci_supermemory_openrouter_key: Object.prototype.hasOwnProperty.call(patch, 'openrouterKey')
+        ? (next.openrouterKey || '')
+        : (currentData.perci_supermemory_openrouter_key || ''),
+      perci_supermemory_provider: next.provider,
+      perci_supermemory_model_base_url: next.modelBaseURL,
+      perci_supermemory_model: next.model,
+      perci_supermemory_data_dir: next.dataDir,
+      perci_supermemory_container_tag: next.containerTag,
+      perci_supermemory_binary_path: binaryPath || '',
+      perci_supermemory_port: String(next.port),
+    };
   });
 
   return {
@@ -6933,11 +7321,7 @@ async function writeSupermemoryConfig(patch = {}) {
 
 async function persistSupermemoryApiKey(apiKey) {
   if (!apiKey) return;
-  const currentData = await readAppData();
-  await writeAppData({
-    ...currentData,
-    perci_supermemory_api_key: apiKey,
-  });
+  await updateAppData({ perci_supermemory_api_key: apiKey });
 }
 
 ipcMain.handle('supermemory:status', async () => {
@@ -6985,25 +7369,27 @@ ipcMain.handle('supermemory:restart', async () => {
 
 ipcMain.handle('supermemory:progress', async () => supermemoryProcess.progress());
 
+function publicSupermemoryConfig(config) {
+  const { apiKey, providerKey, openrouterKey, ...publicConfig } = config;
+  return { ...publicConfig, hasProviderKey: Boolean(providerKey || openrouterKey) };
+}
+
 ipcMain.handle('supermemory:config', async (event, patch = null) => {
+  assertTrustedMainFrame(event);
   try {
     if (patch?.action === 'wipe-data') {
       const config = await readSupermemoryConfig();
       const result = await supermemoryProcess.wipeData(config);
       if (result.ok) {
-        const currentData = await readAppData();
-        await writeAppData({
-          ...currentData,
-          perci_supermemory_api_key: '',
-        });
+        await updateAppData({ perci_supermemory_api_key: '' });
       }
       return result;
     }
 
     if (patch && typeof patch === 'object') {
-      return await writeSupermemoryConfig(patch);
+      return publicSupermemoryConfig(await writeSupermemoryConfig(patch));
     }
-    return await readSupermemoryConfig();
+    return publicSupermemoryConfig(await readSupermemoryConfig());
   } catch (err) {
     return { ok: false, error: err.message };
   }
@@ -7326,11 +7712,11 @@ ipcMain.handle('db:discover', async () => {
     return a.localeCompare(b);
   });
   const paths = allPaths.slice(0, 80);
-  paths.forEach(p => allowedPaths.add(path.resolve(path.dirname(p))));
   return { ok: true, paths };
 });
 
 ipcMain.handle('db:pick-file', async (event) => {
+  assertTrustedMainFrame(event);
   const parentWindow = BrowserWindow.fromWebContents(event.sender)
     || (mainWindow && !mainWindow.isDestroyed() ? mainWindow : null)
     || BrowserWindow.getFocusedWindow();
@@ -7348,13 +7734,15 @@ ipcMain.handle('db:pick-file', async (event) => {
     : await dialog.showOpenDialog(dialogOptions);
 
   if (result.canceled || !result.filePaths[0]) return null;
-  const chosenPath = result.filePaths[0];
-  allowedPaths.add(path.resolve(path.dirname(chosenPath)));
+  const chosenPath = await fsSync.promises.realpath(result.filePaths[0]);
+  if (!(await fsSync.promises.lstat(chosenPath)).isFile()) return null;
+  if (!selectedDatabasePaths.has(event.sender.id)) selectedDatabasePaths.set(event.sender.id, new Set());
+  selectedDatabasePaths.get(event.sender.id).add(chosenPath);
   return chosenPath;
 });
 
 ipcMain.handle('db:schema', async (event, { dbPath } = {}) => {
-  if (!isPathAllowed(dbPath)) return { ok: false, error: 'Access Denied: pick the file again to grant access.' };
+  if (!(await isSelectedDatabase(event, dbPath))) return { ok: false, error: 'Access Denied: pick the file again to grant access.' };
   const sqlitePath = sqlite3Path();
   if (!sqlitePath) return { ok: false, error: 'sqlite3 CLI not found on this Mac.' };
 
@@ -7368,7 +7756,7 @@ ipcMain.handle('db:schema', async (event, { dbPath } = {}) => {
 });
 
 ipcMain.handle('db:query', async (event, { dbPath, sql } = {}) => {
-  if (!isPathAllowed(dbPath)) return { ok: false, error: 'Access Denied: pick the file again to grant access.' };
+  if (!(await isSelectedDatabase(event, dbPath))) return { ok: false, error: 'Access Denied: pick the file again to grant access.' };
   if (!isReadOnlySql(sql)) return { ok: false, error: 'Only single SELECT / WITH / EXPLAIN / read-only PRAGMA statements are allowed.' };
   const sqlitePath = sqlite3Path();
   if (!sqlitePath) return { ok: false, error: 'sqlite3 CLI not found on this Mac.' };
@@ -7812,7 +8200,7 @@ function detectCodebaseMemoryArtifacts() {
   const roots = uniquePaths([
     process.cwd(),
     app.getAppPath(),
-    ...Array.from(allowedPaths),
+    ...workspaceGrants.roots(),
   ]);
   return roots.map(root => {
     const artifactPath = path.join(root, '.codebase-memory', 'graph.db.zst');

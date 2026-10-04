@@ -23,7 +23,8 @@ export const LOCAL_SERVICES = [
     { id: 'openclaw', name: 'OpenClaw', port: 18789, url: 'http://localhost:18789', startCommand: 'openclaw gateway start', cwd: '', autoStart: false },
     { id: 'markitdown', name: 'MarkItDownUI', port: 8920, url: 'http://localhost:8920', startCommand: '', cwd: '', autoStart: false },
     { id: 'hermes-dash', name: 'Hermes Dashboard', port: 8642, url: 'http://localhost:8642', startCommand: 'hermes dashboard --port 8642 --no-open', cwd: '', autoStart: false },
-    { id: 'keysafe', name: 'KeySafe', port: 4100, url: 'http://127.0.0.1:4100', startCommand: 'npm run dev', cwd: '~/keysafe', autoStart: false },
+    // KeySafe is launched only through its authenticated main-process broker.
+    { id: 'keysafe', name: 'KeySafe', port: 4100, url: 'http://127.0.0.1:4100', startCommand: '', cwd: '~/keysafe', autoStart: false },
     { id: 'dotenvx-gui', name: 'Dotenvx', port: 7843, url: 'http://127.0.0.1:7843', startCommand: 'npm start', cwd: '~/dotenvx-gui', autoStart: false },
     { id: 'super-memory', name: 'Supermemory', port: 6768, url: 'http://localhost:6768', startCommand: '', cwd: '', autoStart: false },
     { id: 'lfm-harness', name: 'LFM Harness', port: 6270, url: 'http://localhost:6270', startCommand: 'node ~/lfm-harness/server.js', cwd: '~/lfm-harness', autoStart: false },

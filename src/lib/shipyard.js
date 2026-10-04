@@ -248,7 +248,6 @@ export function moveCard(projectId, cardId, columnId, { actor = 'user' } = {}) {
 async function runGit(repoPath, args) {
     if (!window.electron?.runLocalCommand) return { error: 'Git actions need the Perci desktop app.' };
     if (!repoPath) return { error: 'This project has no repo folder set. Open project settings and pick one.' };
-    await window.electron.registerWorkspace?.(repoPath);
     const res = await window.electron.runLocalCommand('git', args, repoPath);
     if (res?.error) return { error: res.error };
     return { ok: res.exitCode === 0, exitCode: res.exitCode, output: `${res.output || ''}${res.stderr || ''}`.trim() };

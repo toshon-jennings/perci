@@ -21,6 +21,14 @@ export const API_KEY_STORAGE_KEYS = [
     'jules_api_key'
 ];
 
+const SESSION_ONLY_SECRET_KEYS = new Set([
+    ...API_KEY_STORAGE_KEYS,
+    'gdash_google_client_secret',
+    'gdash_google_tokens',
+    'perci_supermemory_api_key',
+    'perci_supermemory_openrouter_key'
+]);
+
 const PERSISTED_KEYS = [
     'chat_history',
     'current_chat_id',
@@ -149,6 +157,8 @@ function writeToCache(key, value) {
  */
 export function resetPersistenceCache() {
     memoryStore = {};
+    hydrationPromise = null;
+    hydrated = false;
 }
 
 // ── Electron detection ────────────────────────────────────────────────────
@@ -181,7 +191,13 @@ export function ensureHydrated() {
                 try {
                     const val = localStorage.getItem(key);
                     if (val !== null) memoryStore[key] = val;
+                    if (SESSION_ONLY_SECRET_KEYS.has(key)) localStorage.removeItem(key);
                 } catch (_) { /* ignore */ }
+            }
+            for (const key of SESSION_ONLY_SECRET_KEYS) {
+                if (!PERSISTED_KEYS.includes(key)) {
+                    try { localStorage.removeItem(key); } catch (_) { /* ignore */ }
+                }
             }
         }
         hydrated = true;
@@ -250,7 +266,9 @@ export function writeStringStorage(key, value) {
             console.error(`[persistentStore] Failed to persist ${key}:`, err);
         });
     } else {
-        try { localStorage.setItem(key, value); } catch (_) { /* ignore */ }
+        if (!SESSION_ONLY_SECRET_KEYS.has(key)) {
+            try { localStorage.setItem(key, value); } catch (_) { /* ignore */ }
+        }
     }
 }
 
@@ -321,7 +339,7 @@ export function writePersistenceSnapshot(snapshot) {
     } else {
         try {
             for (const [key, value] of Object.entries(snapshot)) {
-                if (typeof value === 'string') localStorage.setItem(key, value);
+                if (typeof value === 'string' && !SESSION_ONLY_SECRET_KEYS.has(key)) localStorage.setItem(key, value);
             }
         } catch (_) { /* ignore */ }
     }

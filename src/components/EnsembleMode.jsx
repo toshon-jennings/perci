@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {
@@ -9,6 +9,7 @@ import { EnsembleIcon } from './ModeIcons';
 import { useChat } from '../context/ChatContext';
 import { useTheme } from '../context/ThemeContext';
 import { readJsonStorage, writeStringStorage, serializeJson } from '../lib/persistentStore';
+import { OutboundDataBlockedError, gateOutboundModel, isSensitivePath, prepareOutboundFiles } from '../lib/outboundDataPolicy';
 import ensembleBgDark from '../assets/ensemble-bg-dark.jpeg';
 import ensembleBgLight from '../assets/ensemble-bg-light.jpeg';
 import {
@@ -38,7 +39,7 @@ const TEXT_EXT = new Set([
     'kt', 'c', 'h', 'cpp', 'hpp', 'cs', 'php', 'sh', 'bash', 'zsh', 'yml', 'yaml',
     'toml', 'ini', 'env', 'sql', 'xml', 'csv', 'graphql', 'prisma',
 ]);
-const KNOWN_TEXT_NAMES = new Set(['dockerfile', 'makefile', 'readme', 'license', '.gitignore', '.env']);
+const KNOWN_TEXT_NAMES = new Set(['dockerfile', 'makefile', 'readme', 'license', '.gitignore']);
 
 const isTextFile = (relPath) => {
     const name = relPath.split('/').pop().toLowerCase();
@@ -258,7 +259,7 @@ export default function EnsembleMode() {
         setLoadingFolder(true);
         try {
             const all = await window.electron.listFiles(folder);
-            const list = (all || []).filter(isTextFile).sort();
+            const list = (all || []).filter(isTextFile).filter(path => !isSensitivePath(path)).sort();
             setFolderList(list);
             return list;
         } catch (err) {
@@ -287,7 +288,12 @@ export default function EnsembleMode() {
     const pickContextFolder = useCallback(async () => {
         if (!window.electron?.selectDirectory) return;
         let folder = null;
-        try { folder = await window.electron.selectDirectory(); } catch (err) { console.error(err); }
+        try {
+            folder = await window.electron.selectDirectory({
+                capabilities: ['list', 'read'],
+                symlinkPolicy: 'deny',
+            });
+        } catch (err) { console.error(err); }
         if (!folder) return;
         setContextFolder(folder);
         setContextFiles([]); // selection is folder-relative — reset when the root changes
@@ -409,10 +415,45 @@ export default function EnsembleMode() {
         abortRef.current = controller;
         try {
             const streamModel = createStreamModel({ apiKeys, lmStudioUrl, janUrl });
-            const context = buildContextBlock(contextFiles);
+            const contextPaths = contextFiles.map(file => file.path);
+            let prepared = { files: [], findings: [], totalBytes: 0 };
+            try {
+                if (contextPaths.length) {
+                    prepared = await prepareOutboundFiles({
+                        folder: contextFolder,
+                        paths: contextPaths,
+                        readFile: path => window.electron.readFile(path),
+                    });
+                }
+            } catch (policyError) {
+                if (!(policyError instanceof OutboundDataBlockedError) || !policyError.overrideAllowed) throw policyError;
+                const files = [...new Set(policyError.findings.map(finding => finding.path))];
+                const kinds = [...new Set(policyError.findings.map(finding => finding.kind))];
+                const destinations = [...new Set([...panel, judge, synth || judge].filter(Boolean).map(model => providerLabel(model.provider)))];
+                const approved = window.confirm(
+                    `Potential secrets were found.\n\nFiles: ${files.join(', ')}\nFindings: ${kinds.join(', ')}\nProviders receiving the files: ${destinations.join(', ')}\n\nSend these current file contents once?`
+                );
+                if (!approved) throw new Error('Ensemble send cancelled before any provider request.');
+                prepared = await prepareOutboundFiles({
+                    folder: contextFolder,
+                    paths: contextPaths,
+                    readFile: path => window.electron.readFile(path),
+                    allowDetectedSecrets: true,
+                });
+            }
+            setContextFiles(prepared.files);
+            const context = buildContextBlock(prepared.files);
+            const gatedStreamModel = gateOutboundModel({
+                streamModel,
+                folder: contextFolder,
+                paths: contextPaths,
+                readFile: path => window.electron.readFile(path),
+                approvedFiles: prepared.files,
+                allowDetectedSecrets: prepared.findings.length > 0,
+            });
             const result = await runEnsemble(
                 { prompt, panel, judge, synth, rounds, anonymise, prompts, context },
-                { streamModel, signal: controller.signal, onEvent: handleEvent },
+                { streamModel: gatedStreamModel, signal: controller.signal, onEvent: handleEvent },
             );
             setAnswer(result.answer || '');
         } catch (err) {

@@ -824,32 +824,6 @@ export default function CoworkMode() {
         return () => document.removeEventListener('trigger-choose-folder', handleTrigger);
     }, []);
 
-    useEffect(() => {
-        const maybeApplyPathFromSession = async () => {
-            if (!activeSession?.messages?.length || !window.electron?.listFiles) return;
-
-            const lastPathMessage = [...activeSession.messages]
-                .reverse()
-                .find(msg => msg.role === 'user' && isBareAbsolutePath(msg.content));
-            const folderPath = lastPathMessage?.content?.trim();
-
-            if (!folderPath || folderPath === codeState.workingDirectory) return;
-
-            try {
-                await window.electron.registerWorkspace?.(folderPath);
-                const files = await window.electron.listFiles(folderPath);
-                if (files.length > 0) {
-                    setCodeState(prev => ({ ...prev, workingDirectory: folderPath }));
-                    writeStringStorage('working_directory', folderPath);
-                }
-            } catch (err) {
-                console.error('Could not apply folder path from session:', err);
-            }
-        };
-
-        maybeApplyPathFromSession();
-    }, [activeSession, codeState.workingDirectory, setCodeState]);
-
     const handleChooseFolder = async () => {
         let folderPath = null;
         if (window.electron && window.electron.selectDirectory) {
@@ -873,8 +847,6 @@ export default function CoworkMode() {
             if (folderPath) {
                 setCodeState(prev => ({ ...prev, workingDirectory: folderPath }));
                 writeStringStorage('working_directory', folderPath);
-                window.electron?.registerWorkspace?.(folderPath)
-                    ?.catch?.(err => console.error('Could not register Power Workspace folder:', err));
             }
             if (prompt) {
                 const session = {
@@ -1006,21 +978,6 @@ export default function CoworkMode() {
         const message = prefillPrompt || taskInput;
         if ((!message.trim() && attachments.length === 0) || isLoading) return;
         const currentAttachments = [...attachments];
-
-        // Detect bare folder-path drops and update working directory
-        if (isBareAbsolutePath(message) && window.electron?.listFiles) {
-            try {
-                const folderPath = message.trim();
-                await window.electron.registerWorkspace?.(folderPath);
-                const files = await window.electron.listFiles(folderPath);
-                if (files.length > 0) {
-                    setCodeState(prev => ({ ...prev, workingDirectory: folderPath }));
-                    writeStringStorage('working_directory', folderPath);
-                }
-            } catch (err) {
-                console.error('Could not set working directory from message:', err);
-            }
-        }
 
         setTaskInput('');
         setAttachments([]);
@@ -1315,7 +1272,6 @@ export default function CoworkMode() {
     const handleRunRoutine = async (routine) => {
         const routineFolder = String(routine.folder || '').trim();
         if (routineFolder) {
-            await window.electron?.registerWorkspace?.(routineFolder);
             setCodeState(prev => ({ ...prev, workingDirectory: routineFolder }));
             writeStringStorage('working_directory', routineFolder);
         }
@@ -1794,9 +1750,4 @@ export default function CoworkMode() {
             </div>
         </div>
     );
-}
-
-function isBareAbsolutePath(value) {
-    const text = value?.trim();
-    return Boolean(text && /^\/[^\n\r]*$/.test(text) && !/\s/.test(text));
 }

@@ -80,7 +80,7 @@ export default function PxpipeMode() {
                         src={PXPIPE_ORIGIN}
                         className="flex-1 min-h-0 w-full border-0 bg-white"
                         partition="persist:perci-pxpipe"
-                        allowpopups="true"
+                        webpreferences="contextIsolation=yes, nodeIntegration=no, sandbox=yes, webSecurity=yes"
                     />
                 ) : (
                     <iframe
@@ -88,7 +88,7 @@ export default function PxpipeMode() {
                         key={frameKey.current}
                         src={PXPIPE_ORIGIN}
                         className="flex-1 min-h-0 w-full border-0 bg-white"
-                        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                        sandbox="allow-scripts allow-same-origin allow-forms"
                         title="pxpipe"
                     />
                 )}
