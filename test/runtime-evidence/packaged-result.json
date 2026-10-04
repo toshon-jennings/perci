@@ -1,6 +1,6 @@
 {
-  "profile": "/var/folders/x0/vn7xdx5j0zx94nckt50hrnnc0000gn/T/perci-packaged-security-D3tHoY",
-  "sourceCommit": "working-checkout",
+  "profile": "/var/folders/x0/vn7xdx5j0zx94nckt50hrnnc0000gn/T/perci-packaged-security-KejR1e",
+  "sourceCommit": "a82ae977b74a5e30931d9768e77eaf1f64491a2e",
   "credentialBackend": "mock-keychain",
   "checks": [
     {
@@ -8,7 +8,7 @@
       "result": {
         "version": "0.50.1",
         "packaged": true,
-        "userData": "/var/folders/x0/vn7xdx5j0zx94nckt50hrnnc0000gn/T/perci-packaged-security-D3tHoY"
+        "userData": "/var/folders/x0/vn7xdx5j0zx94nckt50hrnnc0000gn/T/perci-packaged-security-KejR1e"
       }
     },
     {
@@ -74,6 +74,17 @@
     {
       "name": "packaged-guest-media-and-popup-denied",
       "passed": true
+    },
+    {
+      "name": "packaged-guest-permission-matrix",
+      "passed": true,
+      "states": {
+        "camera": "denied",
+        "microphone": "denied",
+        "clipboard-read": "denied",
+        "notifications": "denied",
+        "geolocation": "denied"
+      }
     },
     {
       "name": "packaged-keysafe-off-origin-navigation-denied",

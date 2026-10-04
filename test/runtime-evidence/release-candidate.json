@@ -1,0 +1,36 @@
+{
+  "builtFrom": "a82ae977b74a5e30931d9768e77eaf1f64491a2e",
+  "pushedSource": "dd8c48ad1c6eb0440294ef11db8a5bf0a534c886",
+  "sourceDifference": [
+    "MISTAKES.md",
+    "test/redactConsole.test.js"
+  ],
+  "productSourceIdentical": true,
+  "keysafeSource": "fd026f2896641c1f26e5fe1623ec9766ff3ef8d1",
+  "files": [
+    {
+      "name": "Perci-0.50.1-arm64.zip",
+      "size": 320239563,
+      "sha512": "kgQvELCE32o7knroERQkfPF8x3KLrihZUu4ytX2bx154z0U+L8yM2NtsKiTnzPh6ZiuGfze+gAHlJmUKrLhX4w=="
+    },
+    {
+      "name": "Perci-0.50.1-arm64.dmg",
+      "size": 361925348,
+      "sha512": "rZg/D49xqGuNZ3MQz4b2ZFFVi49gpCstyVabY6mJdNfd39Jo49y3FfZpb5+vTUNCPmVV44N3nlqzjp8599wbAg=="
+    }
+  ],
+  "nativeChecks": 24,
+  "credentialBackend": "mock-keychain",
+  "published": false,
+  "appAsarSha256": "29efbe355af9d8dd9098ffc44eda078eb1a8abfdc774d8545552b3558e0923b0",
+  "directoryDmgZipAppMatch": true,
+  "signature": "verified-ad-hoc",
+  "finderBackground": "visually-rendered",
+  "finderStoredGeometry": {
+    "width": 540,
+    "height": 380,
+    "iconSize": 100,
+    "toolbar": false,
+    "statusBar": false
+  }
+}

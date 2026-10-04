@@ -62,7 +62,7 @@ try{
  const ensembleRequests=await app.evaluate(()=>{globalThis.fetch=globalThis.__syntheticOriginalFetch;return globalThis.__syntheticBrokerRequests;});assert.equal(ensembleRequests.length,3);
  for(const request of ensembleRequests){assert.equal(request.body.messages[0].role,'system');assert.match(request.body.messages[0].content,/untrusted evidence/);const evidenceMessage=request.body.messages.find(message=>message.content.includes(hostileText));assert.equal(evidenceMessage.role,'user');assert.match(evidenceMessage.content,/BEGIN UNTRUSTED FILE EVIDENCE/);}
  checks.push({name:'packaged-ensemble-panel-judge-synthesis-file-boundary',passed:true});
- for(const theme of ['light','dark']){const toggle=page.locator('button[title^="Theme:"]');for(let attempt=0;attempt<3;attempt++){if((await toggle.getAttribute('title')).startsWith('Theme: '+theme+'.'))break;await toggle.click();}await page.waitForTimeout(100);await page.screenshot({path:resolve(evidence,`packaged-ensemble-${theme}.png`)});}
+ for(const theme of ['light','dark']){const toggle=page.locator('button[title^="Theme:"]');for(let attempt=0;attempt<3;attempt++){if((await toggle.getAttribute('title')).startsWith('Theme: '+theme+'.'))break;await toggle.click();}await page.evaluate(()=>window.scrollTo(0,0));await page.waitForTimeout(100);await page.screenshot({path:resolve(evidence,`packaged-ensemble-${theme}.png`)});}
 
 
  const start=await page.evaluate(()=>window.electron.keysafeStart());assert.equal(start.ok,true,JSON.stringify(start));
