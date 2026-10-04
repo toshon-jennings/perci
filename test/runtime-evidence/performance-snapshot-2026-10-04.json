@@ -1,0 +1,91 @@
+{
+  "measurement": "resident-set snapshot, approximate; shared pages may be counted more than once",
+  "processCount": 14,
+  "totalRssMiB": 593.5,
+  "processes": [
+    {
+      "pid": 52213,
+      "parent": 1,
+      "rssKiB": 48720,
+      "process": "Perci"
+    },
+    {
+      "pid": 52217,
+      "parent": 52213,
+      "rssKiB": 25008,
+      "process": "Perci Helper"
+    },
+    {
+      "pid": 52219,
+      "parent": 52213,
+      "rssKiB": 23008,
+      "process": "Perci Helper"
+    },
+    {
+      "pid": 52221,
+      "parent": 52213,
+      "rssKiB": 12768,
+      "process": "Perci Helper"
+    },
+    {
+      "pid": 52223,
+      "parent": 52213,
+      "rssKiB": 179920,
+      "process": "Perci Helper (Renderer)"
+    },
+    {
+      "pid": 52225,
+      "parent": 52213,
+      "rssKiB": 10384,
+      "process": "Perci Helper (Renderer)"
+    },
+    {
+      "pid": 52226,
+      "parent": 52213,
+      "rssKiB": 9088,
+      "process": "Perci Helper"
+    },
+    {
+      "pid": 52229,
+      "parent": 52213,
+      "rssKiB": 41808,
+      "process": "Perci Helper (Renderer)"
+    },
+    {
+      "pid": 52233,
+      "parent": 52213,
+      "rssKiB": 16160,
+      "process": "Perci Helper (Renderer)"
+    },
+    {
+      "pid": 52243,
+      "parent": 52213,
+      "rssKiB": 10192,
+      "process": "Perci Helper (Renderer)"
+    },
+    {
+      "pid": 52245,
+      "parent": 52213,
+      "rssKiB": 9712,
+      "process": "Perci Helper (Renderer)"
+    },
+    {
+      "pid": 53873,
+      "parent": 52213,
+      "rssKiB": 19152,
+      "process": "./github-overview"
+    },
+    {
+      "pid": 55313,
+      "parent": 52213,
+      "rssKiB": 188064,
+      "process": "Perci Helper (Renderer)"
+    },
+    {
+      "pid": 55979,
+      "parent": 52213,
+      "rssKiB": 13744,
+      "process": "Perci"
+    }
+  ]
+}

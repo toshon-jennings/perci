@@ -1,0 +1,10 @@
+{
+  "version": "0.50.2",
+  "starts": {
+    "keysafe": 1,
+    "eidos": 1
+  },
+  "keysafe": "real authenticated production server",
+  "eidos": "simulated stopped OrbStack status; real renderer called start instead of rejecting status",
+  "installedAppReplaced": false
+}

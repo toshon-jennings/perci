@@ -31,23 +31,6 @@ export default function KeysafeMode() {
         }
     }, []);
 
-    // Initial check
-    useEffect(() => {
-        let active = true;
-        (async () => {
-            const isAlive = await checkAlive();
-            if (!active) return;
-            if (isAlive) {
-                setStatus('running');
-            } else {
-                setStatus('offline');
-            }
-        })();
-        return () => {
-            active = false;
-        };
-    }, [checkAlive]);
-
     useEffect(() => {
         const webview = webviewRef.current;
         if (!window.electron || !webview) return;
@@ -60,7 +43,10 @@ export default function KeysafeMode() {
     }, [frameKey, status]);
 
     const handleLaunch = useCallback(async () => {
-        if (!window.electron?.keysafeStart) return;
+        if (!window.electron?.keysafeStart) {
+            setStatus('offline');
+            return;
+        }
         setStatus('starting');
         try {
             const result = await window.electron.keysafeStart();
@@ -73,6 +59,23 @@ export default function KeysafeMode() {
             setStatus('offline');
         }
     }, []);
+
+    // Initial check
+    useEffect(() => {
+        let active = true;
+        (async () => {
+            const isAlive = await checkAlive();
+            if (!active) return;
+            if (isAlive) {
+                setStatus('running');
+            } else {
+                await handleLaunch();
+            }
+        })();
+        return () => {
+            active = false;
+        };
+    }, [checkAlive, handleLaunch]);
 
     const handleReload = useCallback(() => {
         setFrameKey((prev) => prev + 1);

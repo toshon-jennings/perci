@@ -1,5 +1,7 @@
 ## 2026-10-04 — Push protection rejected synthetic fixtures
 
+- Startup probe helper edit used the candidate-export cwd instead of the main checkout | Mixed build and source paths in one command | Helper edit failed without changing source; build continued | Use explicit workspace paths for edits and separate them from candidate builds.
+
 **What happened | Root cause | Consequence | The rule that prevents repeat**
 GitHub rejected the unpushed security commit | Two literal fake-token fixtures matched secret scanners | Perci push remained blocked until fixtures were constructed in tests | Construct scanner-shaped synthetic fixtures from clearly fake segments and keep coverage unchanged.
 

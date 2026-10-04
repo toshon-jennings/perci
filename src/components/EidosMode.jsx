@@ -1,15 +1,13 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
     AlertCircle,
     ArrowUpRight,
     BookOpen,
     CheckCircle2,
-    Database,
     ExternalLink,
     GitBranch,
     GitCommitHorizontal,
     Github,
-    Layers,
     Loader2,
     RefreshCw,
     AlertTriangle
@@ -122,14 +120,6 @@ function EidosModeInner({ onOpenGuide }) {
     const pollRef = useRef(null);
     const runningRef = useRef(false);
 
-    const [preloadPath, setPreloadPath] = useState('');
-
-    useEffect(() => {
-        if (window.electron?.getPreloadPath) {
-            window.electron.getPreloadPath().then(path => setPreloadPath(`file://${path}`));
-        }
-    }, []);
-
     const isElectron = !!window.electron;
     const hasEidosAPI = isElectron && window.electron?.eidosStatus;
     const hasInsightsAPI = isElectron && window.electron?.eidosInsights;
@@ -203,7 +193,7 @@ function EidosModeInner({ onOpenGuide }) {
 
         try {
             const statusResult = await window.electron.eidosStatus();
-            if (statusResult.error) {
+            if (statusResult.error && statusResult.runtime !== 'orbstack-stopped') {
                 setError(statusResult.error);
                 setStatus('error');
                 runningRef.current = false;
@@ -218,7 +208,7 @@ function EidosModeInner({ onOpenGuide }) {
                 return;
             }
 
-            if (statusResult.state === 'no-docker') {
+            if (statusResult.state === 'no-docker' && statusResult.runtime !== 'orbstack-stopped') {
                 setError(statusResult.error || 'Docker/OrbStack not found. Install OrbStack from https://orbstack.dev');
                 setStatus('error');
                 runningRef.current = false;
