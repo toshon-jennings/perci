@@ -32,5 +32,27 @@
     "iconSize": 100,
     "toolbar": false,
     "statusBar": false
+  },
+  "ciArm64": {
+    "run": 37179583018,
+    "source": "dd8c48ad1c6eb0440294ef11db8a5bf0a534c886",
+    "metadataVerified": true,
+    "appAsarSha256": "7108f986faec364df49d42e094d1c4a916a86acb09bfa0c9e80a94d1fcbfb078",
+    "matchesTestedLocalApp": false,
+    "securitySourcesMatchLocal": true,
+    "nativeChecks": 24,
+    "signatureVerified": true,
+    "credentialBackend": "mock-keychain"
+  },
+  "ci": {
+    "run": 37179583018,
+    "source": "dd8c48ad1c6eb0440294ef11db8a5bf0a534c886",
+    "conclusion": "success",
+    "platforms": {
+      "windows": "success",
+      "mac-arm64": "success",
+      "mac-x64": "success"
+    },
+    "releaseAttachment": "skipped"
   }
 }
