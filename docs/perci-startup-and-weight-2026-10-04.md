@@ -31,3 +31,9 @@ Electron's official guidance supports deferring unnecessary work and avoiding bl
 Perci 0.50.2 candidate built from a clean export with only the startup changes and version files overlaid; unrelated NotesMode edits were excluded. All 238 tests passed. Both changed components pass ESLint. The candidate ad-hoc signature verifies. Native runtime test launched KeySafe through the real authenticated production server once and called the Eidos start handler once in response to a simulated stopped-OrbStack status. This proves renderer recovery logic, not a completed live container startup. The Eidos frame is blank in the fixture screenshot because its backend was deliberately simulated; it is not dashboard acceptance evidence. Existing live services/profile were not reset.
 
 Candidate: `release-build/0.50.2/dist_electron/mac-arm64/Perci.app`. Installation/restart approval is pending under the no-quit rule. No public release was created.
+
+## Approved local installation
+
+User confirmed installation/restart. Perci was no longer running; the leftover Perci-owned terminal helper was stopped for the approved restart. Original 0.50.1 bundle preserved at `release-build/rollback-0.50.1/Perci.app`; its app.asar hash matches the original installed bundle. A clean 0.50.2 bundle was installed to `/Applications/Perci.app`; its signature verifies and its app.asar hash matches the tested candidate. No production profile reset or public release occurred.
+
+Live startup is blocked in macOS Keychain access: a process sample of the installed main process shows SecItemCopyMatching, and SecurityAgent is running. User was asked to handle the native prompt; computer use cannot operate SecurityAgent. Full live Eidos/KeySafe acceptance remains pending. Sample retained in `release-build/installed-startup-sample.txt`; installation identity is in `test/runtime-evidence/installed-0.50.2.json`.

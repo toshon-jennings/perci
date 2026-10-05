@@ -1,0 +1,12 @@
+{
+  "version": "0.50.2",
+  "installedPath": "/Applications/Perci.app",
+  "appAsarSha256": "4b55898ecde55999c9946132cc524d578c2d67b32ae0727001f4118a3d505c2e",
+  "candidateMatchesInstalled": true,
+  "signatureVerified": true,
+  "rollbackPath": "/Users/toshonjennings/opal/release-build/rollback-0.50.1/Perci.app",
+  "profileReset": false,
+  "publicReleasePublished": false,
+  "liveStartupVerification": "waiting-for-user-keychain-dialog",
+  "evidence": "Perci main process 10077 sampled in SecItemCopyMatching; SecurityAgent process 10133 running"
+}

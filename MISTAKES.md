@@ -1,5 +1,7 @@
 ## 2026-10-04 — Push protection rejected synthetic fixtures
 
+- Overlay-copying the update into an existing app bundle failed its signature resource check | Old bundle resources remained after ditto overlay | Installation was withheld until verification; original rollback preserved | Move the old bundle aside and install into a clean path, then verify the signature before launch.
+
 - Startup probe helper edit used the candidate-export cwd instead of the main checkout | Mixed build and source paths in one command | Helper edit failed without changing source; build continued | Use explicit workspace paths for edits and separate them from candidate builds.
 
 **What happened | Root cause | Consequence | The rule that prevents repeat**
