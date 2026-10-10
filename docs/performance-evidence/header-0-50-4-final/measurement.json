@@ -1,0 +1,1371 @@
+{
+  "label": "header-0-50-4-final",
+  "collectedAt": "2026-10-10T10:41:09.364Z",
+  "appBundle": "/Users/toshonjennings/opal/release-build/performance-0.50.4-final/mac-arm64/Perci.app",
+  "source": "cf036d73362816546d54bc98a7319c13c187bc28",
+  "dirty": "M MISTAKES.md\n M electron/main.cjs\n M package-lock.json\n M package.json\n M src/App.jsx\n M src/components/AgentsPanel.jsx\n M src/components/ArtifactPanel.jsx\n M src/components/DashboardMode.jsx\n M src/components/DockerMode.jsx\n M src/components/DotenvxMode.jsx\n M src/components/EidosMode.jsx\n M src/components/GithubOverviewMode.jsx\n M src/components/KeysafeMode.jsx\n M src/components/ModeSwitcher.jsx\n M src/components/NotesMode.jsx\n M src/components/OfficePanel.jsx\n M src/components/OfficeScene.jsx\n M src/components/OpencodeMode.jsx\n M src/components/SettingsModal.jsx\n M src/components/windows/DesktopHost.jsx\n M src/components/windows/WindowErrorBoundary.jsx\n M src/context/ModeContext.jsx\n M src/lib/persistentStore.js\n?? docs/Perci-Performance-Implementation-Plan.md\n?? docs/performance-evidence/\n?? electron/single-flight.cjs\n?? perci-security-audit.md\n?? scripts/measure-perci-performance.mjs\n?? scripts/probe-perci-visibility.mjs\n?? src/context/WindowActivityContext.jsx\n?? src/hooks/useVisiblePolling.js\n?? src/lib/agentDefinitions.js\n?? src/lib/lazyModuleRetry.js\n?? src/lib/performancePolicy.js\n?? src/lib/startIntegrationService.js\n?? src/lib/visiblePoller.js\n?? test/lazyModuleRetry.test.js\n?? test/performancePolicy.test.js\n?? test/runtime-evidence/startup-probe.json\n?? test/runtime-evidence/startup-profile/\n?? test/singleFlight.test.js\n?? test/visiblePoller.test.js",
+  "artifactSHA256": "aedb9a2347e92dbe7f5851fc5c0cddaccb9de0a2b70f9102e52005d8d6f5e852",
+  "hardware": {
+    "hostname": "MacBookPro2.local",
+    "memoryBytes": 17179869184
+  },
+  "protocol": {
+    "repetitions": 1,
+    "idleMs": 0,
+    "soakMs": 0,
+    "cycles": false,
+    "empty": false,
+    "syntheticBackends": true,
+    "playwrightFocusEmulation": true
+  },
+  "fixture": [
+    {
+      "id": "chat",
+      "modeId": "chat",
+      "title": "Chat",
+      "state": "minimized",
+      "z": 20,
+      "bounds": {
+        "x": 30,
+        "y": 20,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "code",
+      "modeId": "code",
+      "title": "Code",
+      "state": "normal",
+      "z": 21,
+      "bounds": {
+        "x": 38,
+        "y": 25,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "notes",
+      "modeId": "notes",
+      "title": "Workspace Notes",
+      "state": "normal",
+      "z": 22,
+      "bounds": {
+        "x": 46,
+        "y": 30,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "office",
+      "modeId": "office",
+      "title": "Perci HQ",
+      "state": "minimized",
+      "z": 23,
+      "bounds": {
+        "x": 54,
+        "y": 35,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "eidos",
+      "modeId": "eidos",
+      "title": "Eidos",
+      "state": "normal",
+      "z": 24,
+      "bounds": {
+        "x": 62,
+        "y": 40,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "keysafe",
+      "modeId": "keysafe",
+      "title": "KeySafe",
+      "state": "normal",
+      "z": 25,
+      "bounds": {
+        "x": 70,
+        "y": 45,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "dotenvx-gui",
+      "modeId": "dotenvx-gui",
+      "title": "Dotenvx GUI",
+      "state": "minimized",
+      "z": 26,
+      "bounds": {
+        "x": 78,
+        "y": 50,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "github-overview",
+      "modeId": "github-overview",
+      "title": "GitHub Overview",
+      "state": "normal",
+      "z": 27,
+      "bounds": {
+        "x": 86,
+        "y": 55,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "localhost",
+      "modeId": "localhost",
+      "title": "Localhost",
+      "state": "normal",
+      "z": 28,
+      "bounds": {
+        "x": 94,
+        "y": 60,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "docker",
+      "modeId": "docker",
+      "title": "Docker",
+      "state": "minimized",
+      "z": 29,
+      "bounds": {
+        "x": 102,
+        "y": 65,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "opencode-rig",
+      "modeId": "opencode-rig",
+      "title": "OpenCode Rig",
+      "state": "normal",
+      "z": 30,
+      "bounds": {
+        "x": 110,
+        "y": 70,
+        "width": 920,
+        "height": 620
+      }
+    }
+  ],
+  "caveats": [
+    "External starts and network are blocked in the disposable process.",
+    "These measurements isolate view initialization, not real backend startup. Office font lookup/data/font bytes are supplied locally as synthetic fixtures.",
+    "Summed process accounting is approximate; footprint errors are retained."
+  ],
+  "runs": [
+    {
+      "run": 0,
+      "profile": "/Users/toshonjennings/opal/docs/performance-evidence/header-0-50-4-final/profile-0-1791628871021",
+      "processLaunchMs": 11826,
+      "shellUsableMs": 2766,
+      "samples": [
+        {
+          "elapsedMs": 2970,
+          "version": "0.50.4",
+          "electron": "42.0.1",
+          "processes": [
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 1.346042,
+                "percentCPUUsage": 2.096460827557236,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 91771,
+              "type": "Browser",
+              "creationTime": 1791628871049.814,
+              "memory": {
+                "workingSetSize": 178688,
+                "peakWorkingSetSize": 178688
+              },
+              "sandboxed": false
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.350555,
+                "percentCPUUsage": 0.07179323548181238,
+                "idleWakeupsPerSecond": 319
+              },
+              "pid": 91868,
+              "type": "GPU",
+              "creationTime": 1791628878919.076,
+              "serviceName": "GPU",
+              "memory": {
+                "workingSetSize": 81472,
+                "peakWorkingSetSize": 81504
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.196618,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 91869,
+              "type": "Utility",
+              "creationTime": 1791628878930.454,
+              "serviceName": "network.mojom.NetworkService",
+              "name": "Network Service",
+              "memory": {
+                "workingSetSize": 52112,
+                "peakWorkingSetSize": 52176
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.193395,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 91873,
+              "type": "Tab",
+              "creationTime": 1791628879369.019,
+              "memory": {
+                "workingSetSize": 91776,
+                "peakWorkingSetSize": 96384
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.665568,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 91874,
+              "type": "Tab",
+              "creationTime": 1791628879389.831,
+              "memory": {
+                "workingSetSize": 262848,
+                "peakWorkingSetSize": 262848
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.099027,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 91879,
+              "type": "Tab",
+              "creationTime": 1791628879776.879,
+              "memory": {
+                "workingSetSize": 61776,
+                "peakWorkingSetSize": 77472
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.122387,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 91880,
+              "type": "Utility",
+              "creationTime": 1791628879784.395,
+              "serviceName": "audio.mojom.AudioService",
+              "name": "Audio Service",
+              "memory": {
+                "workingSetSize": 36432,
+                "peakWorkingSetSize": 44928
+              },
+              "sandboxed": true
+            }
+          ],
+          "guests": 0,
+          "calls": {
+            "agent-jobs:list": 1,
+            "openclaw:test-connection": 2,
+            "models:list": 2,
+            "credentials:status": 1
+          },
+          "sources": {
+            "dashboard": 1
+          },
+          "footprint": "======================================================================\nPerci Helper (Renderer) [91874]: 64-bit    Footprint: 163 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 163 MB\n    phys_footprint_peak: 163 MB\n\n======================================================================\nPerci [91771]: 64-bit    Footprint: 98 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 98 MB\n    phys_footprint_peak: 100 MB\n\n======================================================================\nPerci Helper (Renderer) [91873]: 64-bit    Footprint: 21 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 21 MB\n    phys_footprint_peak: 21 MB\n\n======================================================================\nPerci Helper [91868]: 64-bit    Footprint: 21 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 21 MB\n    phys_footprint_peak: 21 MB\n\n======================================================================\nPerci Helper (Renderer) [91879]: 64-bit    Footprint: 15 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 15 MB\n    phys_footprint_peak: 15 MB\n\n======================================================================\nPerci Helper [91869]: 64-bit    Footprint: 10 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 10 MB\n    phys_footprint_peak: 10 MB\n\n======================================================================\nPerci Helper [91880]: 64-bit    Footprint: 7761 KB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 7793 KB\n    phys_footprint_peak: 7793 KB\n\n======================================================================\nSummary Footprint: 334 MB\n======================================================================\n\n",
+          "requestedJsResourceEntries": []
+        }
+      ],
+      "diagnostics": [
+        "Request failed: https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "[stray-navigation] activeElement at unload: <button type=\"button\" class=\"perci-dock-item active\" title=\"Minimize Chat\" style=\"opacity: 1; transform: none;\"><span class=\"perci-dock-glyph\">CH</span><span class=\"perci-dock-label\">Chat</span><span class=\"perci-dock-dot\"></span></button>",
+        "Request failed: https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "[stray-navigation] activeElement at unload: <body>\n  <div id=\"root\"><div class=\"app h-screen max-h-screen flex flex-col bg-[var(--bg-primary)] overflow-hidden\"><header class=\"app-header glass-header select-none sticky top-0 z-50 flex-shrink-0 flex items-center justify-between gap-3 px-4 pb-2.5 pt-8\" style=\"app-region: drag;\"><div class=\"flex shrink-0 items-center\"><div title=\"Perci Desktop\" class=\"w-9 h-9 rounded-[8px] flex items-center jus"
+      ],
+      "viewport": {
+        "width": 1280,
+        "height": 900,
+        "devicePixelRatio": 2
+      },
+      "acceptance": [
+        {
+          "name": "icon header fits native widths with named tooltips and keyboard focus in both themes",
+          "passed": true
+        }
+      ],
+      "headerLayouts": [
+        {
+          "width": 1000,
+          "theme": "light",
+          "visibleText": "",
+          "documentOverflow": false,
+          "groupWidth": 457,
+          "groupScrollWidth": 652,
+          "modeGuideColor": "rgb(80, 80, 94)",
+          "chatGuideColor": "rgb(249, 115, 22)",
+          "names": [
+            {
+              "title": "New Chat",
+              "label": "New Chat"
+            },
+            {
+              "title": "Dashboard",
+              "label": "Dashboard"
+            },
+            {
+              "title": "Map",
+              "label": "Map"
+            },
+            {
+              "title": "Now",
+              "label": "Now"
+            },
+            {
+              "title": "Desk",
+              "label": "Desk"
+            },
+            {
+              "title": "Chat",
+              "label": "Chat"
+            },
+            {
+              "title": "Ensemble",
+              "label": "Ensemble"
+            },
+            {
+              "title": "Cowork",
+              "label": "Cowork"
+            },
+            {
+              "title": "Code",
+              "label": "Code"
+            },
+            {
+              "title": "Shipyard",
+              "label": "Shipyard"
+            },
+            {
+              "title": "Power Workspace",
+              "label": "Power Workspace"
+            },
+            {
+              "title": "Docket",
+              "label": "Docket"
+            },
+            {
+              "title": "Git Shells",
+              "label": "Git Shells"
+            },
+            {
+              "title": "Notes",
+              "label": "Notes"
+            },
+            {
+              "title": "Autoresearch",
+              "label": "Autoresearch"
+            },
+            {
+              "title": "Agents",
+              "label": "Agents"
+            },
+            {
+              "title": "Office",
+              "label": "Office"
+            },
+            {
+              "title": "Build",
+              "label": "Build"
+            },
+            {
+              "title": "Mission",
+              "label": "Mission"
+            },
+            {
+              "title": "Localhost",
+              "label": "Localhost"
+            },
+            {
+              "title": "Open mode guide",
+              "label": "Open mode guide"
+            },
+            {
+              "title": "Open Chat Guide",
+              "label": "Open Chat Guide"
+            },
+            {
+              "title": "OpenClaw: Local OpenClaw",
+              "label": "OpenClaw"
+            },
+            {
+              "title": "Hermes Agent",
+              "label": "Hermes Agent"
+            },
+            {
+              "title": "Skills Management",
+              "label": "Skills Management"
+            },
+            {
+              "title": "AgentMail",
+              "label": "AgentMail"
+            },
+            {
+              "title": "AutoForge — Autonomous coding agent",
+              "label": "AutoForge — Autonomous coding agent"
+            },
+            {
+              "title": "Toggle Terminal",
+              "label": "Toggle Terminal"
+            },
+            {
+              "title": "Theme: light. Click to cycle modes.",
+              "label": "Theme: light. Click to cycle modes."
+            },
+            {
+              "title": "Enable Incognito Mode",
+              "label": "Enable Incognito Mode"
+            }
+          ],
+          "clippedUtilities": []
+        },
+        {
+          "width": 1000,
+          "theme": "dark",
+          "visibleText": "",
+          "documentOverflow": false,
+          "groupWidth": 457,
+          "groupScrollWidth": 652,
+          "modeGuideColor": "rgb(161, 161, 170)",
+          "chatGuideColor": "rgb(249, 115, 22)",
+          "names": [
+            {
+              "title": "New Chat",
+              "label": "New Chat"
+            },
+            {
+              "title": "Dashboard",
+              "label": "Dashboard"
+            },
+            {
+              "title": "Map",
+              "label": "Map"
+            },
+            {
+              "title": "Now",
+              "label": "Now"
+            },
+            {
+              "title": "Desk",
+              "label": "Desk"
+            },
+            {
+              "title": "Chat",
+              "label": "Chat"
+            },
+            {
+              "title": "Ensemble",
+              "label": "Ensemble"
+            },
+            {
+              "title": "Cowork",
+              "label": "Cowork"
+            },
+            {
+              "title": "Code",
+              "label": "Code"
+            },
+            {
+              "title": "Shipyard",
+              "label": "Shipyard"
+            },
+            {
+              "title": "Power Workspace",
+              "label": "Power Workspace"
+            },
+            {
+              "title": "Docket",
+              "label": "Docket"
+            },
+            {
+              "title": "Git Shells",
+              "label": "Git Shells"
+            },
+            {
+              "title": "Notes",
+              "label": "Notes"
+            },
+            {
+              "title": "Autoresearch",
+              "label": "Autoresearch"
+            },
+            {
+              "title": "Agents",
+              "label": "Agents"
+            },
+            {
+              "title": "Office",
+              "label": "Office"
+            },
+            {
+              "title": "Build",
+              "label": "Build"
+            },
+            {
+              "title": "Mission",
+              "label": "Mission"
+            },
+            {
+              "title": "Localhost",
+              "label": "Localhost"
+            },
+            {
+              "title": "Open mode guide",
+              "label": "Open mode guide"
+            },
+            {
+              "title": "Open Chat Guide",
+              "label": "Open Chat Guide"
+            },
+            {
+              "title": "OpenClaw: Local OpenClaw",
+              "label": "OpenClaw"
+            },
+            {
+              "title": "Hermes Agent",
+              "label": "Hermes Agent"
+            },
+            {
+              "title": "Skills Management",
+              "label": "Skills Management"
+            },
+            {
+              "title": "AgentMail",
+              "label": "AgentMail"
+            },
+            {
+              "title": "AutoForge — Autonomous coding agent",
+              "label": "AutoForge — Autonomous coding agent"
+            },
+            {
+              "title": "Toggle Terminal",
+              "label": "Toggle Terminal"
+            },
+            {
+              "title": "Theme: dark. Click to cycle modes.",
+              "label": "Theme: dark. Click to cycle modes."
+            },
+            {
+              "title": "Enable Incognito Mode",
+              "label": "Enable Incognito Mode"
+            }
+          ],
+          "clippedUtilities": []
+        },
+        {
+          "width": 1200,
+          "theme": "light",
+          "visibleText": "",
+          "documentOverflow": false,
+          "groupWidth": 652,
+          "groupScrollWidth": 652,
+          "modeGuideColor": "rgb(80, 80, 94)",
+          "chatGuideColor": "rgb(249, 115, 22)",
+          "names": [
+            {
+              "title": "New Chat",
+              "label": "New Chat"
+            },
+            {
+              "title": "Dashboard",
+              "label": "Dashboard"
+            },
+            {
+              "title": "Map",
+              "label": "Map"
+            },
+            {
+              "title": "Now",
+              "label": "Now"
+            },
+            {
+              "title": "Desk",
+              "label": "Desk"
+            },
+            {
+              "title": "Chat",
+              "label": "Chat"
+            },
+            {
+              "title": "Ensemble",
+              "label": "Ensemble"
+            },
+            {
+              "title": "Cowork",
+              "label": "Cowork"
+            },
+            {
+              "title": "Code",
+              "label": "Code"
+            },
+            {
+              "title": "Shipyard",
+              "label": "Shipyard"
+            },
+            {
+              "title": "Power Workspace",
+              "label": "Power Workspace"
+            },
+            {
+              "title": "Docket",
+              "label": "Docket"
+            },
+            {
+              "title": "Git Shells",
+              "label": "Git Shells"
+            },
+            {
+              "title": "Notes",
+              "label": "Notes"
+            },
+            {
+              "title": "Autoresearch",
+              "label": "Autoresearch"
+            },
+            {
+              "title": "Agents",
+              "label": "Agents"
+            },
+            {
+              "title": "Office",
+              "label": "Office"
+            },
+            {
+              "title": "Build",
+              "label": "Build"
+            },
+            {
+              "title": "Mission",
+              "label": "Mission"
+            },
+            {
+              "title": "Localhost",
+              "label": "Localhost"
+            },
+            {
+              "title": "Open mode guide",
+              "label": "Open mode guide"
+            },
+            {
+              "title": "Open Chat Guide",
+              "label": "Open Chat Guide"
+            },
+            {
+              "title": "OpenClaw: Local OpenClaw",
+              "label": "OpenClaw"
+            },
+            {
+              "title": "Hermes Agent",
+              "label": "Hermes Agent"
+            },
+            {
+              "title": "Skills Management",
+              "label": "Skills Management"
+            },
+            {
+              "title": "AgentMail",
+              "label": "AgentMail"
+            },
+            {
+              "title": "AutoForge — Autonomous coding agent",
+              "label": "AutoForge — Autonomous coding agent"
+            },
+            {
+              "title": "Toggle Terminal",
+              "label": "Toggle Terminal"
+            },
+            {
+              "title": "Theme: light. Click to cycle modes.",
+              "label": "Theme: light. Click to cycle modes."
+            },
+            {
+              "title": "Enable Incognito Mode",
+              "label": "Enable Incognito Mode"
+            }
+          ],
+          "clippedUtilities": []
+        },
+        {
+          "width": 1200,
+          "theme": "dark",
+          "visibleText": "",
+          "documentOverflow": false,
+          "groupWidth": 652,
+          "groupScrollWidth": 652,
+          "modeGuideColor": "rgb(161, 161, 170)",
+          "chatGuideColor": "rgb(249, 115, 22)",
+          "names": [
+            {
+              "title": "New Chat",
+              "label": "New Chat"
+            },
+            {
+              "title": "Dashboard",
+              "label": "Dashboard"
+            },
+            {
+              "title": "Map",
+              "label": "Map"
+            },
+            {
+              "title": "Now",
+              "label": "Now"
+            },
+            {
+              "title": "Desk",
+              "label": "Desk"
+            },
+            {
+              "title": "Chat",
+              "label": "Chat"
+            },
+            {
+              "title": "Ensemble",
+              "label": "Ensemble"
+            },
+            {
+              "title": "Cowork",
+              "label": "Cowork"
+            },
+            {
+              "title": "Code",
+              "label": "Code"
+            },
+            {
+              "title": "Shipyard",
+              "label": "Shipyard"
+            },
+            {
+              "title": "Power Workspace",
+              "label": "Power Workspace"
+            },
+            {
+              "title": "Docket",
+              "label": "Docket"
+            },
+            {
+              "title": "Git Shells",
+              "label": "Git Shells"
+            },
+            {
+              "title": "Notes",
+              "label": "Notes"
+            },
+            {
+              "title": "Autoresearch",
+              "label": "Autoresearch"
+            },
+            {
+              "title": "Agents",
+              "label": "Agents"
+            },
+            {
+              "title": "Office",
+              "label": "Office"
+            },
+            {
+              "title": "Build",
+              "label": "Build"
+            },
+            {
+              "title": "Mission",
+              "label": "Mission"
+            },
+            {
+              "title": "Localhost",
+              "label": "Localhost"
+            },
+            {
+              "title": "Open mode guide",
+              "label": "Open mode guide"
+            },
+            {
+              "title": "Open Chat Guide",
+              "label": "Open Chat Guide"
+            },
+            {
+              "title": "OpenClaw: Local OpenClaw",
+              "label": "OpenClaw"
+            },
+            {
+              "title": "Hermes Agent",
+              "label": "Hermes Agent"
+            },
+            {
+              "title": "Skills Management",
+              "label": "Skills Management"
+            },
+            {
+              "title": "AgentMail",
+              "label": "AgentMail"
+            },
+            {
+              "title": "AutoForge — Autonomous coding agent",
+              "label": "AutoForge — Autonomous coding agent"
+            },
+            {
+              "title": "Toggle Terminal",
+              "label": "Toggle Terminal"
+            },
+            {
+              "title": "Theme: dark. Click to cycle modes.",
+              "label": "Theme: dark. Click to cycle modes."
+            },
+            {
+              "title": "Enable Incognito Mode",
+              "label": "Enable Incognito Mode"
+            }
+          ],
+          "clippedUtilities": []
+        },
+        {
+          "width": 1440,
+          "theme": "light",
+          "visibleText": "",
+          "documentOverflow": false,
+          "groupWidth": 652,
+          "groupScrollWidth": 652,
+          "modeGuideColor": "rgb(80, 80, 94)",
+          "chatGuideColor": "rgb(249, 115, 22)",
+          "names": [
+            {
+              "title": "New Chat",
+              "label": "New Chat"
+            },
+            {
+              "title": "Dashboard",
+              "label": "Dashboard"
+            },
+            {
+              "title": "Map",
+              "label": "Map"
+            },
+            {
+              "title": "Now",
+              "label": "Now"
+            },
+            {
+              "title": "Desk",
+              "label": "Desk"
+            },
+            {
+              "title": "Chat",
+              "label": "Chat"
+            },
+            {
+              "title": "Ensemble",
+              "label": "Ensemble"
+            },
+            {
+              "title": "Cowork",
+              "label": "Cowork"
+            },
+            {
+              "title": "Code",
+              "label": "Code"
+            },
+            {
+              "title": "Shipyard",
+              "label": "Shipyard"
+            },
+            {
+              "title": "Power Workspace",
+              "label": "Power Workspace"
+            },
+            {
+              "title": "Docket",
+              "label": "Docket"
+            },
+            {
+              "title": "Git Shells",
+              "label": "Git Shells"
+            },
+            {
+              "title": "Notes",
+              "label": "Notes"
+            },
+            {
+              "title": "Autoresearch",
+              "label": "Autoresearch"
+            },
+            {
+              "title": "Agents",
+              "label": "Agents"
+            },
+            {
+              "title": "Office",
+              "label": "Office"
+            },
+            {
+              "title": "Build",
+              "label": "Build"
+            },
+            {
+              "title": "Mission",
+              "label": "Mission"
+            },
+            {
+              "title": "Localhost",
+              "label": "Localhost"
+            },
+            {
+              "title": "Open mode guide",
+              "label": "Open mode guide"
+            },
+            {
+              "title": "Open Chat Guide",
+              "label": "Open Chat Guide"
+            },
+            {
+              "title": "OpenClaw: Local OpenClaw",
+              "label": "OpenClaw"
+            },
+            {
+              "title": "Hermes Agent",
+              "label": "Hermes Agent"
+            },
+            {
+              "title": "Skills Management",
+              "label": "Skills Management"
+            },
+            {
+              "title": "AgentMail",
+              "label": "AgentMail"
+            },
+            {
+              "title": "AutoForge — Autonomous coding agent",
+              "label": "AutoForge — Autonomous coding agent"
+            },
+            {
+              "title": "Toggle Terminal",
+              "label": "Toggle Terminal"
+            },
+            {
+              "title": "Theme: light. Click to cycle modes.",
+              "label": "Theme: light. Click to cycle modes."
+            },
+            {
+              "title": "Enable Incognito Mode",
+              "label": "Enable Incognito Mode"
+            }
+          ],
+          "clippedUtilities": []
+        },
+        {
+          "width": 1440,
+          "theme": "dark",
+          "visibleText": "",
+          "documentOverflow": false,
+          "groupWidth": 652,
+          "groupScrollWidth": 652,
+          "modeGuideColor": "rgb(161, 161, 170)",
+          "chatGuideColor": "rgb(249, 115, 22)",
+          "names": [
+            {
+              "title": "New Chat",
+              "label": "New Chat"
+            },
+            {
+              "title": "Dashboard",
+              "label": "Dashboard"
+            },
+            {
+              "title": "Map",
+              "label": "Map"
+            },
+            {
+              "title": "Now",
+              "label": "Now"
+            },
+            {
+              "title": "Desk",
+              "label": "Desk"
+            },
+            {
+              "title": "Chat",
+              "label": "Chat"
+            },
+            {
+              "title": "Ensemble",
+              "label": "Ensemble"
+            },
+            {
+              "title": "Cowork",
+              "label": "Cowork"
+            },
+            {
+              "title": "Code",
+              "label": "Code"
+            },
+            {
+              "title": "Shipyard",
+              "label": "Shipyard"
+            },
+            {
+              "title": "Power Workspace",
+              "label": "Power Workspace"
+            },
+            {
+              "title": "Docket",
+              "label": "Docket"
+            },
+            {
+              "title": "Git Shells",
+              "label": "Git Shells"
+            },
+            {
+              "title": "Notes",
+              "label": "Notes"
+            },
+            {
+              "title": "Autoresearch",
+              "label": "Autoresearch"
+            },
+            {
+              "title": "Agents",
+              "label": "Agents"
+            },
+            {
+              "title": "Office",
+              "label": "Office"
+            },
+            {
+              "title": "Build",
+              "label": "Build"
+            },
+            {
+              "title": "Mission",
+              "label": "Mission"
+            },
+            {
+              "title": "Localhost",
+              "label": "Localhost"
+            },
+            {
+              "title": "Open mode guide",
+              "label": "Open mode guide"
+            },
+            {
+              "title": "Open Chat Guide",
+              "label": "Open Chat Guide"
+            },
+            {
+              "title": "OpenClaw: Local OpenClaw",
+              "label": "OpenClaw"
+            },
+            {
+              "title": "Hermes Agent",
+              "label": "Hermes Agent"
+            },
+            {
+              "title": "Skills Management",
+              "label": "Skills Management"
+            },
+            {
+              "title": "AgentMail",
+              "label": "AgentMail"
+            },
+            {
+              "title": "AutoForge — Autonomous coding agent",
+              "label": "AutoForge — Autonomous coding agent"
+            },
+            {
+              "title": "Toggle Terminal",
+              "label": "Toggle Terminal"
+            },
+            {
+              "title": "Theme: dark. Click to cycle modes.",
+              "label": "Theme: dark. Click to cycle modes."
+            },
+            {
+              "title": "Enable Incognito Mode",
+              "label": "Enable Incognito Mode"
+            }
+          ],
+          "clippedUtilities": []
+        }
+      ],
+      "firstActivationMs": {
+        "chat": 552
+      },
+      "packagedModuleImports": [
+        {
+          "file": "ChatMode-Dk_AWrIy.js",
+          "passed": true
+        },
+        {
+          "file": "CodeMode-J8ru-Ku1.js",
+          "passed": true
+        },
+        {
+          "file": "CoworkMode-Dwq2k6if.js",
+          "passed": true
+        },
+        {
+          "file": "MissionControl-OrlU83mP.js",
+          "passed": true
+        },
+        {
+          "file": "BuildMode-DyDrjbhd.js",
+          "passed": true
+        },
+        {
+          "file": "AgentsPanel-BFwTy3QR.js",
+          "passed": true
+        },
+        {
+          "file": "CodexMicroMode-CogD-1N-.js",
+          "passed": true
+        },
+        {
+          "file": "AutoresearchPanel-C6eXp7QF.js",
+          "passed": true
+        },
+        {
+          "file": "OfficePanel-Dm3D9Duq.js",
+          "passed": true
+        },
+        {
+          "file": "HermesMode-D6pSM3lQ.js",
+          "passed": true
+        },
+        {
+          "file": "GDashMode-DaT2S309.js",
+          "passed": true
+        },
+        {
+          "file": "LighthouseMode-NuJZN1j0.js",
+          "passed": true
+        },
+        {
+          "file": "PowerWorkspaceMode-BX5zKROY.js",
+          "passed": true
+        },
+        {
+          "file": "PerciMapMode-DztFtp0X.js",
+          "passed": true
+        },
+        {
+          "file": "PerciNowMode-BOQQZKfd.js",
+          "passed": true
+        },
+        {
+          "file": "PerciDeskMode-RiRYyJwS.js",
+          "passed": true
+        },
+        {
+          "file": "NotesMode-CisZeUlk.js",
+          "passed": true
+        },
+        {
+          "file": "BarsMode-BiWI6xqX.js",
+          "passed": true
+        },
+        {
+          "file": "MarkItDownMode-BSqDwGYI.js",
+          "passed": true
+        },
+        {
+          "file": "BillboardMode-BGEwSOif.js",
+          "passed": true
+        },
+        {
+          "file": "StudioOSMode-DCIHXF5m.js",
+          "passed": true
+        },
+        {
+          "file": "ProjectsMode-MdeI7PcC.js",
+          "passed": true
+        },
+        {
+          "file": "EidosMode-CD-DXj8u.js",
+          "passed": true
+        },
+        {
+          "file": "LocalhostMode-qAPRg5Rl.js",
+          "passed": true
+        },
+        {
+          "file": "SkillsMode-Dt5veOaI.js",
+          "passed": true
+        },
+        {
+          "file": "EnsembleMode-Bqei6Sgk.js",
+          "passed": true
+        },
+        {
+          "file": "CleanmacMode-RBoGvDUz.js",
+          "passed": true
+        },
+        {
+          "file": "AutoforgeMode-uZPWYJ79.js",
+          "passed": true
+        },
+        {
+          "file": "AgentMailMode-t9ByeddT.js",
+          "passed": true
+        },
+        {
+          "file": "PackagesMode-BnDYLgfY.js",
+          "passed": true
+        },
+        {
+          "file": "OpenNotebookMode-BaggQbVZ.js",
+          "passed": true
+        },
+        {
+          "file": "IptvMode-DuPwjBUl.js",
+          "passed": true
+        },
+        {
+          "file": "SimplexMode-C12RM4g9.js",
+          "passed": true
+        },
+        {
+          "file": "PxpipeMode-BrNV8Xdj.js",
+          "passed": true
+        },
+        {
+          "file": "KeysafeMode-hJYNKqMJ.js",
+          "passed": true
+        },
+        {
+          "file": "ApfelMode-Dg2--MFh.js",
+          "passed": true
+        },
+        {
+          "file": "DotenvxMode-B9DqQEiE.js",
+          "passed": true
+        },
+        {
+          "file": "OpencodeMode-CWacMQyg.js",
+          "passed": true
+        },
+        {
+          "file": "DockerMode-B2ge2kTh.js",
+          "passed": true
+        },
+        {
+          "file": "DbInspectorMode-DFHv5Nh0.js",
+          "passed": true
+        },
+        {
+          "file": "GithubOverviewMode-CVL-51hV.js",
+          "passed": true
+        },
+        {
+          "file": "AliasManagerMode-D01BuIpo.js",
+          "passed": true
+        },
+        {
+          "file": "ShipyardMode-Dcddd1va.js",
+          "passed": true
+        },
+        {
+          "file": "DocketMode-DRYpz6ua.js",
+          "passed": true
+        },
+        {
+          "file": "SystemSettingsMode-DVt7dUs-.js",
+          "passed": true
+        },
+        {
+          "file": "SettingsModal--K4AnEDI.js",
+          "passed": true
+        },
+        {
+          "file": "ArtifactWindow-bciIEsUt.js",
+          "passed": true
+        },
+        {
+          "file": "ResearchResultsWindow-CQ0E5LNK.js",
+          "passed": true
+        },
+        {
+          "file": "PwaShortcutWindow-CqjYlCQz.js",
+          "passed": true
+        },
+        {
+          "file": "Terminal-pldPgGa8.js",
+          "passed": true
+        }
+      ],
+      "processExit": {
+        "code": 0,
+        "signal": null,
+        "at": "2026-10-10T10:41:56.631Z"
+      }
+    }
+  ]
+}

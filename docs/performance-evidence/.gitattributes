@@ -1,0 +1,3 @@
+# Unified diff context and captured CLI output retain their original whitespace.
+*.patch -whitespace
+*.txt whitespace=-blank-at-eof

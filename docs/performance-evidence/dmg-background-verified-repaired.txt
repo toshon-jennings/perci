@@ -1,0 +1,11 @@
+==> converting to read-write
+==> mounting
+    volume: Perci 0.50.3-arm64 2
+    background asset: background.png
+    app: Perci.app
+==> handing off to Finder
+    backgroundType=2 alias=706 bytes  (Finder-written)
+==> repacking
+
+done: /Users/toshonjennings/opal/release-build/performance-0.50.3-verified/Perci-0.50.3-arm64.dmg
+Mount it and toggle Light/Dark with the window open.

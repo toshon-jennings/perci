@@ -1,3 +1,4 @@
+import { AUTOMATIC_SERVICES } from '../lib/performancePolicy';
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Key, Globe, RefreshCw, ChevronDown, Check, Wifi, WifiOff, User, ScrollText, Search, Server, Plus, Trash2, Monitor, Moon, Sun, Bot, Database, Keyboard, Palette, Zap, ExternalLink } from 'lucide-react';
@@ -95,7 +96,7 @@ export function SettingsModal({ isOpen, onClose }) {
         setCycleOrder,
         cycleScope,
         setCycleScope,
-        openWindow,
+        openWindow, performancePolicy, updatePerformancePolicy,
     } = useMode();
     const { themeMode, setThemeMode, resolvedTheme } = useTheme();
 
@@ -631,6 +632,32 @@ export function SettingsModal({ isOpen, onClose }) {
 
                 {/* Scrollable body */}
                 <div className="flex-1 overflow-y-auto px-6 py-5 space-y-0">
+
+                    <Section title="Performance" icon={Zap}>
+                        <p className="text-sm text-[var(--text-secondary)]">Remember your layout without loading every tool. Changes to restoration apply next time Perci opens.</p>
+                        <label className="flex items-center justify-between gap-4 py-2 text-sm text-[var(--text-primary)]">
+                            Load restored tools when selected
+                            <input type="checkbox" checked={performancePolicy.restoreViews === 'deferred'} onChange={event => updatePerformancePolicy({ ...performancePolicy, restoreViews: event.target.checked ? 'deferred' : 'immediate' })} className="accent-[var(--accent)]" />
+                        </label>
+                        <label className="flex items-center justify-between gap-4 py-2 text-sm text-[var(--text-primary)]">
+                            Pause hidden tool updates
+                            <input type="checkbox" checked={performancePolicy.pauseHiddenViews} onChange={event => updatePerformancePolicy({ ...performancePolicy, pauseHiddenViews: event.target.checked })} className="accent-[var(--accent)]" />
+                        </label>
+                        <p className="text-xs text-[var(--text-secondary)]">Pausing updates keeps your work in memory. Running jobs and services continue.</p>
+                        <div className="divide-y divide-[var(--border)]">
+                            {Object.entries(AUTOMATIC_SERVICES).map(([id, label]) => (
+                                <label key={id} className="flex items-center justify-between gap-4 py-2 text-sm text-[var(--text-primary)]">
+                                    {label}
+                                    <select aria-label={`${label} service startup`} value={performancePolicy.services[id]} onChange={event => updatePerformancePolicy({ ...performancePolicy, services: { ...performancePolicy.services, [id]: event.target.value } })} className="rounded-md border border-[var(--border)] bg-[var(--bg-secondary)] px-2 py-1 text-[var(--text-primary)]">
+                                        <option value="on-open">When opened</option>
+                                        <option value="manual">Manually</option>
+                                        <option value="on-startup">With Perci</option>
+                                    </select>
+                                </label>
+                            ))}
+                        </div>
+                        <p className="text-xs text-[var(--text-secondary)]">“With Perci” applies on the next launch. Startup choices do not stop services already running.</p>
+                    </Section>
 
                     {/* Profile */}
                     <Section title="Profile" icon={User} defaultOpen={true}>

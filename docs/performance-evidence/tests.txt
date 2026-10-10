@@ -1,0 +1,71 @@
+npm notice run perci@0.50.3 test
+npm notice run vitest run
+
+ RUN  v1.6.1 /Users/toshonjennings/opal
+
+ ✓ test/billboardProviders.test.js  (8 tests) 5ms
+ ✓ test/codexAccount.test.js  (9 tests) 5ms
+ ✓ test/harnessMemory.test.js  (11 tests) 5ms
+ ✓ test/billboardPricing.test.js  (7 tests) 4ms
+ ✓ test/ensemble.test.js  (12 tests) 7ms
+ ✓ test/voiceTranscription.test.js  (7 tests) 9ms
+ ✓ test/abortPropagation.test.js  (8 tests) 5ms
+ ✓ test/harnessModules.test.js  (11 tests) 6ms
+ ✓ test/powerWorkspace.test.js  (16 tests) 7ms
+ ✓ test/brain.test.js  (10 tests) 8ms
+ ✓ test/perciSurfaceMap.test.js  (11 tests) 8ms
+ ✓ test/preview-generator.test.js  (4 tests) 3ms
+ ✓ test/outboundDataPolicy.test.js  (6 tests) 11ms
+ ✓ test/codexMicro.test.js  (7 tests) 4ms
+ ✓ test/barsIdeaBrowser.test.js  (2 tests) 5ms
+ ✓ test/missionControl.test.js  (4 tests) 5ms
+ ✓ test/credentialStore.test.js  (6 tests) 13ms
+stderr | test/deepinfraModels.test.js > fetchDeepInfraModels > returns an empty list rather than throwing when the catalog fails
+Error fetching DeepInfra models: Error: Failed to fetch DeepInfra models
+    at ModelService.fetchDeepInfraModels (/Users/toshonjennings/opal/src/lib/llm/ModelService.js:584:37)
+    at /Users/toshonjennings/opal/test/deepinfraModels.test.js:98:9
+    at runTest (file:///Users/toshonjennings/opal/node_modules/@vitest/runner/dist/index.js:781:11)
+    at runSuite (file:///Users/toshonjennings/opal/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///Users/toshonjennings/opal/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///Users/toshonjennings/opal/node_modules/@vitest/runner/dist/index.js:958:5)
+    at startTests (file:///Users/toshonjennings/opal/node_modules/@vitest/runner/dist/index.js:967:3)
+    at file:///Users/toshonjennings/opal/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+    at withEnv (file:///Users/toshonjennings/opal/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:83:5)
+    at run (file:///Users/toshonjennings/opal/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:105:3)
+
+ ✓ test/deepinfraModels.test.js  (6 tests) 51ms
+ ✓ test/browserIdentity.test.js  (6 tests) 22ms
+ ✓ test/klipit-extension.test.js  (7 tests) 3ms
+ ✓ test/workspaceGrants.test.js  (6 tests) 134ms
+ ✓ test/localServices.test.js  (8 tests) 19ms
+ ✓ test/guestPolicy.test.js  (6 tests) 4ms
+ ✓ test/localhostHealth.test.js  (4 tests) 27ms
+ ✓ test/browserDeveloperTools.test.js  (4 tests) 3ms
+ ✓ test/clients.tools.test.js  (2 tests) 4ms
+ ✓ test/modelBroker.test.js  (3 tests) 64ms
+ ✓ test/perciNow.test.js  (1 test) 4ms
+ ✓ test/perciContext.test.js  (1 test) 10ms
+ ✓ test/redactConsole.test.js  (3 tests) 3ms
+ ✓ test/armsGraph.test.js  (3 tests) 3ms
+ ✓ test/weatherService.test.js  (5 tests) 3ms
+ ✓ test/preloadStream.test.js  (2 tests) 5ms
+ ✓ test/performancePolicy.test.js  (3 tests) 3ms
+ ✓ test/visiblePoller.test.js  (2 tests) 28ms
+ ✓ test/taste.test.js  (4 tests) 2ms
+ ✓ test/toolCallAbort.test.js  (3 tests) 474ms
+ ✓ test/macUpdateManifest.test.js  (3 tests) 4ms
+ ✓ test/notesTags.test.js  (7 tests) 8ms
+ ✓ test/afterPack.test.js  (2 tests) 7ms
+ ✓ test/keysafeService.test.js  (4 tests) 3ms
+ ✓ test/singleFlight.test.js  (2 tests) 3ms
+ ✓ test/persistentStoreSecrets.test.js  (2 tests) 2ms
+ ✓ test/note-crypto.test.js  (4 tests) 1ms
+ ✓ test/dotenvxWindow.test.js  (1 test) 2ms
+ ✓ test/notesMarkdownTable.test.js  (1 test) 11ms
+ ✓ test/notesMarkdownList.test.js  (1 test) 13ms
+
+ Test Files  47 passed (47)
+      Tests  245 passed (245)
+   Start at  20:35:39
+   Duration  1.43s (transform 960ms, setup 831ms, collect 2.76s, tests 1.03s, environment 6ms, prepare 2.79s)
+

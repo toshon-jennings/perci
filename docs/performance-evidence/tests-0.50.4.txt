@@ -1,0 +1,72 @@
+npm notice run perci@0.50.4 test
+npm notice run vitest run
+
+ RUN  v1.6.1 /Users/toshonjennings/opal
+
+ ✓ test/codexAccount.test.js  (9 tests) 10ms
+ ✓ test/billboardPricing.test.js  (7 tests) 8ms
+ ✓ test/harnessMemory.test.js  (11 tests) 18ms
+ ✓ test/billboardProviders.test.js  (8 tests) 13ms
+ ✓ test/abortPropagation.test.js  (8 tests) 26ms
+ ✓ test/ensemble.test.js  (12 tests) 45ms
+ ✓ test/voiceTranscription.test.js  (7 tests) 22ms
+ ✓ test/powerWorkspace.test.js  (16 tests) 6ms
+ ✓ test/harnessModules.test.js  (11 tests) 9ms
+ ✓ test/brain.test.js  (10 tests) 37ms
+ ✓ test/perciSurfaceMap.test.js  (11 tests) 12ms
+ ✓ test/preview-generator.test.js  (4 tests) 22ms
+ ✓ test/codexMicro.test.js  (7 tests) 7ms
+stderr | test/deepinfraModels.test.js > fetchDeepInfraModels > returns an empty list rather than throwing when the catalog fails
+Error fetching DeepInfra models: Error: Failed to fetch DeepInfra models
+    at ModelService.fetchDeepInfraModels (/Users/toshonjennings/opal/src/lib/llm/ModelService.js:584:37)
+    at /Users/toshonjennings/opal/test/deepinfraModels.test.js:98:9
+    at runTest (file:///Users/toshonjennings/opal/node_modules/@vitest/runner/dist/index.js:781:11)
+    at runSuite (file:///Users/toshonjennings/opal/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///Users/toshonjennings/opal/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///Users/toshonjennings/opal/node_modules/@vitest/runner/dist/index.js:958:5)
+    at startTests (file:///Users/toshonjennings/opal/node_modules/@vitest/runner/dist/index.js:967:3)
+    at file:///Users/toshonjennings/opal/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:116:7
+    at withEnv (file:///Users/toshonjennings/opal/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:83:5)
+    at run (file:///Users/toshonjennings/opal/node_modules/vitest/dist/chunks/runtime-runBaseTests.oAvMKtQC.js:105:3)
+
+ ✓ test/deepinfraModels.test.js  (6 tests) 76ms
+ ✓ test/workspaceGrants.test.js  (6 tests) 242ms
+ ✓ test/credentialStore.test.js  (6 tests) 11ms
+ ✓ test/barsIdeaBrowser.test.js  (2 tests) 5ms
+ ✓ test/missionControl.test.js  (4 tests) 20ms
+ ✓ test/browserIdentity.test.js  (6 tests) 14ms
+ ✓ test/klipit-extension.test.js  (7 tests) 7ms
+ ✓ test/outboundDataPolicy.test.js  (6 tests) 7ms
+ ✓ test/localServices.test.js  (8 tests) 6ms
+ ✓ test/modelBroker.test.js  (3 tests) 79ms
+ ✓ test/guestPolicy.test.js  (6 tests) 8ms
+ ✓ test/clients.tools.test.js  (2 tests) 4ms
+ ✓ test/localhostHealth.test.js  (4 tests) 104ms
+ ✓ test/browserDeveloperTools.test.js  (4 tests) 9ms
+ ✓ test/perciNow.test.js  (1 test) 3ms
+ ✓ test/perciContext.test.js  (1 test) 121ms
+ ✓ test/redactConsole.test.js  (3 tests) 5ms
+ ✓ test/toolCallAbort.test.js  (3 tests) 584ms
+ ✓ test/visiblePoller.test.js  (2 tests) 9ms
+ ✓ test/armsGraph.test.js  (3 tests) 4ms
+ ✓ test/taste.test.js  (4 tests) 4ms
+ ✓ test/performancePolicy.test.js  (3 tests) 3ms
+ ✓ test/weatherService.test.js  (5 tests) 4ms
+ ✓ test/preloadStream.test.js  (2 tests) 7ms
+ ✓ test/notesTags.test.js  (7 tests) 6ms
+ ✓ test/lazyModuleRetry.test.js  (3 tests) 2ms
+ ✓ test/keysafeService.test.js  (4 tests) 6ms
+ ✓ test/macUpdateManifest.test.js  (3 tests) 3ms
+ ✓ test/singleFlight.test.js  (2 tests) 6ms
+ ✓ test/afterPack.test.js  (2 tests) 8ms
+ ✓ test/note-crypto.test.js  (4 tests) 2ms
+ ✓ test/persistentStoreSecrets.test.js  (2 tests) 92ms
+ ✓ test/notesMarkdownList.test.js  (1 test) 21ms
+ ✓ test/notesMarkdownTable.test.js  (1 test) 20ms
+ ✓ test/dotenvxWindow.test.js  (1 test) 2ms
+
+ Test Files  48 passed (48)
+      Tests  248 passed (248)
+   Start at  06:34:24
+   Duration  4.52s (transform 2.19s, setup 2.48s, collect 8.39s, tests 1.74s, environment 95ms, prepare 8.86s)
+

@@ -30,6 +30,7 @@ const SESSION_ONLY_SECRET_KEYS = new Set([
 ]);
 
 const PERSISTED_KEYS = [
+    'perci_performance:v1',
     'chat_history',
     'current_chat_id',
     'perci_projects',

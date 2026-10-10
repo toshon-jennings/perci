@@ -83,3 +83,6 @@ DECISIONS.md
 /vendor/keysafe-runtime/
 
 /release-build/
+
+# Disposable Electron startup profile; keep only its compact probe record.
+/test/runtime-evidence/startup-profile/

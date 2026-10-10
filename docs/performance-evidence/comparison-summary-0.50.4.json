@@ -1,0 +1,692 @@
+{
+  "method": "Serial identical synthetic backend fixtures; macOS Summary Footprint MB, summed primed Electron CPU percentages. Shell timing measures fixture hydration reload, not end-to-end cold launch or backend readiness.",
+  "labels": {
+    "baseline-final-v2": {
+      "artifactSHA256": "4b55898ecde55999c9946132cc524d578c2d67b32ae0727001f4118a3d505c2e",
+      "version": "0.50.2",
+      "sampledRuns": 3,
+      "complete": true,
+      "footprintMB": {
+        "median": 1008.0,
+        "min": 1003.0,
+        "max": 1027.0,
+        "values": [
+          1003.0,
+          1008.0,
+          1027.0
+        ]
+      },
+      "cpuPercent": {
+        "median": 7.207714689516408,
+        "min": 7.012181718665572,
+        "max": 7.255659278783747,
+        "values": [
+          7.207714689516408,
+          7.012181718665572,
+          7.255659278783747
+        ]
+      },
+      "shellHydrationMs": {
+        "median": 2248,
+        "min": 1487,
+        "max": 2580,
+        "values": [
+          1487,
+          2248,
+          2580
+        ]
+      },
+      "guests": [
+        1,
+        1,
+        1
+      ]
+    },
+    "candidate-0-50-4-final": {
+      "artifactSHA256": "aedb9a2347e92dbe7f5851fc5c0cddaccb9de0a2b70f9102e52005d8d6f5e852",
+      "version": "0.50.4",
+      "sampledRuns": 3,
+      "complete": true,
+      "footprintMB": {
+        "median": 626.0,
+        "min": 601.0,
+        "max": 740.0,
+        "values": [
+          740.0,
+          626.0,
+          601.0
+        ]
+      },
+      "cpuPercent": {
+        "median": 4.632627033141136,
+        "min": 4.5775375145489505,
+        "max": 4.677509813870929,
+        "values": [
+          4.5775375145489505,
+          4.677509813870929,
+          4.632627033141136
+        ]
+      },
+      "shellHydrationMs": {
+        "median": 1586,
+        "min": 481,
+        "max": 1594,
+        "values": [
+          1586,
+          481,
+          1594
+        ]
+      },
+      "guests": [
+        0,
+        0,
+        0
+      ]
+    },
+    "baseline-empty-final-v2": {
+      "artifactSHA256": "4b55898ecde55999c9946132cc524d578c2d67b32ae0727001f4118a3d505c2e",
+      "version": "0.50.2",
+      "sampledRuns": 3,
+      "complete": true,
+      "footprintMB": {
+        "median": 876.0,
+        "min": 711.0,
+        "max": 940.0,
+        "values": [
+          711.0,
+          876.0,
+          940.0
+        ]
+      },
+      "cpuPercent": {
+        "median": 5.3586823417275795,
+        "min": 5.162378493220265,
+        "max": 5.570312052317048,
+        "values": [
+          5.162378493220265,
+          5.3586823417275795,
+          5.570312052317048
+        ]
+      },
+      "shellHydrationMs": {
+        "median": 606,
+        "min": 587,
+        "max": 836,
+        "values": [
+          836,
+          587,
+          606
+        ]
+      },
+      "guests": [
+        0,
+        0,
+        0
+      ]
+    },
+    "candidate-empty-0-50-4-final": {
+      "artifactSHA256": "aedb9a2347e92dbe7f5851fc5c0cddaccb9de0a2b70f9102e52005d8d6f5e852",
+      "version": "0.50.4",
+      "sampledRuns": 3,
+      "complete": true,
+      "footprintMB": {
+        "median": 611.0,
+        "min": 606.0,
+        "max": 732.0,
+        "values": [
+          611.0,
+          606.0,
+          732.0
+        ]
+      },
+      "cpuPercent": {
+        "median": 4.561922918138605,
+        "min": 4.559310732535541,
+        "max": 4.567492029306083,
+        "values": [
+          4.559310732535541,
+          4.567492029306083,
+          4.561922918138605
+        ]
+      },
+      "shellHydrationMs": {
+        "median": 681,
+        "min": 384,
+        "max": 1650,
+        "values": [
+          384,
+          681,
+          1650
+        ]
+      },
+      "guests": [
+        0,
+        0,
+        0
+      ]
+    },
+    "baseline-soak-final-v2": {
+      "artifactSHA256": "4b55898ecde55999c9946132cc524d578c2d67b32ae0727001f4118a3d505c2e",
+      "version": "0.50.2",
+      "sampledRuns": 1,
+      "complete": true,
+      "footprintMB": {
+        "median": 960.0,
+        "min": 960.0,
+        "max": 960.0,
+        "values": [
+          960.0
+        ]
+      },
+      "cpuPercent": {
+        "median": 6.7061079990207455,
+        "min": 6.7061079990207455,
+        "max": 6.7061079990207455,
+        "values": [
+          6.7061079990207455
+        ]
+      },
+      "shellHydrationMs": {
+        "median": 1640,
+        "min": 1640,
+        "max": 1640,
+        "values": [
+          1640
+        ]
+      },
+      "guests": [
+        1
+      ],
+      "series": [
+        {
+          "elapsedMs": 302065,
+          "cycle": 0,
+          "footprintMB": 960.0,
+          "cpuPercent": 6.7061079990207455
+        },
+        {
+          "elapsedMs": 348658,
+          "cycle": 1,
+          "footprintMB": 1164.0,
+          "cpuPercent": 12.402708503441122
+        },
+        {
+          "elapsedMs": 393286,
+          "cycle": 2,
+          "footprintMB": 1140.0,
+          "cpuPercent": 13.145639683779269
+        },
+        {
+          "elapsedMs": 437828,
+          "cycle": 3,
+          "footprintMB": 1141.0,
+          "cpuPercent": 13.13853288152987
+        },
+        {
+          "elapsedMs": 482556,
+          "cycle": 4,
+          "footprintMB": 1843.0,
+          "cpuPercent": 13.661456136191589
+        },
+        {
+          "elapsedMs": 527069,
+          "cycle": 5,
+          "footprintMB": 1395.0,
+          "cpuPercent": 12.92308116184631
+        },
+        {
+          "elapsedMs": 571843,
+          "cycle": 6,
+          "footprintMB": 1399.0,
+          "cpuPercent": 13.306799908486374
+        },
+        {
+          "elapsedMs": 616324,
+          "cycle": 7,
+          "footprintMB": 1396.0,
+          "cpuPercent": 13.029761105242843
+        },
+        {
+          "elapsedMs": 661056,
+          "cycle": 8,
+          "footprintMB": 1409.0,
+          "cpuPercent": 13.048584197053481
+        },
+        {
+          "elapsedMs": 705534,
+          "cycle": 9,
+          "footprintMB": 1430.0,
+          "cpuPercent": 13.930942541686301
+        },
+        {
+          "elapsedMs": 750031,
+          "cycle": 10,
+          "footprintMB": 1616.0,
+          "cpuPercent": 12.134120471109235
+        },
+        {
+          "elapsedMs": 795198,
+          "cycle": 11,
+          "footprintMB": 1449.0,
+          "cpuPercent": 13.264887156094606
+        },
+        {
+          "elapsedMs": 840531,
+          "cycle": 12,
+          "footprintMB": 1411.0,
+          "cpuPercent": 13.909318773016144
+        },
+        {
+          "elapsedMs": 885490,
+          "cycle": 13,
+          "footprintMB": 1437.0,
+          "cpuPercent": 13.582963183352001
+        },
+        {
+          "elapsedMs": 930443,
+          "cycle": 14,
+          "footprintMB": 1427.0,
+          "cpuPercent": 12.923419422005017
+        },
+        {
+          "elapsedMs": 974863,
+          "cycle": 15,
+          "footprintMB": 1422.0,
+          "cpuPercent": 12.039499059986817
+        },
+        {
+          "elapsedMs": 1019716,
+          "cycle": 16,
+          "footprintMB": 1416.0,
+          "cpuPercent": 12.964611359618829
+        },
+        {
+          "elapsedMs": 1064673,
+          "cycle": 17,
+          "footprintMB": 1439.0,
+          "cpuPercent": 12.491076807143653
+        },
+        {
+          "elapsedMs": 1109524,
+          "cycle": 18,
+          "footprintMB": 1440.0,
+          "cpuPercent": 12.972009323814397
+        },
+        {
+          "elapsedMs": 1154432,
+          "cycle": 19,
+          "footprintMB": 1443.0,
+          "cpuPercent": 13.441898314807876
+        },
+        {
+          "elapsedMs": 1201669,
+          "cycle": 20,
+          "footprintMB": 1473.0,
+          "cpuPercent": 14.266566260437871
+        },
+        {
+          "elapsedMs": 1246670,
+          "cycle": 21,
+          "footprintMB": 1498.0,
+          "cpuPercent": 12.55739430708292
+        },
+        {
+          "elapsedMs": 1291974,
+          "cycle": 22,
+          "footprintMB": 1479.0,
+          "cpuPercent": 13.735215441979786
+        },
+        {
+          "elapsedMs": 1336379,
+          "cycle": 23,
+          "footprintMB": 1484.0,
+          "cpuPercent": 11.743474748229204
+        },
+        {
+          "elapsedMs": 1381457,
+          "cycle": 24,
+          "footprintMB": 1482.0,
+          "cpuPercent": 12.130301369871363
+        },
+        {
+          "elapsedMs": 1426926,
+          "cycle": 25,
+          "footprintMB": 1513.0,
+          "cpuPercent": 13.131043985213989
+        },
+        {
+          "elapsedMs": 1472117,
+          "cycle": 26,
+          "footprintMB": 1485.0,
+          "cpuPercent": 13.736658652794512
+        },
+        {
+          "elapsedMs": 1502510,
+          "cycle": 27,
+          "footprintMB": 1496.0,
+          "cpuPercent": 14.533567227030309
+        }
+      ],
+      "completedCycles": 27,
+      "postWarmup": {
+        "samples": 24,
+        "firstThreeMedianMB": 1399.0,
+        "lastThreeMedianMB": 1496.0,
+        "slopeMBPerMinute": -0.8730438194912397,
+        "cpuPercent": {
+          "median": 13.089814091133736,
+          "min": 11.743474748229204,
+          "max": 14.533567227030309,
+          "values": [
+            13.661456136191589,
+            12.92308116184631,
+            13.306799908486374,
+            13.029761105242843,
+            13.048584197053481,
+            13.930942541686301,
+            12.134120471109235,
+            13.264887156094606,
+            13.909318773016144,
+            13.582963183352001,
+            12.923419422005017,
+            12.039499059986817,
+            12.964611359618829,
+            12.491076807143653,
+            12.972009323814397,
+            13.441898314807876,
+            14.266566260437871,
+            12.55739430708292,
+            13.735215441979786,
+            11.743474748229204,
+            12.130301369871363,
+            13.131043985213989,
+            13.736658652794512,
+            14.533567227030309
+          ]
+        }
+      }
+    },
+    "candidate-soak-0-50-4-final": {
+      "artifactSHA256": "aedb9a2347e92dbe7f5851fc5c0cddaccb9de0a2b70f9102e52005d8d6f5e852",
+      "version": "0.50.4",
+      "sampledRuns": 1,
+      "complete": true,
+      "footprintMB": {
+        "median": 631.0,
+        "min": 631.0,
+        "max": 631.0,
+        "values": [
+          631.0
+        ]
+      },
+      "cpuPercent": {
+        "median": 4.780900593302279,
+        "min": 4.780900593302279,
+        "max": 4.780900593302279,
+        "values": [
+          4.780900593302279
+        ]
+      },
+      "shellHydrationMs": {
+        "median": 521,
+        "min": 521,
+        "max": 521,
+        "values": [
+          521
+        ]
+      },
+      "guests": [
+        0
+      ],
+      "series": [
+        {
+          "elapsedMs": 300701,
+          "cycle": 0,
+          "footprintMB": 631.0,
+          "cpuPercent": 4.780900593302279
+        },
+        {
+          "elapsedMs": 345893,
+          "cycle": 1,
+          "footprintMB": 1040.0,
+          "cpuPercent": 5.811065952666315
+        },
+        {
+          "elapsedMs": 389785,
+          "cycle": 2,
+          "footprintMB": 1042.0,
+          "cpuPercent": 5.3825405632943095
+        },
+        {
+          "elapsedMs": 433655,
+          "cycle": 3,
+          "footprintMB": 1048.0,
+          "cpuPercent": 5.357237830242634
+        },
+        {
+          "elapsedMs": 477546,
+          "cycle": 4,
+          "footprintMB": 1059.0,
+          "cpuPercent": 4.957940214162684
+        },
+        {
+          "elapsedMs": 521392,
+          "cycle": 5,
+          "footprintMB": 1054.0,
+          "cpuPercent": 5.065079920704993
+        },
+        {
+          "elapsedMs": 565200,
+          "cycle": 6,
+          "footprintMB": 1079.0,
+          "cpuPercent": 4.88802247313623
+        },
+        {
+          "elapsedMs": 609150,
+          "cycle": 7,
+          "footprintMB": 1064.0,
+          "cpuPercent": 5.295578264518695
+        },
+        {
+          "elapsedMs": 652983,
+          "cycle": 8,
+          "footprintMB": 1074.0,
+          "cpuPercent": 5.2637503661933875
+        },
+        {
+          "elapsedMs": 696954,
+          "cycle": 9,
+          "footprintMB": 1064.0,
+          "cpuPercent": 5.603860884333202
+        },
+        {
+          "elapsedMs": 740874,
+          "cycle": 10,
+          "footprintMB": 1069.0,
+          "cpuPercent": 5.143700003675453
+        },
+        {
+          "elapsedMs": 784782,
+          "cycle": 11,
+          "footprintMB": 1056.0,
+          "cpuPercent": 5.321114216949671
+        },
+        {
+          "elapsedMs": 828785,
+          "cycle": 12,
+          "footprintMB": 1076.0,
+          "cpuPercent": 5.330702624337709
+        },
+        {
+          "elapsedMs": 872571,
+          "cycle": 13,
+          "footprintMB": 1067.0,
+          "cpuPercent": 5.346450992705536
+        },
+        {
+          "elapsedMs": 917597,
+          "cycle": 14,
+          "footprintMB": 1079.0,
+          "cpuPercent": 5.148646215949937
+        },
+        {
+          "elapsedMs": 961401,
+          "cycle": 15,
+          "footprintMB": 1094.0,
+          "cpuPercent": 5.090491762954551
+        },
+        {
+          "elapsedMs": 1005315,
+          "cycle": 16,
+          "footprintMB": 1095.0,
+          "cpuPercent": 5.334263434557569
+        },
+        {
+          "elapsedMs": 1049254,
+          "cycle": 17,
+          "footprintMB": 1080.0,
+          "cpuPercent": 5.208681810448499
+        },
+        {
+          "elapsedMs": 1093139,
+          "cycle": 18,
+          "footprintMB": 1081.0,
+          "cpuPercent": 5.43787614159654
+        },
+        {
+          "elapsedMs": 1137730,
+          "cycle": 19,
+          "footprintMB": 1089.0,
+          "cpuPercent": 5.150401323436893
+        },
+        {
+          "elapsedMs": 1182774,
+          "cycle": 20,
+          "footprintMB": 1012.0,
+          "cpuPercent": 4.749534809961956
+        },
+        {
+          "elapsedMs": 1226694,
+          "cycle": 21,
+          "footprintMB": 1090.0,
+          "cpuPercent": 4.759205067700369
+        },
+        {
+          "elapsedMs": 1270351,
+          "cycle": 22,
+          "footprintMB": 1103.0,
+          "cpuPercent": 4.819827635124298
+        },
+        {
+          "elapsedMs": 1314222,
+          "cycle": 23,
+          "footprintMB": 1103.0,
+          "cpuPercent": 5.076452783737599
+        },
+        {
+          "elapsedMs": 1358018,
+          "cycle": 24,
+          "footprintMB": 1088.0,
+          "cpuPercent": 5.106344363295048
+        },
+        {
+          "elapsedMs": 1402095,
+          "cycle": 25,
+          "footprintMB": 1104.0,
+          "cpuPercent": 5.378508833643409
+        },
+        {
+          "elapsedMs": 1446619,
+          "cycle": 26,
+          "footprintMB": 1096.0,
+          "cpuPercent": 5.262932943657903
+        },
+        {
+          "elapsedMs": 1490465,
+          "cycle": 27,
+          "footprintMB": 1107.0,
+          "cpuPercent": 5.120005810065613
+        },
+        {
+          "elapsedMs": 1504277,
+          "cycle": 28,
+          "footprintMB": 1255.0,
+          "cpuPercent": 6.051661642021679
+        }
+      ],
+      "completedCycles": 28,
+      "postWarmup": {
+        "samples": 25,
+        "firstThreeMedianMB": 1059.0,
+        "lastThreeMedianMB": 1107.0,
+        "slopeMBPerMinute": 4.142408199093255,
+        "cpuPercent": {
+          "median": 5.150401323436893,
+          "min": 4.749534809961956,
+          "max": 6.051661642021679,
+          "values": [
+            4.957940214162684,
+            5.065079920704993,
+            4.88802247313623,
+            5.295578264518695,
+            5.2637503661933875,
+            5.603860884333202,
+            5.143700003675453,
+            5.321114216949671,
+            5.330702624337709,
+            5.346450992705536,
+            5.148646215949937,
+            5.090491762954551,
+            5.334263434557569,
+            5.208681810448499,
+            5.43787614159654,
+            5.150401323436893,
+            4.749534809961956,
+            4.759205067700369,
+            4.819827635124298,
+            5.076452783737599,
+            5.106344363295048,
+            5.378508833643409,
+            5.262932943657903,
+            5.120005810065613,
+            6.051661642021679
+          ]
+        }
+      }
+    }
+  },
+  "restored": {
+    "footprintMB": {
+      "baselineMedian": 1008.0,
+      "candidateMedian": 626.0,
+      "reductionPercent": 37.89682539682539
+    },
+    "cpuPercent": {
+      "baselineMedian": 7.207714689516408,
+      "candidateMedian": 4.632627033141136,
+      "reductionPercent": 35.72682559314849
+    },
+    "shellHydrationMs": {
+      "baselineMedian": 2248,
+      "candidateMedian": 1586,
+      "reductionPercent": 29.448398576512457
+    }
+  },
+  "empty": {
+    "footprintMB": {
+      "baselineMedian": 876.0,
+      "candidateMedian": 611.0,
+      "reductionPercent": 30.251141552511417
+    },
+    "cpuPercent": {
+      "baselineMedian": 5.3586823417275795,
+      "candidateMedian": 4.561922918138605,
+      "reductionPercent": 14.868569785984143
+    },
+    "shellHydrationMs": {
+      "baselineMedian": 606,
+      "candidateMedian": 681,
+      "reductionPercent": -12.376237623762387
+    }
+  }
+}

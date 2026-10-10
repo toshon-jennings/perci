@@ -1,0 +1,357 @@
+{
+  "label": "candidate-acceptance-extended",
+  "collectedAt": "2026-10-10T01:09:48.833Z",
+  "appBundle": "/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app",
+  "source": "cf036d73362816546d54bc98a7319c13c187bc28",
+  "dirty": "M MISTAKES.md\n M electron/main.cjs\n M package-lock.json\n M package.json\n M src/App.jsx\n M src/components/AgentsPanel.jsx\n M src/components/ArtifactPanel.jsx\n M src/components/DashboardMode.jsx\n M src/components/DockerMode.jsx\n M src/components/DotenvxMode.jsx\n M src/components/EidosMode.jsx\n M src/components/GithubOverviewMode.jsx\n M src/components/KeysafeMode.jsx\n M src/components/NotesMode.jsx\n M src/components/OfficePanel.jsx\n M src/components/OfficeScene.jsx\n M src/components/OpencodeMode.jsx\n M src/components/SettingsModal.jsx\n M src/components/windows/DesktopHost.jsx\n M src/components/windows/WindowErrorBoundary.jsx\n M src/context/ModeContext.jsx\n M src/lib/persistentStore.js\n?? docs/Perci-Performance-Implementation-Plan.md\n?? docs/performance-evidence/\n?? electron/single-flight.cjs\n?? perci-security-audit.md\n?? scripts/measure-perci-performance.mjs\n?? src/context/WindowActivityContext.jsx\n?? src/hooks/useVisiblePolling.js\n?? src/lib/agentDefinitions.js\n?? src/lib/performancePolicy.js\n?? src/lib/startIntegrationService.js\n?? src/lib/visiblePoller.js\n?? test/performancePolicy.test.js\n?? test/runtime-evidence/startup-probe.json\n?? test/runtime-evidence/startup-profile/\n?? test/singleFlight.test.js\n?? test/visiblePoller.test.js",
+  "artifactSHA256": "acc6d91bcb0b5a85a19fefa11bc1a64e2f57e48da9594933cd8348c6b2b5ec56",
+  "hardware": {
+    "hostname": "MacBookPro2.local",
+    "memoryBytes": 17179869184
+  },
+  "fixture": [
+    {
+      "id": "chat",
+      "modeId": "chat",
+      "title": "Chat",
+      "state": "minimized",
+      "z": 20,
+      "bounds": {
+        "x": 30,
+        "y": 20,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "code",
+      "modeId": "code",
+      "title": "Code",
+      "state": "normal",
+      "z": 21,
+      "bounds": {
+        "x": 38,
+        "y": 25,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "notes",
+      "modeId": "notes",
+      "title": "Workspace Notes",
+      "state": "normal",
+      "z": 22,
+      "bounds": {
+        "x": 46,
+        "y": 30,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "office",
+      "modeId": "office",
+      "title": "Perci HQ",
+      "state": "minimized",
+      "z": 23,
+      "bounds": {
+        "x": 54,
+        "y": 35,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "eidos",
+      "modeId": "eidos",
+      "title": "Eidos",
+      "state": "normal",
+      "z": 24,
+      "bounds": {
+        "x": 62,
+        "y": 40,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "keysafe",
+      "modeId": "keysafe",
+      "title": "KeySafe",
+      "state": "normal",
+      "z": 25,
+      "bounds": {
+        "x": 70,
+        "y": 45,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "dotenvx-gui",
+      "modeId": "dotenvx-gui",
+      "title": "Dotenvx GUI",
+      "state": "minimized",
+      "z": 26,
+      "bounds": {
+        "x": 78,
+        "y": 50,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "github-overview",
+      "modeId": "github-overview",
+      "title": "GitHub Overview",
+      "state": "normal",
+      "z": 27,
+      "bounds": {
+        "x": 86,
+        "y": 55,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "localhost",
+      "modeId": "localhost",
+      "title": "Localhost",
+      "state": "normal",
+      "z": 28,
+      "bounds": {
+        "x": 94,
+        "y": 60,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "docker",
+      "modeId": "docker",
+      "title": "Docker",
+      "state": "minimized",
+      "z": 29,
+      "bounds": {
+        "x": 102,
+        "y": 65,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "opencode-rig",
+      "modeId": "opencode-rig",
+      "title": "OpenCode Rig",
+      "state": "normal",
+      "z": 30,
+      "bounds": {
+        "x": 110,
+        "y": 70,
+        "width": 920,
+        "height": 620
+      }
+    }
+  ],
+  "caveats": [
+    "External starts and network are blocked in the disposable process.",
+    "These measurements isolate view initialization, not real backend startup.",
+    "Summed process accounting is approximate; footprint errors are retained."
+  ],
+  "runs": [
+    {
+      "run": 0,
+      "profile": "/Users/toshonjennings/opal/docs/performance-evidence/candidate-acceptance-extended/profile-0-1791594589621",
+      "processLaunchMs": 4610,
+      "shellUsableMs": 1533,
+      "samples": [
+        {
+          "elapsedMs": 1903,
+          "version": "0.50.3",
+          "electron": "42.0.1",
+          "processes": [
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 1.72538,
+                "percentCPUUsage": 1.2454710144927537,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 12989,
+              "type": "Browser",
+              "creationTime": 1791594589639.529,
+              "memory": {
+                "workingSetSize": 171344,
+                "peakWorkingSetSize": 204864
+              },
+              "sandboxed": false
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 2.154179,
+                "percentCPUUsage": 4.72741536285689,
+                "idleWakeupsPerSecond": 265
+              },
+              "pid": 13005,
+              "type": "GPU",
+              "creationTime": 1791594590391.058,
+              "serviceName": "GPU",
+              "memory": {
+                "workingSetSize": 111296,
+                "peakWorkingSetSize": 133792
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.22399,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 13006,
+              "type": "Utility",
+              "creationTime": 1791594590406.044,
+              "serviceName": "network.mojom.NetworkService",
+              "name": "Network Service",
+              "memory": {
+                "workingSetSize": 44032,
+                "peakWorkingSetSize": 56144
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.198494,
+                "percentCPUUsage": 0.5499911559211108,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 13013,
+              "type": "Tab",
+              "creationTime": 1791594590987.637,
+              "memory": {
+                "workingSetSize": 80304,
+                "peakWorkingSetSize": 94944
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 2.451723,
+                "percentCPUUsage": 6.196382771734324,
+                "idleWakeupsPerSecond": 66
+              },
+              "pid": 13014,
+              "type": "Tab",
+              "creationTime": 1791594591010.562,
+              "memory": {
+                "workingSetSize": 263744,
+                "peakWorkingSetSize": 318720
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.09572,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 13016,
+              "type": "Tab",
+              "creationTime": 1791594591540.658,
+              "memory": {
+                "workingSetSize": 47856,
+                "peakWorkingSetSize": 77248
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.113159,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 13017,
+              "type": "Utility",
+              "creationTime": 1791594591558.748,
+              "serviceName": "audio.mojom.AudioService",
+              "name": "Audio Service",
+              "memory": {
+                "workingSetSize": 30656,
+                "peakWorkingSetSize": 45040
+              },
+              "sandboxed": true
+            }
+          ],
+          "guests": 0,
+          "calls": {
+            "agent-jobs:list": 1,
+            "openclaw:test-connection": 2,
+            "models:list": 2,
+            "credentials:status": 1
+          },
+          "sources": {
+            "dashboard": 1
+          },
+          "footprint": "======================================================================\nPerci Helper [13005]: 64-bit    Footprint: 1200 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 1200 MB\n    phys_footprint_peak: 1329 MB\n\n======================================================================\nPerci Helper (Renderer) [13014]: 64-bit    Footprint: 286 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 286 MB\n    phys_footprint_peak: 286 MB\n\n======================================================================\nPerci [12989]: 64-bit    Footprint: 110 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 110 MB\n    phys_footprint_peak: 114 MB\n\n======================================================================\nPerci Helper (Renderer) [13013]: 64-bit    Footprint: 22 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 22 MB\n    phys_footprint_peak: 22 MB\n\n======================================================================\nPerci Helper (Renderer) [13016]: 64-bit    Footprint: 15 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 15 MB\n    phys_footprint_peak: 15 MB\n\n======================================================================\nPerci Helper [13006]: 64-bit    Footprint: 10 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 10 MB\n    phys_footprint_peak: 10 MB\n\n======================================================================\nPerci Helper [13017]: 64-bit    Footprint: 7905 KB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 7937 KB\n    phys_footprint_peak: 7953 KB\n\n======================================================================\nSummary Footprint: 1648 MB\n======================================================================\n\n",
+          "executedJs": []
+        }
+      ],
+      "viewport": {
+        "width": 1280,
+        "height": 900,
+        "devicePixelRatio": 2
+      },
+      "acceptance": [
+        {
+          "name": "restored layout defers every tool and launch",
+          "passed": true
+        },
+        {
+          "name": "deferred state and keyboard focus render in both themes",
+          "passed": true
+        },
+        {
+          "name": "native window-cycle action activates a deferred tool",
+          "passed": true
+        },
+        {
+          "name": "failed Office chunk stays confined and Retry loads it",
+          "passed": false,
+          "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Settings', exact: true }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" class=\"dash-cta dash-cta-ghost\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <div class=\"perci-window-header\">…</div> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <p class=\"mb-2 text-sm font-semibold text-red-400\">This window failed to render</p> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <p class=\"mb-2 text-sm font-semibold text-red-400\">This window failed to render</p> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  2 × retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m      - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"perci-window-header\">…</div> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  14 × retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <p class=\"mb-2 text-sm font-semibold text-red-400\">This window failed to render</p> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <p class=\"mb-2 text-sm font-semibold text-red-400\">This window failed to render</p> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div class=\"perci-window-header\">…</div> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div class=\"perci-window-header\">…</div> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n"
+        },
+        {
+          "name": "Office draws and polling stop hidden and resume without remount",
+          "passed": false,
+          "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-window-id=\"office\"] canvas') to be visible\u001b[22m\n"
+        },
+        {
+          "name": "Chat draft survives minimize and restore",
+          "passed": true
+        },
+        {
+          "name": "Code prompt survives minimize and restore",
+          "passed": true
+        },
+        {
+          "name": "active model response continues while Chat is minimized",
+          "passed": true
+        },
+        {
+          "name": "Notes editor buffer survives minimize and restore",
+          "passed": false,
+          "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-window-id=\"notes\"]').locator('.monaco-editor textarea').first() to be visible\u001b[22m\n"
+        },
+        {
+          "name": "every fixture mode opens through packaged lazy imports",
+          "passed": false,
+          "error": "office\n\n1 !== 0\n"
+        },
+        {
+          "name": "Settings persists manual startup in native storage",
+          "passed": false,
+          "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Settings', exact: true }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" class=\"dash-cta dash-cta-ghost\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <div class=\"perci-window-header\">…</div> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <p class=\"mb-2 text-sm font-semibold text-red-400\">This window failed to render</p> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <p class=\"mb-2 text-sm font-semibold text-red-400\">This window failed to render</p> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  2 × retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m      - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"perci-window-header\">…</div> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  14 × retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <p class=\"mb-2 text-sm font-semibold text-red-400\">This window failed to render</p> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <p class=\"mb-2 text-sm font-semibold text-red-400\">This window failed to render</p> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div class=\"perci-window-header\">…</div> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <div class=\"perci-window-header\">…</div> from <div class=\"perci-desktop-host\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n"
+        }
+      ]
+    }
+  ]
+}

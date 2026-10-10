@@ -1,0 +1,111 @@
+{
+  "method": "Serial identical synthetic backend fixtures; macOS Summary Footprint MB, summed primed Electron CPU percentages. Shell timing measures fixture hydration reload, not end-to-end cold launch or backend readiness.",
+  "restored": {
+    "footprintMB": {
+      "baselineMedian": 1008.0,
+      "candidateMedian": 662.0,
+      "reductionPercent": 34.32539682539682
+    },
+    "cpuPercent": {
+      "baselineMedian": 7.207714689516408,
+      "candidateMedian": 5.905359270269248,
+      "reductionPercent": 18.06890915287519
+    },
+    "shellHydrationMs": {
+      "baselineMedian": 2248,
+      "candidateMedian": 838,
+      "reductionPercent": 62.72241992882562
+    }
+  },
+  "empty": {
+    "footprintMB": {
+      "baselineMedian": 876.0,
+      "candidateMedian": 739.0,
+      "reductionPercent": 15.639269406392698
+    },
+    "cpuPercent": {
+      "baselineMedian": 5.3586823417275795,
+      "candidateMedian": 5.01631060156668,
+      "reductionPercent": 6.389103110197103
+    },
+    "shellHydrationMs": {
+      "baselineMedian": 606,
+      "candidateMedian": 667,
+      "reductionPercent": -10.06600660066006
+    }
+  }
+}
+{
+  "baseline-final-v2": {
+    "complete": true,
+    "sampledRuns": 3,
+    "completedCycles": null,
+    "postWarmup": null
+  },
+  "candidate-final-v2": {
+    "complete": true,
+    "sampledRuns": 3,
+    "completedCycles": null,
+    "postWarmup": null
+  },
+  "baseline-empty-final-v2": {
+    "complete": true,
+    "sampledRuns": 3,
+    "completedCycles": null,
+    "postWarmup": null
+  },
+  "candidate-empty-final-v2": {
+    "complete": true,
+    "sampledRuns": 3,
+    "completedCycles": null,
+    "postWarmup": null
+  },
+  "baseline-soak-final-v2": {
+    "complete": true,
+    "sampledRuns": 1,
+    "completedCycles": 27,
+    "postWarmup": {
+      "samples": 24,
+      "firstThreeMedianMB": 1399.0,
+      "lastThreeMedianMB": 1496.0,
+      "slopeMBPerMinute": -0.8730438194912397,
+      "cpuPercent": {
+        "median": 13.089814091133736,
+        "min": 11.743474748229204,
+        "max": 14.533567227030309,
+        "values": [
+          13.661456136191589,
+          12.92308116184631,
+          13.306799908486374,
+          13.029761105242843,
+          13.048584197053481,
+          13.930942541686301,
+          12.134120471109235,
+          13.264887156094606,
+          13.909318773016144,
+          13.582963183352001,
+          12.923419422005017,
+          12.039499059986817,
+          12.964611359618829,
+          12.491076807143653,
+          12.972009323814397,
+          13.441898314807876,
+          14.266566260437871,
+          12.55739430708292,
+          13.735215441979786,
+          11.743474748229204,
+          12.130301369871363,
+          13.131043985213989,
+          13.736658652794512,
+          14.533567227030309
+        ]
+      }
+    }
+  },
+  "candidate-soak-final-v2": {
+    "complete": null,
+    "sampledRuns": null,
+    "completedCycles": null,
+    "postWarmup": null
+  }
+}

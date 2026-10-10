@@ -1,0 +1,445 @@
+{
+  "caveat": "One instrumented hydration reload per artifact after bootstrap. Caches may be warm; overlapping event durations do not establish cold parse time or explain a 3-run timing difference causally.",
+  "traces": {
+    "trace-baseline-empty": {
+      "additionalEvents": {
+        "UpdateLayoutTree": {
+          "count": 105,
+          "summedDurationMs": 284.60400000000004
+        },
+        "Paint": {
+          "count": 1042,
+          "summedDurationMs": 134.42099999999996
+        },
+        "Layerize": {
+          "count": 113,
+          "summedDurationMs": 72.61199999999998
+        },
+        "v8.evaluateModule": {
+          "count": 1,
+          "summedDurationMs": 119.613
+        }
+      },
+      "moduleParseEvents": [
+        {
+          "script": "vendor-CghBr0Ey.js",
+          "durationMs": 28.519
+        },
+        {
+          "script": "index-D73Wtz6W.js",
+          "durationMs": 23.45
+        },
+        {
+          "script": "terminal-DPv0ql28.js",
+          "durationMs": 5.912
+        },
+        {
+          "script": "pdf-export-DcZbAP7I.js",
+          "durationMs": 5.753
+        },
+        {
+          "script": "motion-Bdoy_HsL.js",
+          "durationMs": 3.774
+        },
+        {
+          "script": "html-export-CBrSDip1.js",
+          "durationMs": 2.908
+        },
+        {
+          "script": "icons-DC-0gUjW.js",
+          "durationMs": 1.147
+        },
+        {
+          "script": "syntax-ui-BhhFplip.js",
+          "durationMs": 0.386
+        },
+        {
+          "script": "monaco-COSEZ9JE.js",
+          "durationMs": 0.284
+        }
+      ],
+      "artifactSHA256": "4b55898ecde55999c9946132cc524d578c2d67b32ae0727001f4118a3d505c2e",
+      "shellHydrationMs": 1128,
+      "timings": {
+        "ParseHTML": {
+          "count": 8,
+          "summedDurationMs": 0.342
+        },
+        "V8.CompileCode": {
+          "count": 1401,
+          "summedDurationMs": 42.823999999999984
+        },
+        "V8.ParseFunction": {
+          "count": 1342,
+          "summedDurationMs": 17.00099999999997
+        },
+        "V8.CompileIgnition": {
+          "count": 1414,
+          "summedDurationMs": 10.212999999999978
+        },
+        "V8.CompileIgnitionFinalization": {
+          "count": 965,
+          "summedDurationMs": 3.7489999999999095
+        },
+        "V8.ParseProgram": {
+          "count": 57,
+          "summedDurationMs": 9.610999999999997
+        },
+        "V8.PreParse": {
+          "count": 7715,
+          "summedDurationMs": 53.68399999999848
+        },
+        "V8.CompileEval": {
+          "count": 9,
+          "summedDurationMs": 0.11200000000000002
+        },
+        "V8.CompileScript": {
+          "count": 10,
+          "summedDurationMs": 0.534
+        },
+        "V8.Compile": {
+          "count": 50,
+          "summedDurationMs": 2.2539999999999982
+        },
+        "EvaluateScript": {
+          "count": 3,
+          "summedDurationMs": 0.098
+        },
+        "v8.compile": {
+          "count": 3,
+          "summedDurationMs": 0.074
+        },
+        "HTMLDocumentParser::MaybeFetchQueuedPreloads": {
+          "count": 1,
+          "summedDurationMs": 0.797
+        },
+        "v8.streamingCompile.start": {
+          "count": 9,
+          "summedDurationMs": 0.092
+        },
+        "v8.parseOnBackground": {
+          "count": 9,
+          "summedDurationMs": 72.13300000000001
+        },
+        "v8.parseOnBackgroundParsing": {
+          "count": 9,
+          "summedDurationMs": 71.68100000000001
+        },
+        "BackgroundCompileTask::Run": {
+          "count": 9,
+          "summedDurationMs": 71.52099999999999
+        },
+        "ParseAuthorStyleSheet": {
+          "count": 6,
+          "summedDurationMs": 2.4739999999999998
+        },
+        "V8.CompileCodeBackground": {
+          "count": 9,
+          "summedDurationMs": 5.115
+        },
+        "v8.streamingCompile.complete": {
+          "count": 9,
+          "summedDurationMs": 4.8260000000000005
+        },
+        "v8.compileModule": {
+          "count": 9,
+          "summedDurationMs": 3.8930000000000002
+        },
+        "V8.CompileStreamedModule": {
+          "count": 9,
+          "summedDurationMs": 3.8230000000000004
+        }
+      },
+      "largestEvaluateScript": [
+        {
+          "script": "",
+          "count": 3,
+          "summedDurationMs": 0.098
+        }
+      ]
+    },
+    "trace-accessible-final-empty": {
+      "additionalEvents": {
+        "Layerize": {
+          "count": 57,
+          "summedDurationMs": 62.34499999999999
+        },
+        "UpdateLayoutTree": {
+          "count": 61,
+          "summedDurationMs": 377.98100000000005
+        },
+        "Paint": {
+          "count": 1117,
+          "summedDurationMs": 134.79000000000056
+        },
+        "v8.evaluateModule": {
+          "count": 1,
+          "summedDurationMs": 76.005
+        }
+      },
+      "moduleParseEvents": [
+        {
+          "script": "vendor-DDZ4Dcd2.js",
+          "durationMs": 34.175
+        },
+        {
+          "script": "index-dHZm6pmn.js",
+          "durationMs": 6.022
+        },
+        {
+          "script": "pdf-export-5gWwDdm1.js",
+          "durationMs": 5.873
+        },
+        {
+          "script": "motion-BMXd61lD.js",
+          "durationMs": 3.244
+        },
+        {
+          "script": "icons-B0uOhi0z.js",
+          "durationMs": 1.762
+        },
+        {
+          "script": "syntax-ui-mcTRHXn_.js",
+          "durationMs": 1.196
+        }
+      ],
+      "artifactSHA256": "dad87e95afc50685cb9b684aec3055b55ef4d57771a7e5aa1939371e1f335fac",
+      "shellHydrationMs": 1018,
+      "timings": {
+        "V8.CompileCode": {
+          "count": 1439,
+          "summedDurationMs": 46.9110000000001
+        },
+        "V8.ParseFunction": {
+          "count": 1378,
+          "summedDurationMs": 17.176000000000005
+        },
+        "V8.CompileIgnition": {
+          "count": 1435,
+          "summedDurationMs": 10.695000000000002
+        },
+        "V8.CompileIgnitionFinalization": {
+          "count": 981,
+          "summedDurationMs": 3.1169999999999227
+        },
+        "ParseHTML": {
+          "count": 8,
+          "summedDurationMs": 0.264
+        },
+        "V8.ParseProgram": {
+          "count": 59,
+          "summedDurationMs": 13.119999999999997
+        },
+        "V8.PreParse": {
+          "count": 5575,
+          "summedDurationMs": 39.06600000000047
+        },
+        "V8.CompileEval": {
+          "count": 9,
+          "summedDurationMs": 0.11600000000000002
+        },
+        "V8.CompileScript": {
+          "count": 10,
+          "summedDurationMs": 0.5230000000000001
+        },
+        "V8.Compile": {
+          "count": 50,
+          "summedDurationMs": 0.8220000000000003
+        },
+        "EvaluateScript": {
+          "count": 3,
+          "summedDurationMs": 0.113
+        },
+        "v8.compile": {
+          "count": 3,
+          "summedDurationMs": 0.084
+        },
+        "HTMLDocumentParser::MaybeFetchQueuedPreloads": {
+          "count": 1,
+          "summedDurationMs": 0.219
+        },
+        "v8.streamingCompile.start": {
+          "count": 6,
+          "summedDurationMs": 0.081
+        },
+        "v8.parseOnBackground": {
+          "count": 6,
+          "summedDurationMs": 52.27199999999999
+        },
+        "v8.parseOnBackgroundParsing": {
+          "count": 6,
+          "summedDurationMs": 52.152
+        },
+        "BackgroundCompileTask::Run": {
+          "count": 6,
+          "summedDurationMs": 52.001999999999995
+        },
+        "ParseAuthorStyleSheet": {
+          "count": 4,
+          "summedDurationMs": 1.5109999999999997
+        },
+        "V8.CompileCodeBackground": {
+          "count": 6,
+          "summedDurationMs": 3.934
+        },
+        "v8.streamingCompile.complete": {
+          "count": 6,
+          "summedDurationMs": 2.922
+        },
+        "v8.compileModule": {
+          "count": 6,
+          "summedDurationMs": 2.219
+        },
+        "V8.CompileStreamedModule": {
+          "count": 6,
+          "summedDurationMs": 2.1710000000000003
+        }
+      },
+      "largestEvaluateScript": [
+        {
+          "script": "",
+          "count": 3,
+          "summedDurationMs": 0.113
+        }
+      ]
+    }
+  },
+  "timedCPU": {
+    "baseline-final-v2": {
+      "Browser": {
+        "median": 0.14629415327739204,
+        "values": [
+          0.14629415327739204,
+          0.13228211949268306,
+          0.1501636200542207
+        ]
+      },
+      "GPU": {
+        "median": 2.7308053915968418,
+        "values": [
+          2.7308053915968418,
+          2.6824698561835025,
+          2.77278171589854
+        ]
+      },
+      "Utility": {
+        "median": 0.01107253702282132,
+        "values": [
+          0.01107253702282132,
+          0.010004473743748342,
+          0.017429371162924236
+        ]
+      },
+      "Tab": {
+        "median": 4.315284571668062,
+        "values": [
+          4.319542607619352,
+          4.187425269245638,
+          4.315284571668062
+        ]
+      }
+    },
+    "baseline-empty-final-v2": {
+      "Browser": {
+        "median": 0.20439961540234822,
+        "values": [
+          0.09464961179117419,
+          0.25503449073890133,
+          0.20439961540234822
+        ]
+      },
+      "GPU": {
+        "median": 2.0307256003659995,
+        "values": [
+          1.9944464536517517,
+          2.0307256003659995,
+          2.0585393192852917
+        ]
+      },
+      "Utility": {
+        "median": 0.0023900024721461915,
+        "values": [
+          0.003086129269069181,
+          0.0023900024721461915,
+          0.0020355546032262127
+        ]
+      },
+      "Tab": {
+        "median": 3.070532248150532,
+        "values": [
+          3.07019629850827,
+          3.070532248150532,
+          3.305337563026182
+        ]
+      }
+    },
+    "candidate-0-50-4-accessible-final": {
+      "Browser": {
+        "median": 0.13295201448526528,
+        "values": [
+          0.0976605343178563,
+          0.13295201448526528,
+          0.1643620390955184
+        ]
+      },
+      "GPU": {
+        "median": 1.544554046804105,
+        "values": [
+          1.544554046804105,
+          1.58768823087713,
+          1.5320472378723509
+        ]
+      },
+      "Utility": {
+        "median": 0.002314245543177331,
+        "values": [
+          0.0023992444949399562,
+          0.002314245543177331,
+          0.0018832059727594698
+        ]
+      },
+      "Tab": {
+        "median": 2.9525550379949803,
+        "values": [
+          2.86618355471004,
+          3.0682366134466714,
+          2.9525550379949803
+        ]
+      }
+    },
+    "candidate-empty-0-50-4-accessible-final": {
+      "Browser": {
+        "median": 0.05600976395098425,
+        "values": [
+          0.31881855527609493,
+          0.05600976395098425,
+          0.03779856994261483
+        ]
+      },
+      "GPU": {
+        "median": 1.2282979900322433,
+        "values": [
+          1.1718788436829113,
+          1.3051035511294289,
+          1.2282979900322433
+        ]
+      },
+      "Utility": {
+        "median": 0.002262270025123556,
+        "values": [
+          0.002262270025123556,
+          0.00204411566421892,
+          0.0025043574137580222
+        ]
+      },
+      "Tab": {
+        "median": 3.27869172818503,
+        "values": [
+          3.4889539468705384,
+          3.27869172818503,
+          3.123670060981097
+        ]
+      }
+    }
+  }
+}

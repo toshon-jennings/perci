@@ -1,0 +1,16 @@
+{
+  "candidate": "/Users/toshonjennings/opal/release-build/performance-0.50.4-verified/mac-arm64/Perci.app",
+  "version": "0.50.4",
+  "artifactSHA256": "00edf24d119351982b7c8cc52fc793825ea432b0cdf5feee91ef8a1cb55fb2b2",
+  "packagedSourceMismatches": [],
+  "verifiedFiles": 250,
+  "notesExportSHA256": "1f639c6df5be50309ddb4c05300342daff0761488eeadbf733eb83d442dd67c7",
+  "notarized": false,
+  "packageMetadataCaveat": "electron-builder transforms package.json; product identity/version/main checked separately, all shipped CJS and Vite assets match byte-for-byte.",
+  "packageIdentity": {
+    "name": "perci",
+    "version": "0.50.4",
+    "main": "electron/main.cjs"
+  },
+  "signatureVerified": true
+}

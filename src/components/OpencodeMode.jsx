@@ -1,3 +1,5 @@
+import { useWindowActivity } from '../context/WindowActivityContext';
+import { useVisiblePolling } from '../hooks/useVisiblePolling';
 /* eslint-disable react/no-unknown-property */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AlertCircle, ExternalLink, RefreshCw, Play, Loader2, Hammer, X } from 'lucide-react';
@@ -10,6 +12,7 @@ const OPENCODE_PARTITION = 'persist:perci-opencode';
 const START_TIMEOUT_MS = 30000;
 
 export default function OpencodeMode() {
+    const { shouldUpdate } = useWindowActivity();
     const canUseWebview = typeof window !== 'undefined' && Boolean(window.electron);
     const [frameKey, setFrameKey] = useState(0);
     const [status, setStatus] = useState('checking'); // checking | no-cli | starting | running | offline | foreign
@@ -21,7 +24,7 @@ export default function OpencodeMode() {
     const [staleDismissed, setStaleDismissed] = useState(false);
     const [installInfo, setInstallInfo] = useState(null);
     const webviewRef = useRef(null);
-    const pollIntervalRef = useRef(null);
+    const startDeadlineRef = useRef(0);
 
     // In Electron the probe runs in main, which can read the status code and
     // authenticate — so it can tell "nothing listening" from "someone else's
@@ -51,32 +54,18 @@ export default function OpencodeMode() {
         }
     }, []);
 
-    const stopPolling = useCallback(() => {
-        if (pollIntervalRef.current) {
-            clearInterval(pollIntervalRef.current);
-            pollIntervalRef.current = null;
+    useVisiblePolling(async (isCurrent) => {
+        const next = await probe();
+        if (!isCurrent()) return;
+        if (next !== 'offline') {
+            startDeadlineRef.current = 0;
+            setStatus(next);
+        } else if (Date.now() > startDeadlineRef.current) {
+            startDeadlineRef.current = 0;
+            setStatus('offline');
+            setLoadError('OpenCode did not come up in time.');
         }
-    }, []);
-
-    const startPolling = useCallback(() => {
-        if (pollIntervalRef.current) return;
-        const deadline = Date.now() + START_TIMEOUT_MS;
-        pollIntervalRef.current = setInterval(async () => {
-            const next = await probe();
-            // Only 'offline' is worth waiting on — the others are answers, not
-            // a server still coming up.
-            if (next !== 'offline') {
-                stopPolling();
-                setStatus(next);
-                return;
-            }
-            if (Date.now() > deadline) {
-                stopPolling();
-                setStatus(next);
-                setLoadError('OpenCode did not come up in time.');
-            }
-        }, 1500);
-    }, [probe, stopPolling]);
+    }, 1500, shouldUpdate && status === 'starting');
 
     // Detect the CLI (Electron only — the browser build can't launch processes),
     // then probe the port. Re-runs on Reload via frameKey.
@@ -97,13 +86,17 @@ export default function OpencodeMode() {
                 }
             }
             const next = await probe();
-            if (active) setStatus(next);
+            if (active) {
+                // Rebuild reloads the frame while the accepted restart may still
+                // be coming up. An early offline probe must not cancel observation.
+                if (next === 'offline' && Date.now() < startDeadlineRef.current) setStatus('starting');
+                else { startDeadlineRef.current = 0; setStatus(next); }
+            }
         })();
         return () => {
             active = false;
-            stopPolling();
         };
-    }, [probe, stopPolling, frameKey]);
+    }, [probe, frameKey]);
 
     useEffect(() => {
         const webview = webviewRef.current;
@@ -161,17 +154,18 @@ export default function OpencodeMode() {
     const handleLaunch = useCallback(async () => {
         if (!window.electron?.opencodeStart) return;
         setLoadError(null);
+        startDeadlineRef.current = Date.now() + START_TIMEOUT_MS;
         setStatus('starting');
         try {
             const result = await window.electron.opencodeStart();
             if (!result?.ok) throw new Error(result?.error || 'OpenCode did not start.');
-            startPolling();
         } catch (err) {
+            startDeadlineRef.current = 0;
             console.error('[OpenCode] Failed to start server:', err);
             setLoadError(err.message);
             setStatus('offline');
         }
-    }, [startPolling]);
+    }, []);
 
     // Main stops Perci's server once the build lands, so restarting here is what
     // swaps the running server over to the freshly built binary.
@@ -186,17 +180,18 @@ export default function OpencodeMode() {
             await refreshBuildInfo();
             setContentReady(false);
             setFrameKey((k) => k + 1);
+            startDeadlineRef.current = Date.now() + START_TIMEOUT_MS;
             setStatus('starting');
             const started = await window.electron.opencodeStart();
             if (!started?.ok) throw new Error(started?.error || 'OpenCode did not restart.');
-            startPolling();
         } catch (err) {
+            startDeadlineRef.current = 0;
             console.error('[OpenCode] Rebuild failed:', err);
             setRebuild(null);
             setRebuildError(err.message);
             setStatus('offline');
         }
-    }, [refreshBuildInfo, startPolling]);
+    }, [refreshBuildInfo]);
 
     const reload = () => { setLoadError(null); setContentReady(false); setFrameKey((k) => k + 1); };
     const openExternal = () => {

@@ -5,8 +5,6 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { SyntaxHighlighter } from '../lib/syntaxHighlighter';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import {
     PREVIEW_SECURITY_LIMITS,
     buildPreviewErrorDocument,
@@ -57,7 +55,12 @@ export function ArtifactPanel({ isOpen, onClose, artifact, onUpdateContent, widt
         const element = document.getElementById('artifact-pdf-content');
         if (!element) return;
 
+        let html2canvas;
+        let jsPDF;
         try {
+            const [canvasModule, pdfModule] = await Promise.all([import('html2canvas'), import('jspdf')]);
+            html2canvas = canvasModule.default;
+            jsPDF = pdfModule.default;
             const pdf = new jsPDF('p', 'pt', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();

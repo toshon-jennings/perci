@@ -1,0 +1,15 @@
+{
+  "candidate": "/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app",
+  "version": "0.50.3",
+  "artifactSHA256": "acc6d91bcb0b5a85a19fefa11bc1a64e2f57e48da9594933cd8348c6b2b5ec56",
+  "packagedSourceMismatches": [],
+  "unrelatedNotesExcluded": true,
+  "notesExportSHA256": "1f639c6df5be50309ddb4c05300342daff0761488eeadbf733eb83d442dd67c7",
+  "signatureStatus": "See signature.txt; verification is separate from notarization.",
+  "runtimeStatus": "Not launched; native acceptance and performance measurements pending.",
+  "dmg": "/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/Perci-0.50.3-arm64.dmg",
+  "dmgSHA256": "33d70b94440e51871f5f1fd90f9eccec0b1d44aa885401b3ccb12eac508ebcc0",
+  "signatureVerified": true,
+  "notarized": false,
+  "dmgAppearance": "Observed at 540x380 in dark appearance; light appearance pending."
+}

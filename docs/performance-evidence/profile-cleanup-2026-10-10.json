@@ -1,0 +1,383 @@
+{
+  "date": "2026-10-10",
+  "action": "User-approved move of retired runtime profiles to macOS Trash, not permanent deletion.",
+  "profileDirectories": 62,
+  "files": 11615,
+  "bytes": 348615606,
+  "installedAppAndUserProfileTouched": false,
+  "compactStartupProbeRetained": true,
+  "entries": [
+    {
+      "formerPath": "docs/performance-evidence/acceptance-0-50-4-final/profile-0-1791628934402",
+      "files": 240,
+      "bytes": 12828756,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/baseline/profile-0-1791594128445",
+      "files": 235,
+      "bytes": 7684539,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/baseline/profile-1-1791594198510",
+      "files": 247,
+      "bytes": 7685590,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/baseline/profile-2-1791594263993",
+      "files": 243,
+      "bytes": 7686038,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/baseline-empty-final-v2/profile-0-1791626542529",
+      "files": 182,
+      "bytes": 4147808,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/baseline-empty-final-v2/profile-1-1791626608730",
+      "files": 177,
+      "bytes": 4013910,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/baseline-empty-final-v2/profile-2-1791626671927",
+      "files": 179,
+      "bytes": 4023586,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/baseline-final/profile-0-1791626006355",
+      "files": 257,
+      "bytes": 8837305,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/baseline-final-v2/profile-0-1791626141619",
+      "files": 257,
+      "bytes": 8895537,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/baseline-final-v2/profile-1-1791626209199",
+      "files": 257,
+      "bytes": 8913813,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/baseline-final-v2/profile-2-1791626275069",
+      "files": 257,
+      "bytes": 8914057,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/baseline-soak-final-v2/profile-0-1791626936880",
+      "files": 265,
+      "bytes": 14086508,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate/profile-0-1791594358081",
+      "files": 181,
+      "bytes": 4157603,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate/profile-1-1791594423752",
+      "files": 181,
+      "bytes": 4157798,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate/profile-2-1791594489389",
+      "files": 181,
+      "bytes": 4158147,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-0-50-4-accessible-final/profile-0-1791631658115",
+      "files": 178,
+      "bytes": 4021763,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-0-50-4-accessible-final/profile-1-1791631722254",
+      "files": 174,
+      "bytes": 4007080,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-0-50-4-accessible-final/profile-2-1791631785219",
+      "files": 174,
+      "bytes": 4007194,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-0-50-4-final/profile-0-1791629315763",
+      "files": 178,
+      "bytes": 4020988,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-0-50-4-final/profile-1-1791629381150",
+      "files": 176,
+      "bytes": 4012008,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-0-50-4-final/profile-2-1791629444768",
+      "files": 174,
+      "bytes": 4006501,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-acceptance/profile-0-1791593970594",
+      "files": 169,
+      "bytes": 4155003,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-acceptance-extended/profile-0-1791594589621",
+      "files": 187,
+      "bytes": 4189120,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-acceptance-v2/profile-0-1791594093069",
+      "files": 223,
+      "bytes": 12808714,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-empty-0-50-4-accessible-final/profile-0-1791631851120",
+      "files": 178,
+      "bytes": 4019216,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-empty-0-50-4-accessible-final/profile-1-1791631915164",
+      "files": 174,
+      "bytes": 4004613,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-empty-0-50-4-accessible-final/profile-2-1791631980704",
+      "files": 162,
+      "bytes": 4003504,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-empty-0-50-4-final/profile-0-1791629511532",
+      "files": 174,
+      "bytes": 4004462,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-empty-0-50-4-final/profile-1-1791629574909",
+      "files": 174,
+      "bytes": 4004203,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-empty-0-50-4-final/profile-2-1791629639336",
+      "files": 178,
+      "bytes": 4018752,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-empty-final-v2/profile-0-1791626738754",
+      "files": 174,
+      "bytes": 4004037,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-empty-final-v2/profile-1-1791626802471",
+      "files": 169,
+      "bytes": 4154899,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-empty-final-v2/profile-2-1791626868642",
+      "files": 181,
+      "bytes": 4155838,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-final-v2/profile-0-1791626343791",
+      "files": 174,
+      "bytes": 4006336,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-final-v2/profile-1-1791626408258",
+      "files": 181,
+      "bytes": 4158595,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-final-v2/profile-2-1791626472482",
+      "files": 181,
+      "bytes": 4158336,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-retry/profile-0-1791594784745",
+      "files": 167,
+      "bytes": 4085521,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-retry-v2/profile-0-1791594817371",
+      "files": 181,
+      "bytes": 4158340,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-retry-v3/profile-0-1791594899829",
+      "files": 177,
+      "bytes": 4016749,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/candidate-soak-0-50-4-final/profile-0-1791629707437",
+      "files": 260,
+      "bytes": 14082083,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/first-open-0-50-4-final/profile-0-1791632459831",
+      "files": 255,
+      "bytes": 14177496,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/header-0-50-4/profile-0-1791628630400",
+      "files": 162,
+      "bytes": 4004439,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/header-0-50-4-accessible/profile-0-1791631414587",
+      "files": 166,
+      "bytes": 4020156,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/header-0-50-4-accessible-final/profile-0-1791631608899",
+      "files": 169,
+      "bytes": 4156472,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/header-0-50-4-final/profile-0-1791628871021",
+      "files": 162,
+      "bytes": 4004527,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/native-visibility/profile-1791596347828",
+      "files": 1,
+      "bytes": 73,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/native-visibility/profile-1791596364369",
+      "files": 1,
+      "bytes": 73,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/native-visibility/profile-1791596376227",
+      "files": 180,
+      "bytes": 4155861,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/native-visibility/profile-1791596437650",
+      "files": 180,
+      "bytes": 4156111,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/native-visibility-0.50.4/profile-1791629071853",
+      "files": 180,
+      "bytes": 4156059,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/trace-accessible-final-empty/profile-0-1791632059161",
+      "files": 166,
+      "bytes": 4017572,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/trace-baseline-empty/profile-0-1791632049694",
+      "files": 170,
+      "bytes": 4159260,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/verified-acceptance/profile-0-1791595146940",
+      "files": 237,
+      "bytes": 13003814,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/verified-acceptance-complete/profile-0-1791595773015",
+      "files": 245,
+      "bytes": 12855610,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/verified-acceptance-final/profile-0-1791595702710",
+      "files": 166,
+      "bytes": 4012940,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/verified-acceptance-v2/profile-0-1791595484881",
+      "files": 166,
+      "bytes": 4020177,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/verified-acceptance-v3/profile-0-1791595527045",
+      "files": 245,
+      "bytes": 12863186,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/verified-terminal/profile-0-1791595933719",
+      "files": 181,
+      "bytes": 4157276,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/verified-visibility/profile-0-1791596045192",
+      "files": 178,
+      "bytes": 4020935,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/verified-visibility-cdp/profile-0-1791596258521",
+      "files": 178,
+      "bytes": 4021019,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "docs/performance-evidence/verified-visibility-native/profile-0-1791596229666",
+      "files": 178,
+      "bytes": 4021082,
+      "recoverableMoveVerified": true
+    },
+    {
+      "formerPath": "test/runtime-evidence/startup-profile",
+      "files": 192,
+      "bytes": 4176618,
+      "recoverableMoveVerified": true
+    }
+  ]
+}

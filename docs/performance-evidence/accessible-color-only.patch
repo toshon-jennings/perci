@@ -1,0 +1,58 @@
+--- pre-contrast/src/App.jsx
++++ accessible-final/src/App.jsx
+@@ -1053,7 +1053,7 @@
+     return (
+         <div className="app h-screen max-h-screen flex flex-col bg-[var(--bg-primary)] overflow-hidden">
+             {/* Top Navigation / Header */}
+-            <header className={`app-header glass-header select-none sticky top-0 z-50 flex-shrink-0 flex items-center justify-between gap-3 px-4 pb-2.5 ${window.electron ? 'pt-8' : 'pt-2.5'}`} style={{ WebkitAppRegion: 'drag' }}>
++            <header className={`app-header glass-header select-none sticky top-0 z-50 flex-shrink-0 flex items-center justify-between gap-3 px-4 pb-2.5 ${window.electron ? 'pt-8' : 'pt-2.5'}`} style={{ WebkitAppRegion: 'drag', '--accent': 'var(--accent-hover)' }}>
+                 <div className="flex shrink-0 items-center">
+                     {/* Professional macOS-style Logo Container */}
+                     <div title={`Perci ${window.electron ? 'Desktop' : 'Web Fallback'}`}
+@@ -1118,7 +1118,7 @@
+                     {currentMode === MODES.CHAT && (
+                         <button
+                             onClick={() => setShowChatGuide(true)}
+-                            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[#f97316] hover:bg-[rgba(249,115,22,0.1)] hover:text-[#ea580c] transition-all duration-150 ease-out border border-transparent hover:border-[rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 group"
++                            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[var(--accent)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)] transition-all duration-150 ease-out border border-transparent hover:border-[rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 group"
+                             aria-label="Open Chat Guide" title="Open Chat Guide"
+                         >
+                             <BookOpen size={16} className="transition-transform duration-200 group-hover:rotate-6" />
+@@ -1157,7 +1157,7 @@
+                         className={`relative group flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all text-[11px] uppercase tracking-wider skills-branded ${skillsWindowOpen ? 'active' : ''}`}
+                         aria-label="Skills Management" title="Skills Management"
+                     >
+-                        <Puzzle size={16} />
++                        <Puzzle size={16} style={{ color: 'var(--text-primary)' }} />
+                         <span className="absolute -top-1 -right-1 w-3 h-3 bg-[var(--accent-secondary)] rounded-full transition-all duration-300 group-hover:translate-x-3 group-hover:-translate-y-1 group-hover:opacity-0 pointer-events-none" />
+                     </button>
+ 
+@@ -1186,7 +1186,7 @@
+                         <img src={autoforgeLogo} alt="" className="h-5 w-5 rounded" />
+                     </button>
+ 
+-                    <button onClick={() => setShowGlobalTerminal(v => !v)} className={`p-1.5 rounded-md transition-colors ${showGlobalTerminal ? 'bg-[var(--accent)] text-white' : 'text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)]'}`} aria-label="Toggle Terminal" title="Toggle Terminal">
++                    <button onClick={() => setShowGlobalTerminal(v => !v)} className={`p-1.5 rounded-md transition-colors ${showGlobalTerminal ? 'bg-[var(--accent)] text-[var(--text-on-accent)]' : 'text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)]'}`} aria-label="Toggle Terminal" title="Toggle Terminal">
+                         <TerminalIcon size={18} />
+                     </button>
+ 
+@@ -1204,7 +1204,7 @@
+                         {themeMode === 'system' ? <Monitor size={18} /> : (isDarkMode ? <Moon size={18} /> : <Sun size={18} />)}
+                     </button>
+ 
+-                    <button onClick={toggleIncognitoMode} className={`p-1.5 rounded-md transition-colors ${isIncognitoMode ? 'bg-[var(--accent)] text-white' : 'text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)]'}`} aria-label={isIncognitoMode ? "Disable Incognito Mode" : "Enable Incognito Mode"} title={isIncognitoMode ? "Disable Incognito Mode" : "Enable Incognito Mode"}>
++                    <button onClick={toggleIncognitoMode} className={`p-1.5 rounded-md transition-colors ${isIncognitoMode ? 'bg-[var(--accent)] text-[var(--text-on-accent)]' : 'text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)]'}`} aria-label={isIncognitoMode ? "Disable Incognito Mode" : "Enable Incognito Mode"} title={isIncognitoMode ? "Disable Incognito Mode" : "Enable Incognito Mode"}>
+                         {isIncognitoMode ? <Lock size={18} /> : <Unlock size={18} />}
+                     </button>
+                 </div>
+--- pre-contrast/src/components/ModeSwitcher.jsx
++++ accessible-final/src/components/ModeSwitcher.jsx
+@@ -40,7 +40,7 @@
+         { id: MODES.OFFICE, icon: OfficeIcon,       label: 'Office' },
+         { id: MODES.BUILD,  icon: BuildIcon,        label: 'Build' },
+         { id: MODES.MISSION, icon: MissionIcon,     label: 'Mission' },
+-        { id: LOCALHOST_WINDOW_ID, icon: Globe, label: 'Localhost', color: '#4DA64D' },
++        { id: LOCALHOST_WINDOW_ID, icon: Globe, label: 'Localhost', color: 'color-mix(in srgb, var(--text-primary) 20%, #4DA64D)' },
+     ];
+ 
+     return (

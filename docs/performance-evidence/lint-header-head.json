@@ -1,0 +1,35 @@
+[
+  {
+    "filePath": "/Users/toshonjennings/opal/src/components/ModeSwitcher.jsx",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'React' is defined but never used.",
+        "line": 1,
+        "column": 8,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 1,
+        "endColumn": 13
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import React from 'react';\nimport { useMode, MODES, LOCALHOST_WINDOW_ID } from '../context/ModeContext';\nimport {\n    DashboardIcon, ChatIcon, EnsembleIcon, CoworkIcon, CodeIcon, NotesIcon, ResearchIcon,\n    AgentsIcon, OfficeIcon, BuildIcon, MissionIcon, ProjectsIcon, SurfaceMapIcon, PerciNowIcon, PerciDeskIcon, DocketIcon,\n} from './ModeIcons';\nimport { Globe, Ship, Rocket } from 'lucide-react';\n\n// Duotone palettes for the custom mode icons (see ModeIcons.jsx).\n// Secondary is a translucent tint so the primary outline/detail stays\n// legible at ~15px; the solid accent does the recognising, not the fill.\nconst ICON_ACTIVE = { '--mi-primary': '#fff', '--mi-secondary': 'rgba(255,255,255,0.32)' };\nconst ICON_RESTING = {\n    '--mi-primary': 'var(--accent)',\n    '--mi-secondary': 'color-mix(in srgb, var(--accent-cyan) 50%, transparent)',\n};\n\nexport default function ModeSwitcher() {\n    const { currentMode, setCurrentMode, windows } = useMode();\n\n    const perciNowOpen = windows.some(w => w.id === MODES.PERCI_NOW && w.state !== 'minimized');\n    const perciDeskOpen = windows.some(w => w.id === MODES.PERCI_DESK && w.state !== 'minimized');\n\n    const modes = [\n        { id: MODES.DASHBOARD, icon: DashboardIcon, label: '' },\n        { id: MODES.SURFACE_MAP, icon: SurfaceMapIcon, label: 'Map' },\n        { id: MODES.PERCI_NOW, icon: PerciNowIcon, label: 'Now' },\n        { id: MODES.PERCI_DESK, icon: PerciDeskIcon, label: 'Desk' },\n        { id: MODES.CHAT,   icon: ChatIcon,         label: 'Chat' },\n        { id: MODES.ENSEMBLE, icon: EnsembleIcon,   label: 'Ensemble' },\n        { id: MODES.COWORK, icon: CoworkIcon,       label: 'Cowork' },\n        { id: MODES.CODE,   icon: CodeIcon,         label: 'Code' },\n        { id: MODES.SHIPYARD, icon: Ship,   label: 'Shipyard', color: '#f97316' },\n        { id: MODES.POWER_WORKSPACE, icon: Rocket, label: 'Power Ws', color: '#f97316' },\n        { id: MODES.DOCKET, icon: DocketIcon,       label: 'Docket' },\n        { id: MODES.PROJECTS, icon: ProjectsIcon,   label: 'Git Shells' },\n        { id: MODES.NOTES,  icon: NotesIcon,        label: 'Notes' },\n        { id: MODES.AUTORESEARCH, icon: ResearchIcon, label: 'Autoresearch' },\n        { id: MODES.AGENTS, icon: AgentsIcon,       label: 'Agents' },\n        { id: MODES.OFFICE, icon: OfficeIcon,       label: 'Office' },\n        { id: MODES.BUILD,  icon: BuildIcon,        label: 'Build' },\n        { id: MODES.MISSION, icon: MissionIcon,     label: 'Mission' },\n        { id: LOCALHOST_WINDOW_ID, icon: Globe, label: 'Localhost', color: '#4DA64D' },\n    ];\n\n    return (\n        <div className=\"flex gap-0.5 p-1 rounded-xl glass-panel layout-transition\">\n            {modes.map(mode => {\n                const active = currentMode === mode.id\n                    || (mode.id === MODES.PERCI_NOW && perciNowOpen)\n                    || (mode.id === MODES.PERCI_DESK && perciDeskOpen);\n                return (\n                    <button\n                        key={mode.id}\n                        onClick={() => setCurrentMode(mode.id)}\n                        aria-label={mode.label}\n                        title={mode.label}\n                        className=\"micro-interaction state-feedback relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200\"\n                        style={{ fontFamily: 'DM Sans, sans-serif' }}\n                    >\n                        {/* Sliding active indicator */}\n                        {active && (\n                            <span\n                                className=\"absolute inset-0 rounded-lg layout-transition\"\n                                style={mode.color ? { background: 'linear-gradient(135deg, ' + mode.color + ', color-mix(in srgb, ' + mode.color + ' 70%, white))', boxShadow: '0 0 16px color-mix(in srgb, ' + mode.color + ' 50%, transparent)' } : {\n                                    background: 'linear-gradient(135deg, var(--accent), var(--accent-cyan))',\n                                    boxShadow: '0 0 16px var(--accent-glow)',\n                                }}\n                            />\n                        )}\n                        <mode.icon\n                            size={15}\n                            className=\"relative z-10 transition-colors duration-200\"\n                            style={mode.color ? { '--mi-primary': mode.color, '--mi-secondary': 'color-mix(in srgb, ' + mode.color + ' 50%, transparent)', color: active ? 'white' : mode.color } : active ? ICON_ACTIVE : ICON_RESTING}\n                        />\n                        <span\n                            className=\"relative z-10 hidden lg:inline transition-colors duration-200\"\n                            style={{ color: mode.color ? mode.color : active ? 'white' : 'var(--text-secondary)' }}\n                        >\n                            {mode.label}\n                        </span>\n                    </button>\n                );\n            })}\n        </div>\n    );\n}\n",
+    "usedDeprecatedRules": [
+      {
+        "ruleId": "no-extra-semi",
+        "replacedBy": []
+      },
+      {
+        "ruleId": "no-mixed-spaces-and-tabs",
+        "replacedBy": []
+      }
+    ]
+  }
+]

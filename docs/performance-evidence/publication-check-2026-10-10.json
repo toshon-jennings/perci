@@ -1,0 +1,68 @@
+{
+  "auditSecretFindings": 0,
+  "stagedScannerFindings": 10,
+  "verifiedSourceHashFalsePositives": [
+    {
+      "file": "docs/performance-evidence/candidate-source-0.50.4-initial.json",
+      "line": 52,
+      "classification": "SHA256 of src/components/KeysafeMode.jsx, verified against source; not a credential"
+    },
+    {
+      "file": "docs/performance-evidence/candidate-source-0.50.4-initial.json",
+      "line": 83,
+      "classification": "SHA256 of src/components/KeysafeMode.jsx, verified against source; not a credential"
+    },
+    {
+      "file": "docs/performance-evidence/candidate-source-0.50.4.json",
+      "line": 52,
+      "classification": "SHA256 of src/components/KeysafeMode.jsx, verified against source; not a credential"
+    },
+    {
+      "file": "docs/performance-evidence/candidate-source-0.50.4.json",
+      "line": 83,
+      "classification": "SHA256 of src/components/KeysafeMode.jsx, verified against source; not a credential"
+    },
+    {
+      "file": "docs/performance-evidence/candidate-source.json",
+      "line": 51,
+      "classification": "SHA256 of src/components/KeysafeMode.jsx, verified against source; not a credential"
+    },
+    {
+      "file": "docs/performance-evidence/candidate-source.json",
+      "line": 81,
+      "classification": "SHA256 of src/components/KeysafeMode.jsx, verified against source; not a credential"
+    },
+    {
+      "file": "docs/performance-evidence/candidate-source-0.50.4-accessible.json",
+      "line": 52,
+      "classification": "SHA256 of src/components/KeysafeMode.jsx, verified against source; not a credential"
+    },
+    {
+      "file": "docs/performance-evidence/candidate-source-0.50.4-accessible.json",
+      "line": 83,
+      "classification": "SHA256 of src/components/KeysafeMode.jsx, verified against source; not a credential"
+    },
+    {
+      "file": "docs/performance-evidence/candidate-source-0.50.4-accessible-final.json",
+      "line": 52,
+      "classification": "SHA256 of src/components/KeysafeMode.jsx, verified against source; not a credential"
+    },
+    {
+      "file": "docs/performance-evidence/candidate-source-0.50.4-accessible-final.json",
+      "line": 83,
+      "classification": "SHA256 of src/components/KeysafeMode.jsx, verified against source; not a credential"
+    }
+  ],
+  "unexplainedFindings": 0,
+  "runtimeProfilePayloadsStaged": false,
+  "unrelatedNotesStaged": false,
+  "version": "0.50.4",
+  "versionBumpedFrom": "0.50.2",
+  "cleanupProfilesMovedToTrash": 62,
+  "publicationScope": "Reviewed performance/icon-only header source, tests/evidence, historical security audit, compact startup probe, and runtime-profile ignore/cleanup records. No release tag, installed app change or unrelated Notes edit.",
+  "verification": {
+    "tests": "npm test:48files/248tests pass on2026-10-10",
+    "stagedWhitespace": "git diff --cached --check passes; scoped attributes preserve raw CLI logs and unified diff context.",
+    "reviewedProductHashes": "All29ownedsourcehashes still match reviewed0.50.4manifest; no product changes after final ship verdict."
+  }
+}

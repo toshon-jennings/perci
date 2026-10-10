@@ -1,0 +1,30 @@
+{
+  "bridge": true,
+  "video": {
+    "paused": false,
+    "currentTime": 0.084882,
+    "duration": 8,
+    "ended": false
+  },
+  "afterClick": [
+    {
+      "splash": false,
+      "visible": true
+    }
+  ],
+  "automaticCompletion": {
+    "separateRun": true,
+    "videoTimeSamplesSeconds": [
+      1.651479,
+      4.679691,
+      7.692543
+    ],
+    "splashClosedByFinal12SecondObservation": true
+  },
+  "installedApp": "0.50.1",
+  "credentialBackend": "mock-keychain",
+  "liveProfile": {
+    "workspaceVisiblyVerified": true,
+    "restartOrProfileResetPerformed": false
+  }
+}

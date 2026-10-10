@@ -1,3 +1,4 @@
+import { readPerformancePolicy, savePerformancePolicy } from '../lib/performancePolicy';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
     hasElectronStore,
@@ -248,7 +249,16 @@ export function ModeProvider({ children }) {
     // included) opens as a floating window on top, surfaced by the bottom dock.
     // The open set is persisted so windows survive a reload; per-mode geometry is
     // remembered separately so reopening a closed window restores its size.
+    const [performancePolicy, setPerformancePolicy] = useState(readPerformancePolicy);
     const [windows, setWindows] = useState(() => hydrateWindows(readJsonStorage('perci_open_windows', [])));
+    const [viewActivations, setViewActivations] = useState(() => performancePolicy.restoreViews === 'immediate'
+        ? Object.fromEntries(windows.map(win => [win.id, 'restored'])) : {});
+    const activateWindow = useCallback(id => {
+        setViewActivations(current => current[id] === 'user-open' ? current : { ...current, [id]: 'user-open' });
+    }, []);
+    const updatePerformancePolicy = useCallback(value => {
+        setPerformancePolicy(savePerformancePolicy(value));
+    }, []);
 
     useEffect(() => {
         let frame = 0;
@@ -335,12 +345,14 @@ export function ModeProvider({ children }) {
     };
 
     const focusWindow = useCallback((id) => {
+        if (!windowsRef.current.some(win => win.id === id)) return;
+        activateWindow(id);
         const nextZ = ++zCounterRef.current;
         setWindows(ws => ws.map(w => w.id === id
             ? { ...w, z: nextZ, focusedAt: Date.now(), state: w.state === 'minimized' ? 'normal' : w.state }
             : w));
         setActiveMode(id);
-    }, []);
+    }, [activateWindow]);
 
     const cycleWindows = useCallback((direction = 'forward') => {
         let candidates = windowsRef.current;
@@ -381,6 +393,7 @@ export function ModeProvider({ children }) {
 
     const openWindow = useCallback((modeId) => {
         if (modeId === MODES.DASHBOARD) return;
+        activateWindow(modeId);
         const nextZ = ++zCounterRef.current;
         setActiveMode(modeId);
         setWindows(ws => {
@@ -402,7 +415,7 @@ export function ModeProvider({ children }) {
                 noWhirlpool: NO_WHIRLPOOL_IDS.has(modeId),
             }];
         });
-    }, []);
+    }, [activateWindow]);
 
     // Opens (or refocuses) the YouTube window with a new embed URL.
     const openYouTubeWindow = useCallback((embedUrl) => {
@@ -447,6 +460,7 @@ export function ModeProvider({ children }) {
     }, [openWindow]);
 
     const closeWindow = useCallback((id) => {
+        setViewActivations(current => { const next = { ...current }; delete next[id]; return next; });
         const next = windowsRef.current.filter(w => w.id !== id);
         setWindows(next);
         setActiveMode(topVisibleId(next));
@@ -483,6 +497,7 @@ export function ModeProvider({ children }) {
     }, []);
 
     const windowApi = useMemo(() => ({
+        performancePolicy, updatePerformancePolicy, viewActivations,
         windows,
         openWindow,
         closeWindow,
@@ -511,7 +526,7 @@ export function ModeProvider({ children }) {
         setCycleOrder,
         cycleScope,
         setCycleScope,
-    }), [windows, openWindow, closeWindow, focusWindow, focusDashboard, minimizeWindow, toggleMaximizeWindow, moveWindow, resizeWindow, youtubeUrl, openYouTubeWindow, pendingAgentSelection, openAgentWindow, pendingArtifactId, openArtifactWindow, researchData, openResearchWindow, pendingComparePrompt, openCompareWindow, cycleWindows, cycleOrder, cycleScope]);
+    }), [performancePolicy, updatePerformancePolicy, viewActivations, windows, openWindow, closeWindow, focusWindow, focusDashboard, minimizeWindow, toggleMaximizeWindow, moveWindow, resizeWindow, youtubeUrl, openYouTubeWindow, pendingAgentSelection, openAgentWindow, pendingArtifactId, openArtifactWindow, researchData, openResearchWindow, pendingComparePrompt, openCompareWindow, cycleWindows, cycleOrder, cycleScope]);
 
     const createDefaultCodeState = () => ({
         workingDirectory: readStringStorage('working_directory', null),

@@ -1,0 +1,7 @@
+ok    size: 540x380 PNG
+
+label-row luminance (y=285, target 0.60-0.75):
+  app icon       x=140  0.618  ok
+  /Applications  x=400  0.618  ok
+
+passes. Still mock it up and still mount it — neither is checkable from here.

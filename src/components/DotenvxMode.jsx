@@ -1,3 +1,4 @@
+import { useServiceAutoStart } from '../context/WindowActivityContext';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AlertCircle, Download, ExternalLink, Play, RefreshCw } from 'lucide-react';
 import dotenvxLogo from '../assets/dotenvx-logo.svg';
@@ -7,6 +8,9 @@ export const DOTENVX_ORIGIN = 'http://127.0.0.1:7843';
 const DOTENVX_REPO_URL = 'https://github.com/toshonjennings/dotenvx-gui';
 
 export default function DotenvxMode() {
+    const autoStart = useServiceAutoStart('dotenvx-gui');
+    const mountedRef = useRef(false);
+    useEffect(() => { mountedRef.current = true; return () => { mountedRef.current = false; }; }, []);
     const canUseWebview = typeof window !== 'undefined' && Boolean(window.electron);
     const canStart = canUseWebview
         && Boolean(window.electron?.localhostStartNow)
@@ -96,27 +100,31 @@ export default function DotenvxMode() {
         setError(null);
         try {
             const result = await window.electron.localhostStartNow(launch);
+            if (!mountedRef.current) return;
             if (!result?.ok) throw new Error(result?.error || 'Dotenvx did not start.');
 
             let online = false;
             for (let attempt = 0; attempt < 12; attempt += 1) {
+                if (!mountedRef.current) return;
                 await new Promise(resolve => setTimeout(resolve, 500));
                 online = await checkHealth();
                 if (online) break;
             }
+            if (!mountedRef.current) return;
             if (!online) throw new Error('Dotenvx started but did not answer on port 7843.');
             reload();
         } catch (startError) {
+            if (!mountedRef.current) return;
             setError(startError.message || 'Dotenvx did not start.');
             setStatus('offline');
         }
     }, [checkHealth, reload]);
 
     useEffect(() => {
-        if (status !== 'offline' || autoStartedRef.current || !canStart) return;
+        if (!autoStart || status !== 'offline' || autoStartedRef.current || !canStart) return;
         autoStartedRef.current = true;
         startServer();
-    }, [canStart, startServer, status]);
+    }, [canStart, startServer, status, autoStart]);
 
     const canInstall = canUseWebview && Boolean(window.electron?.dotenvxInstall);
 

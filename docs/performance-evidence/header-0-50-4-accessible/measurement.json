@@ -1,0 +1,345 @@
+{
+  "label": "header-0-50-4-accessible",
+  "collectedAt": "2026-10-10T11:23:34.216Z",
+  "appBundle": "/Users/toshonjennings/opal/release-build/performance-0.50.4-accessible/mac-arm64/Perci.app",
+  "sourceExport": "/Users/toshonjennings/opal/release-build/performance-clean-0.50.4-accessible",
+  "source": "cf036d73362816546d54bc98a7319c13c187bc28",
+  "dirty": "M MISTAKES.md\n M electron/main.cjs\n M package-lock.json\n M package.json\n M src/App.jsx\n M src/components/AgentsPanel.jsx\n M src/components/ArtifactPanel.jsx\n M src/components/DashboardMode.jsx\n M src/components/DockerMode.jsx\n M src/components/DotenvxMode.jsx\n M src/components/EidosMode.jsx\n M src/components/GithubOverviewMode.jsx\n M src/components/KeysafeMode.jsx\n M src/components/ModeSwitcher.jsx\n M src/components/NotesMode.jsx\n M src/components/OfficePanel.jsx\n M src/components/OfficeScene.jsx\n M src/components/OpencodeMode.jsx\n M src/components/SettingsModal.jsx\n M src/components/windows/DesktopHost.jsx\n M src/components/windows/WindowErrorBoundary.jsx\n M src/context/ModeContext.jsx\n M src/lib/persistentStore.js\n?? docs/Perci-Performance-Implementation-Plan.md\n?? docs/performance-evidence/\n?? electron/single-flight.cjs\n?? perci-security-audit.md\n?? scripts/measure-perci-performance.mjs\n?? scripts/probe-perci-visibility.mjs\n?? src/context/WindowActivityContext.jsx\n?? src/hooks/useVisiblePolling.js\n?? src/lib/agentDefinitions.js\n?? src/lib/lazyModuleRetry.js\n?? src/lib/performancePolicy.js\n?? src/lib/startIntegrationService.js\n?? src/lib/visiblePoller.js\n?? test/lazyModuleRetry.test.js\n?? test/performancePolicy.test.js\n?? test/runtime-evidence/startup-probe.json\n?? test/runtime-evidence/startup-profile/\n?? test/singleFlight.test.js\n?? test/visiblePoller.test.js",
+  "artifactSHA256": "dbcde510c66ea69cec6f70d95a057179c3c24ad886f7fe5281b81056ac7ce39b",
+  "hardware": {
+    "hostname": "MacBookPro2.local",
+    "memoryBytes": 17179869184
+  },
+  "protocol": {
+    "repetitions": 1,
+    "idleMs": 0,
+    "soakMs": 0,
+    "cycles": false,
+    "empty": false,
+    "syntheticBackends": true,
+    "playwrightFocusEmulation": true
+  },
+  "fixture": [
+    {
+      "id": "chat",
+      "modeId": "chat",
+      "title": "Chat",
+      "state": "minimized",
+      "z": 20,
+      "bounds": {
+        "x": 30,
+        "y": 20,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "code",
+      "modeId": "code",
+      "title": "Code",
+      "state": "normal",
+      "z": 21,
+      "bounds": {
+        "x": 38,
+        "y": 25,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "notes",
+      "modeId": "notes",
+      "title": "Workspace Notes",
+      "state": "normal",
+      "z": 22,
+      "bounds": {
+        "x": 46,
+        "y": 30,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "office",
+      "modeId": "office",
+      "title": "Perci HQ",
+      "state": "minimized",
+      "z": 23,
+      "bounds": {
+        "x": 54,
+        "y": 35,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "eidos",
+      "modeId": "eidos",
+      "title": "Eidos",
+      "state": "normal",
+      "z": 24,
+      "bounds": {
+        "x": 62,
+        "y": 40,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "keysafe",
+      "modeId": "keysafe",
+      "title": "KeySafe",
+      "state": "normal",
+      "z": 25,
+      "bounds": {
+        "x": 70,
+        "y": 45,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "dotenvx-gui",
+      "modeId": "dotenvx-gui",
+      "title": "Dotenvx GUI",
+      "state": "minimized",
+      "z": 26,
+      "bounds": {
+        "x": 78,
+        "y": 50,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "github-overview",
+      "modeId": "github-overview",
+      "title": "GitHub Overview",
+      "state": "normal",
+      "z": 27,
+      "bounds": {
+        "x": 86,
+        "y": 55,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "localhost",
+      "modeId": "localhost",
+      "title": "Localhost",
+      "state": "normal",
+      "z": 28,
+      "bounds": {
+        "x": 94,
+        "y": 60,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "docker",
+      "modeId": "docker",
+      "title": "Docker",
+      "state": "minimized",
+      "z": 29,
+      "bounds": {
+        "x": 102,
+        "y": 65,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "opencode-rig",
+      "modeId": "opencode-rig",
+      "title": "OpenCode Rig",
+      "state": "normal",
+      "z": 30,
+      "bounds": {
+        "x": 110,
+        "y": 70,
+        "width": 920,
+        "height": 620
+      }
+    }
+  ],
+  "caveats": [
+    "External starts and network are blocked in the disposable process.",
+    "These measurements isolate view initialization, not real backend startup. Office font lookup/data/font bytes are supplied locally as synthetic fixtures.",
+    "Summed process accounting is approximate; footprint errors are retained."
+  ],
+  "runs": [
+    {
+      "run": 0,
+      "profile": "/Users/toshonjennings/opal/docs/performance-evidence/header-0-50-4-accessible/profile-0-1791631414587",
+      "processLaunchMs": 10568,
+      "shellUsableMs": 731,
+      "samples": [
+        {
+          "elapsedMs": 1518,
+          "version": "0.50.4",
+          "electron": "42.0.1",
+          "processes": [
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 1.298109,
+                "percentCPUUsage": 2.6589661482159195,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 22033,
+              "type": "Browser",
+              "creationTime": 1791631414595.109,
+              "memory": {
+                "workingSetSize": 163184,
+                "peakWorkingSetSize": 199456
+              },
+              "sandboxed": false
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.278348,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 22074,
+              "type": "GPU",
+              "creationTime": 1791631422233.799,
+              "serviceName": "GPU",
+              "memory": {
+                "workingSetSize": 68512,
+                "peakWorkingSetSize": 80064
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.159426,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 22075,
+              "type": "Utility",
+              "creationTime": 1791631422241.206,
+              "serviceName": "network.mojom.NetworkService",
+              "name": "Network Service",
+              "memory": {
+                "workingSetSize": 47184,
+                "peakWorkingSetSize": 56960
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.121528,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 22076,
+              "type": "Tab",
+              "creationTime": 1791631422722.486,
+              "memory": {
+                "workingSetSize": 80384,
+                "peakWorkingSetSize": 99744
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.75655,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 22077,
+              "type": "Tab",
+              "creationTime": 1791631422738.42,
+              "memory": {
+                "workingSetSize": 250576,
+                "peakWorkingSetSize": 250576
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.092684,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 22081,
+              "type": "Tab",
+              "creationTime": 1791631423104.475,
+              "memory": {
+                "workingSetSize": 58592,
+                "peakWorkingSetSize": 77072
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.116069,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 22082,
+              "type": "Utility",
+              "creationTime": 1791631423133.998,
+              "serviceName": "audio.mojom.AudioService",
+              "name": "Audio Service",
+              "memory": {
+                "workingSetSize": 36464,
+                "peakWorkingSetSize": 44976
+              },
+              "sandboxed": true
+            }
+          ],
+          "guests": 0,
+          "calls": {
+            "agent-jobs:list": 2,
+            "openclaw:test-connection": 4,
+            "models:list": 4,
+            "credentials:status": 2
+          },
+          "sources": {
+            "dashboard": 2
+          },
+          "footprint": "======================================================================\nPerci Helper (Renderer) [22077]: 64-bit    Footprint: 186 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 186 MB\n    phys_footprint_peak: 187 MB\n\n======================================================================\nPerci [22033]: 64-bit    Footprint: 103 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 103 MB\n    phys_footprint_peak: 103 MB\n\n======================================================================\nPerci Helper [22074]: 64-bit    Footprint: 81 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 88 MB\n    phys_footprint_peak: 88 MB\n\n======================================================================\nPerci Helper (Renderer) [22076]: 64-bit    Footprint: 22 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 22 MB\n    phys_footprint_peak: 22 MB\n\n======================================================================\nPerci Helper (Renderer) [22081]: 64-bit    Footprint: 15 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 15 MB\n    phys_footprint_peak: 15 MB\n\n======================================================================\nPerci Helper [22075]: 64-bit    Footprint: 10 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 10 MB\n    phys_footprint_peak: 10 MB\n\n======================================================================\nPerci Helper [22082]: 64-bit    Footprint: 7777 KB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 7809 KB\n    phys_footprint_peak: 7809 KB\n\n======================================================================\nSummary Footprint: 420 MB\n======================================================================\n\n",
+          "requestedJsResourceEntries": []
+        }
+      ],
+      "diagnostics": [
+        "Request failed: https://fonts.gstatic.com/s/dmsans/v17/rP2Hp2ywxg089UriCZOIHTWEBlw.woff2 net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "[stray-navigation] activeElement at unload: <body>\n  <div id=\"root\"><div class=\"app h-screen max-h-screen flex flex-col bg-[var(--bg-primary)] overflow-hidden\"><header class=\"app-header glass-header select-none sticky top-0 z-50 flex-shrink-0 flex items-center justify-between gap-3 px-4 pb-2.5 pt-8\" style=\"app-region: drag; --accent: var(--accent-hover);\"><div class=\"flex shrink-0 items-center\"><div title=\"Perci Desktop\" class=\"w-9 h-9 roun",
+        "Request failed: https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "[stray-navigation] activeElement at unload: <body>\n  <div id=\"root\"><div class=\"app h-screen max-h-screen flex flex-col bg-[var(--bg-primary)] overflow-hidden\"><header class=\"app-header glass-header select-none sticky top-0 z-50 flex-shrink-0 flex items-center justify-between gap-3 px-4 pb-2.5 pt-8\" style=\"app-region: drag; --accent: var(--accent-hover);\"><div class=\"flex shrink-0 items-center\"><div title=\"Perci Desktop\" class=\"w-9 h-9 roun"
+      ],
+      "viewport": {
+        "width": 1280,
+        "height": 900,
+        "devicePixelRatio": 2
+      },
+      "acceptance": [
+        {
+          "name": "icon header fits native widths with named tooltips and keyboard focus in both themes",
+          "passed": false,
+          "error": "[{\"name\":\"Skills Management\",\"color\":\"rgb(249, 115, 22)\",\"background\":[252.73018069973088,239.78116109188775,229.78900422914265],\"ratio\":2.5020538492313285}]"
+        }
+      ],
+      "headerLayouts": [],
+      "processExit": {
+        "code": 0,
+        "signal": null,
+        "at": "2026-10-10T11:23:58.897Z"
+      }
+    }
+  ]
+}

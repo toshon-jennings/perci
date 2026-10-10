@@ -1,0 +1,11 @@
+{"label":"verified-acceptance-v2","run":0,"sample":1,"guests":0,"elapsedMs":1756}
+file:///Users/toshonjennings/opal/scripts/measure-perci-performance.mjs:167
+            record.initialJsCoverage = (await page.coverage.stopJSCoverage()).map(({ url, text, ranges }) => ({ url: url.split('/').pop(), sourceLength: text.length, coveredLength: ranges.reduce((sum, r) => sum + r.end - r.start, 0) }));
+                                                                                                                                                              ^
+
+TypeError: Cannot read properties of undefined (reading 'length')
+    at file:///Users/toshonjennings/opal/scripts/measure-perci-performance.mjs:167:159
+    at Array.map (<anonymous>)
+    at file:///Users/toshonjennings/opal/scripts/measure-perci-performance.mjs:167:79
+
+Node.js v22.22.3

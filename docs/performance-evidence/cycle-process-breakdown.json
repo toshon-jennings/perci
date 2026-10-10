@@ -1,0 +1,54 @@
+{
+  "baseline-soak-final-v2": {
+    "Browser": {
+      "firstThreeMedianMB": 92.0,
+      "lastThreeMedianMB": 93.0,
+      "slopeMBPerMinute": 0.04416962210523966,
+      "cpuMedian": 0.1463364106828673
+    },
+    "GPU": {
+      "firstThreeMedianMB": 727.0,
+      "lastThreeMedianMB": 758.0,
+      "slopeMBPerMinute": -5.176572710033953,
+      "cpuMedian": 4.56875880927831
+    },
+    "Utility": {
+      "firstThreeMedianMB": 17.3447265625,
+      "lastThreeMedianMB": 17.3447265625,
+      "slopeMBPerMinute": 0.0,
+      "cpuMedian": 0.0025110155057099545
+    },
+    "Tab": {
+      "firstThreeMedianMB": 620.0,
+      "lastThreeMedianMB": 681.0,
+      "slopeMBPerMinute": 4.233858643129169,
+      "cpuMedian": 8.455272062522333
+    }
+  },
+  "candidate-soak-0-50-4-final": {
+    "Browser": {
+      "firstThreeMedianMB": 92.0,
+      "lastThreeMedianMB": 94.0,
+      "slopeMBPerMinute": 0.1018332866024681,
+      "cpuMedian": 0.13643294155207772
+    },
+    "GPU": {
+      "firstThreeMedianMB": 456.0,
+      "lastThreeMedianMB": 453.0,
+      "slopeMBPerMinute": 1.2772537683275536,
+      "cpuMedian": 1.7306899567636498
+    },
+    "Utility": {
+      "firstThreeMedianMB": 16.923828125,
+      "lastThreeMedianMB": 16.939453125,
+      "slopeMBPerMinute": 0.000664732870239491,
+      "cpuMedian": 0.0017026703757205025
+    },
+    "Tab": {
+      "firstThreeMedianMB": 515.0,
+      "lastThreeMedianMB": 564.0,
+      "slopeMBPerMinute": 2.782737382906768,
+      "cpuMedian": 3.3380124261639286
+    }
+  }
+}

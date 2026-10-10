@@ -1,0 +1,160 @@
+npm notice run perci@0.50.4 build
+npm notice run vite build
+vite v5.4.21 building for production...
+transforming...
+✓ 4174 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                     0.41 kB │ gzip:   0.28 kB
+dist/assets/klipit-logo-2ycSQiYL.png                5.58 kB
+dist/assets/simplex-logo-kUaQGL1T.png               9.47 kB
+dist/assets/openclaw-color-CCtRw2Oe.png            13.32 kB
+dist/assets/nousresearch-BCtXp_7u.png              17.60 kB
+dist/assets/opencode-icon-DnnuM0tx.png             29.94 kB
+dist/assets/studioos-logo-light-n1qqv6Ci.png       50.27 kB
+dist/assets/studioos-logo-dark-CssTrAGf.png        51.46 kB
+dist/assets/lh-logo-CpHOS367.png                   62.32 kB
+dist/assets/perci-logo-Cmm_T6g1.png               100.14 kB
+dist/assets/github-overview-logo-CYwtdiRt.png     178.28 kB
+dist/assets/logo-opal-shadow-cnEcdI4K.png         218.99 kB
+dist/assets/studioos-bg-Cmgsz5K0.jpg              227.07 kB
+dist/assets/autoforge-logo-BbExxDWC.png           238.92 kB
+dist/assets/eidos-logo-BDAEyXnF.png               313.65 kB
+dist/assets/cleanmac-logo-CCvQqWr_.jpeg           341.95 kB
+dist/assets/codex-micro-bg-BUbXZO0J.jpeg          348.20 kB
+dist/assets/keysafe-logo-Bu2oHaKR.jpeg            389.91 kB
+dist/assets/ensemble-bg-light-BdYnifcM.jpeg       473.76 kB
+dist/assets/simplex-bg-BmeDvs6v.jpg               474.38 kB
+dist/assets/agentmail-bg-BUlZclct.jpeg            525.74 kB
+dist/assets/chat-hero-background-CadDr5Un.jpeg    571.59 kB
+dist/assets/keysafe-bg-BqS_x1Ni.jpeg              586.08 kB
+dist/assets/opencode-bg-xZXPTuv5.jpeg             602.49 kB
+dist/assets/gdash2-cropped-zoO-f_7x.png           628.28 kB
+dist/assets/github-overview-bg-D7b4tfZe.jpeg      651.34 kB
+dist/assets/klipit-bg-BKepV8Lf.jpeg               662.13 kB
+dist/assets/chatgpt-logo-CH2d8YF4.png             669.29 kB
+dist/assets/markitdown-logo-az_COxRW.jpeg         686.06 kB
+dist/assets/pxpipe-bg-DReNRf2x.jpeg               706.11 kB
+dist/assets/billboard-bg-CLjWwD9y.jpg             710.01 kB
+dist/assets/apfel-bg-BLxIGBOC.jpeg                717.51 kB
+dist/assets/cleanmac-bg-CBur-8Q-.jpeg             722.76 kB
+dist/assets/autoforge-bg-24LnycDI.jpeg            884.61 kB
+dist/assets/docker-bg-DKqQ1BY0.jpg                931.33 kB
+dist/assets/iptv-bg-DMO5N8Ir.jpeg               1,007.87 kB
+dist/assets/lighthouse-bg-DtDpz3-e.jpg          1,025.13 kB
+dist/assets/gdash-bg-8vrOAqtS.jpg               1,034.95 kB
+dist/assets/open-notebook-bg-Cd0Cnm56.jpeg      1,086.96 kB
+dist/assets/localhost-bg-BFUTOnyW.jpeg          1,541.79 kB
+dist/assets/ensemble-bg-dark-CcpF6Pa1.jpeg      1,594.67 kB
+dist/assets/openclaw-chat-bg-CsQR0PHo.jpeg      1,842.20 kB
+dist/assets/markitdown-bg-B2SXSWIs.jpeg         1,862.22 kB
+dist/assets/openclaw-bg-DOqSwtGn.jpg            2,007.10 kB
+dist/assets/localhost-gqV-GNYo.jpeg             2,430.92 kB
+dist/assets/bars-bg-wPg2rNB9.jpg                2,820.43 kB
+dist/assets/gitshells-bg-BCpsXCDp.jpg           3,132.81 kB
+dist/assets/HermesMode-C8qxHRM9.css                 1.18 kB │ gzip:   0.48 kB
+dist/assets/DocketMode-BXVrnA_Y.css                 1.45 kB │ gzip:   0.56 kB
+dist/assets/ProjectsMode-JXVj75hh.css               2.02 kB │ gzip:   0.74 kB
+dist/assets/OfficePanel-DmameEFU.css                2.10 kB │ gzip:   0.90 kB
+dist/assets/SystemSettingsMode-C1yr7gQY.css         3.20 kB │ gzip:   0.95 kB
+dist/assets/KeysafeMode-DMc-XNKs.css                4.46 kB │ gzip:   1.17 kB
+dist/assets/PerciMapMode-DsskO55A.css               5.32 kB │ gzip:   1.51 kB
+dist/assets/terminal-9CEnUXvW.css                   5.75 kB │ gzip:   1.98 kB
+dist/assets/LocalhostMode-CeO1AqL1.css              6.57 kB │ gzip:   1.86 kB
+dist/assets/PerciSurfaceCanvas-ZXZx1ufY.css         6.64 kB │ gzip:   1.76 kB
+dist/assets/SimplexMode-DAsziYmX.css                9.69 kB │ gzip:   2.14 kB
+dist/assets/PerciNowMode-D6SPxDd3.css              10.52 kB │ gzip:   2.14 kB
+dist/assets/ShipyardMode-ChGGkcwF.css              11.68 kB │ gzip:   2.74 kB
+dist/assets/IptvMode-BQ_OOQrX.css                  12.92 kB │ gzip:   2.65 kB
+dist/assets/SkillsMode-BD7Abztt.css                14.56 kB │ gzip:   2.76 kB
+dist/assets/BarsMode-BAumXXSr.css                  14.65 kB │ gzip:   3.67 kB
+dist/assets/LighthouseMode-KsW6bmAk.css            15.68 kB │ gzip:   3.87 kB
+dist/assets/PerciDeskMode-DJX47YXq.css             19.40 kB │ gzip:   3.75 kB
+dist/assets/CodexMicroMode-CrwD9dn9.css            21.38 kB │ gzip:   5.13 kB
+dist/assets/EidosMode-mNC_5kFN.css                 21.97 kB │ gzip:   4.07 kB
+dist/assets/BillboardMode-CTbBWdMz.css             33.16 kB │ gzip:   6.18 kB
+dist/assets/index-CPfhiE4m.css                    214.83 kB │ gzip:  34.46 kB
+dist/assets/relevance-CY2D7avG.js                   0.46 kB │ gzip:   0.30 kB
+dist/assets/ArtifactWindow-C9DL2-2i.js              0.57 kB │ gzip:   0.38 kB
+dist/assets/FileProcessor-C_Jt8hm2.js               0.97 kB │ gzip:   0.52 kB
+dist/assets/EditableTitle-Br3HcjJM.js               1.17 kB │ gzip:   0.65 kB
+dist/assets/PwaShortcutWindow-BP8fzSK8.js           2.27 kB │ gzip:   0.95 kB
+dist/assets/AttachmentSystem-Cu9uUAOu.js            2.40 kB │ gzip:   0.97 kB
+dist/assets/notesOKF-CT5uecRF.js                    2.59 kB │ gzip:   1.10 kB
+dist/assets/TerminalSplitLayout-XPV6c77r.js         3.34 kB │ gzip:   1.32 kB
+dist/assets/AgentMailMode-t9ByeddT.js               3.36 kB │ gzip:   1.25 kB
+dist/assets/ResearchResultsWindow-DzkXLS_c.js       3.56 kB │ gzip:   1.36 kB
+dist/assets/GDashMode-DaT2S309.js                   3.79 kB │ gzip:   1.54 kB
+dist/assets/previewSecurity-B1THnJYh.js             3.97 kB │ gzip:   1.59 kB
+dist/assets/useAgentTools-DtnKoaB9.js               4.07 kB │ gzip:   1.88 kB
+dist/assets/budgetGovernor-B7JdsjYn.js              4.09 kB │ gzip:   1.71 kB
+dist/assets/PxpipeMode-D9nFv_FW.js                  4.67 kB │ gzip:   1.57 kB
+dist/assets/PerciSurfaceCanvas-Cu20QA17.js          4.70 kB │ gzip:   2.10 kB
+dist/assets/ProviderModelPicker-R7XcSGHa.js         4.81 kB │ gzip:   1.93 kB
+dist/assets/KeysafeMode-59bowbun.js                 5.09 kB │ gzip:   1.85 kB
+dist/assets/Terminal-C0ZAofE1.js                    5.93 kB │ gzip:   2.53 kB
+dist/assets/OpenNotebookMode-BaggQbVZ.js            6.16 kB │ gzip:   2.02 kB
+dist/assets/PerciMapMode-DQHUtOjv.js                6.26 kB │ gzip:   2.44 kB
+dist/assets/brain-O3_SYRyh.js                       6.37 kB │ gzip:   2.79 kB
+dist/assets/SystemSettingsMode-DVt7dUs-.js          6.50 kB │ gzip:   2.00 kB
+dist/assets/GithubOverviewMode-CfFp_OXV.js          7.04 kB │ gzip:   2.58 kB
+dist/assets/DotenvxMode-BRnT7gFi.js                 7.78 kB │ gzip:   2.58 kB
+dist/assets/ApfelMode-DNFuewyR.js                   7.78 kB │ gzip:   2.83 kB
+dist/assets/MarkItDownMode-DovL849R.js              8.93 kB │ gzip:   2.75 kB
+dist/assets/ArtifactPanel-FG-DrHSM.js               9.01 kB │ gzip:   3.22 kB
+dist/assets/AutoforgeMode-CpwJPpwi.js               9.26 kB │ gzip:   2.90 kB
+dist/assets/taste-D--reL4l.js                       9.49 kB │ gzip:   4.73 kB
+dist/assets/PerciDeskMode-Dh5fcnRV.js              10.02 kB │ gzip:   3.33 kB
+dist/assets/powerWorkspace-C_bQc6T5.js             10.02 kB │ gzip:   3.52 kB
+dist/assets/DbInspectorMode-DFHv5Nh0.js            10.05 kB │ gzip:   2.89 kB
+dist/assets/PerciNowMode-CUr_Rsry.js               11.63 kB │ gzip:   3.66 kB
+dist/assets/integrationTools-QI2p6iyP.js           11.66 kB │ gzip:   4.49 kB
+dist/assets/webcontainer-Cy79dHj7.js               11.88 kB │ gzip:   4.78 kB
+dist/assets/DockerMode-CqgS09-o.js                 11.92 kB │ gzip:   3.45 kB
+dist/assets/monaco-UKfdy0nO.js                     11.93 kB │ gzip:   4.48 kB
+dist/assets/AliasManagerMode-D01BuIpo.js           13.90 kB │ gzip:   3.71 kB
+dist/assets/OpencodeMode-B_Svt1qf.js               14.91 kB │ gzip:   3.84 kB
+dist/assets/PackagesMode-BnDYLgfY.js               15.30 kB │ gzip:   3.76 kB
+dist/assets/SimplexMode-DaljQzwU.js                16.32 kB │ gzip:   4.54 kB
+dist/assets/CleanmacMode-RBoGvDUz.js               16.57 kB │ gzip:   4.91 kB
+dist/assets/StudioOSMode-DGKuTeoP.js               17.09 kB │ gzip:   4.74 kB
+dist/assets/DocketMode-CNtOrZc_.js                 18.60 kB │ gzip:   5.18 kB
+dist/assets/SkillsMode-BVCYa7yr.js                 18.69 kB │ gzip:   5.79 kB
+dist/assets/syntax-ui-mcTRHXn_.js                  19.01 kB │ gzip:   4.70 kB
+dist/assets/ShipyardMode-BJILI6cK.js               21.54 kB │ gzip:   6.73 kB
+dist/assets/sanitize-B6FQ9oRL.js                   22.57 kB │ gzip:   8.74 kB
+dist/assets/LighthouseMode-C5W7NAhT.js             24.38 kB │ gzip:   7.75 kB
+dist/assets/ProjectsMode-CISw6War.js               24.51 kB │ gzip:   7.38 kB
+dist/assets/CodexMicroMode-Dvzesu_r.js             24.85 kB │ gzip:   8.25 kB
+dist/assets/CodeMode-CUp-7Mm6.js                   25.77 kB │ gzip:   8.36 kB
+dist/assets/BarsMode-Bw5fJMLA.js                   27.99 kB │ gzip:   9.35 kB
+dist/assets/IntelligentSearchTool-D0kWd1Ga.js      32.31 kB │ gzip:  11.93 kB
+dist/assets/IptvMode-BxUKM_FI.js                   32.45 kB │ gzip:  11.87 kB
+dist/assets/BuildMode-CTzchH6W.js                  32.53 kB │ gzip:   9.45 kB
+dist/assets/AgentsPanel-CgTu_V3j.js                33.48 kB │ gzip:   8.55 kB
+dist/assets/EnsembleMode-Vr8bMIQv.js               33.95 kB │ gzip:  11.05 kB
+dist/assets/PowerWorkspaceMode-DSDOznKQ.js         45.27 kB │ gzip:  11.91 kB
+dist/assets/BillboardMode-CnamBEFC.js              45.42 kB │ gzip:  13.10 kB
+dist/assets/OfficePanel-C0pbP-Rt.js                54.79 kB │ gzip:  14.01 kB
+dist/assets/EidosMode-Bi2qJmBm.js                  57.10 kB │ gzip:  15.56 kB
+dist/assets/HermesMode-C0dKhOxl.js                 58.00 kB │ gzip:  13.42 kB
+dist/assets/SettingsModal-WvWP05p3.js              62.12 kB │ gzip:  14.27 kB
+dist/assets/MissionControl-DTgDKP_C.js             64.21 kB │ gzip:  15.80 kB
+dist/assets/CoworkMode-DEKcOX6Z.js                 64.25 kB │ gzip:  16.38 kB
+dist/assets/AutoresearchPanel-BqEr0HVh.js          68.75 kB │ gzip:  21.69 kB
+dist/assets/icons-B0uOhi0z.js                      89.31 kB │ gzip:  16.36 kB
+dist/assets/ChatMode-CYZIX980.js                   96.69 kB │ gzip:  26.64 kB
+dist/assets/NotesMode-CYPttWQA.js                  98.74 kB │ gzip:  26.82 kB
+dist/assets/motion-BMXd61lD.js                    109.84 kB │ gzip:  36.20 kB
+dist/assets/LocalhostMode-DIX665u0.js             114.04 kB │ gzip:  28.04 kB
+dist/assets/html-export-CBrSDip1.js               201.42 kB │ gzip:  48.03 kB
+dist/assets/terminal-DPv0ql28.js                  334.02 kB │ gzip:  84.74 kB
+dist/assets/pdf-export-5gWwDdm1.js                340.44 kB │ gzip: 111.65 kB
+dist/assets/index-Cz-26kD7.js                     481.86 kB │ gzip: 153.30 kB
+dist/assets/vendor-DDZ4Dcd2.js                  1,567.70 kB │ gzip: 466.44 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 8.89s

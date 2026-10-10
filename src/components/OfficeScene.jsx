@@ -1932,7 +1932,7 @@ function StainedGlassWindow() {
     );
 }
 
-export default function OfficeScene({ desks, perciState, bubble, weather, onDeskClick }) {
+export default function OfficeScene({ desks, perciState, bubble, weather, onDeskClick, isVisible = true }) {
     const [now, setNow] = useState(() => new Date());
     const reduce = useMemo(
         () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false,
@@ -1948,13 +1948,15 @@ export default function OfficeScene({ desks, perciState, bubble, weather, onDesk
     }), [desks]);
 
     useEffect(() => {
+        if (!isVisible) return undefined;
         const tick = () => setNow(new Date());
+        tick();
         const id = window.setInterval(tick, 60 * 1000);
         return () => window.clearInterval(id);
-    }, []);
+    }, [isVisible]);
 
     return (
-        <Canvas dpr={[1, 2]} camera={{ position: [0, 6.8, 11.4], fov: 42 }} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+        <Canvas frameloop={isVisible ? 'always' : 'never'} dpr={[1, 2]} camera={{ position: [0, 6.8, 11.4], fov: 42 }} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
             <fog attach="fog" args={[timeScene.fog, 18, 36]} />
             <color attach="background" args={[timeScene.background]} />
 

@@ -1,60 +1,65 @@
-import { useCallback, useEffect, useMemo, useRef, useState, Component } from 'react';
+import { lazyModuleRetryUrl } from './lib/lazyModuleRetry';
+import WindowErrorBoundary from './components/windows/WindowErrorBoundary';
+import { readPerformancePolicy, shouldAutoStartService, AUTOMATIC_SERVICES } from './lib/performancePolicy';
+import { startIntegrationService } from './lib/startIntegrationService';
+import { useAppVisibility } from './context/WindowActivityContext';
+import { useCallback, useEffect, useMemo, useRef, useState, Component, lazy, Suspense } from 'react';
 import perciLogo from './assets/perci-logo.png';
 import { useMode, MODES, OPENCLAW_WINDOW_ID, HERMES_WINDOW_ID, YOUTUBE_WINDOW_ID, GDASH_WINDOW_ID, ARTIFACT_WINDOW_ID, RESEARCH_WINDOW_ID, EIDOS_WINDOW_ID, LOCALHOST_WINDOW_ID, KLIPIT_WINDOW_ID, SKILLS_WINDOW_ID, CLEANMAC_WINDOW_ID, PACKAGES_WINDOW_ID, AGENTMAIL_WINDOW_ID, AUTOFORGE_WINDOW_ID, OPEN_NOTEBOOK_WINDOW_ID, IPTV_WINDOW_ID, SIMPLEX_WINDOW_ID, PXPIPE_WINDOW_ID, KEYSAFE_WINDOW_ID, APFEL_WINDOW_ID, DOTENVX_WINDOW_ID, OPENCODE_WINDOW_ID, ALIAS_MANAGER_WINDOW_ID, DOCKER_WINDOW_ID, DB_INSPECTOR_WINDOW_ID, GITHUB_OVERVIEW_WINDOW_ID } from './context/ModeContext';
 import ModeSwitcher from './components/ModeSwitcher';
-import ChatMode from './components/ChatMode';
-import CodeMode from './components/CodeMode';
-import CoworkMode from './components/CoworkMode';
-import MissionControl from './components/MissionControl';
-import BuildMode from './components/BuildMode';
-import AgentsPanel from './components/AgentsPanel';
-import CodexMicroMode from './components/CodexMicroMode';
-import AutoresearchPanel from './components/AutoresearchPanel';
-import OfficePanel from './components/OfficePanel';
-import HermesMode from './components/HermesMode';
-import GDashMode from './components/GDashMode';
-import LighthouseMode from './components/LighthouseMode';
+const ChatMode = retryableLazy(() => import('./components/ChatMode'));
+const CodeMode = retryableLazy(() => import('./components/CodeMode'));
+const CoworkMode = retryableLazy(() => import('./components/CoworkMode'));
+const MissionControl = retryableLazy(() => import('./components/MissionControl'));
+const BuildMode = retryableLazy(() => import('./components/BuildMode'));
+const AgentsPanel = retryableLazy(() => import('./components/AgentsPanel'));
+const CodexMicroMode = retryableLazy(() => import('./components/CodexMicroMode'));
+const AutoresearchPanel = retryableLazy(() => import('./components/AutoresearchPanel'));
+const OfficePanel = retryableLazy(() => import('./components/OfficePanel'));
+const HermesMode = retryableLazy(() => import('./components/HermesMode'));
+const GDashMode = retryableLazy(() => import('./components/GDashMode'));
+const LighthouseMode = retryableLazy(() => import('./components/LighthouseMode'));
 import DashboardMode from './components/DashboardMode';
-import PowerWorkspaceMode from './components/PowerWorkspaceMode';
-import PerciMapMode from './components/PerciMapMode';
-import PerciNowMode from './components/PerciNowMode';
-import PerciDeskMode from './components/PerciDeskMode';
-import NotesMode from './components/NotesMode';
-import BarsMode from './components/BarsMode';
-import MarkItDownMode from './components/MarkItDownMode';
-import BillboardMode from './components/BillboardMode';
-import StudioOSMode from './components/StudioOSMode';
-import ProjectsMode from './components/ProjectsMode';
-import EidosMode from './components/EidosMode';
-import LocalhostMode from './components/LocalhostMode';
-import SkillsMode from './components/SkillsMode';
-import EnsembleMode from './components/EnsembleMode';
-import CleanmacMode from './components/CleanmacMode';
-import AutoforgeMode from './components/AutoforgeMode';
-import AgentMailMode from './components/AgentMailMode';
-import PackagesMode from './components/PackagesMode';
-import OpenNotebookMode from './components/OpenNotebookMode';
-import IptvMode from './components/IptvMode';
-import SimplexMode from './components/SimplexMode';
-import PxpipeMode from './components/PxpipeMode';
-import KeysafeMode from './components/KeysafeMode';
-import ApfelMode from './components/ApfelMode';
-import DotenvxMode from './components/DotenvxMode';
-import OpencodeMode from './components/OpencodeMode';
-import DockerMode from './components/DockerMode';
-import DbInspectorMode from './components/DbInspectorMode';
-import GithubOverviewMode from './components/GithubOverviewMode';
-import AliasManagerMode from './components/AliasManagerMode';
-import ShipyardMode from './components/ShipyardMode';
-import DocketMode from './components/DocketMode';
-import SystemSettingsMode from './components/SystemSettingsMode';
+const PowerWorkspaceMode = retryableLazy(() => import('./components/PowerWorkspaceMode'));
+const PerciMapMode = retryableLazy(() => import('./components/PerciMapMode'));
+const PerciNowMode = retryableLazy(() => import('./components/PerciNowMode'));
+const PerciDeskMode = retryableLazy(() => import('./components/PerciDeskMode'));
+const NotesMode = retryableLazy(() => import('./components/NotesMode'));
+const BarsMode = retryableLazy(() => import('./components/BarsMode'));
+const MarkItDownMode = retryableLazy(() => import('./components/MarkItDownMode'));
+const BillboardMode = retryableLazy(() => import('./components/BillboardMode'));
+const StudioOSMode = retryableLazy(() => import('./components/StudioOSMode'));
+const ProjectsMode = retryableLazy(() => import('./components/ProjectsMode'));
+const EidosMode = retryableLazy(() => import('./components/EidosMode'));
+const LocalhostMode = retryableLazy(() => import('./components/LocalhostMode'));
+const SkillsMode = retryableLazy(() => import('./components/SkillsMode'));
+const EnsembleMode = retryableLazy(() => import('./components/EnsembleMode'));
+const CleanmacMode = retryableLazy(() => import('./components/CleanmacMode'));
+const AutoforgeMode = retryableLazy(() => import('./components/AutoforgeMode'));
+const AgentMailMode = retryableLazy(() => import('./components/AgentMailMode'));
+const PackagesMode = retryableLazy(() => import('./components/PackagesMode'));
+const OpenNotebookMode = retryableLazy(() => import('./components/OpenNotebookMode'));
+const IptvMode = retryableLazy(() => import('./components/IptvMode'));
+const SimplexMode = retryableLazy(() => import('./components/SimplexMode'));
+const PxpipeMode = retryableLazy(() => import('./components/PxpipeMode'));
+const KeysafeMode = retryableLazy(() => import('./components/KeysafeMode'));
+const ApfelMode = retryableLazy(() => import('./components/ApfelMode'));
+const DotenvxMode = retryableLazy(() => import('./components/DotenvxMode'));
+const OpencodeMode = retryableLazy(() => import('./components/OpencodeMode'));
+const DockerMode = retryableLazy(() => import('./components/DockerMode'));
+const DbInspectorMode = retryableLazy(() => import('./components/DbInspectorMode'));
+const GithubOverviewMode = retryableLazy(() => import('./components/GithubOverviewMode'));
+const AliasManagerMode = retryableLazy(() => import('./components/AliasManagerMode'));
+const ShipyardMode = retryableLazy(() => import('./components/ShipyardMode'));
+const DocketMode = retryableLazy(() => import('./components/DocketMode'));
+const SystemSettingsMode = retryableLazy(() => import('./components/SystemSettingsMode'));
 import PerciPet from './components/PerciPet';
-import { SettingsModal } from './components/SettingsModal';
+const SettingsModal = retryableLazy(() => import('./components/SettingsModal'), module => ({ default: module.SettingsModal }));
 import DesktopHost from './components/windows/DesktopHost';
 import Dock from './components/windows/Dock';
-import ArtifactWindow from './components/windows/ArtifactWindow';
-import ResearchResultsWindow from './components/windows/ResearchResultsWindow';
-import PwaShortcutWindow from './components/windows/PwaShortcutWindow';
+const ArtifactWindow = retryableLazy(() => import('./components/windows/ArtifactWindow'));
+const ResearchResultsWindow = retryableLazy(() => import('./components/windows/ResearchResultsWindow'));
+const PwaShortcutWindow = retryableLazy(() => import('./components/windows/PwaShortcutWindow'));
 import { ModeGuideModal } from './components/ModeGuideModal';
 import { readStringStorage, writeStringStorage } from './lib/persistentStore';
 import { OpenClawModelsPanel } from './components/OpenClawModelsPanel';
@@ -70,7 +75,7 @@ import agentmailLogo from './assets/agentmail-logo.png';
 import { Moon, Sun, Monitor, Lock, Unlock, Plus, Terminal as TerminalIcon, Server, RefreshCw, ExternalLink, AlertCircle, BookOpen, Cpu, Download, Puzzle, MessageSquare } from 'lucide-react';
 import { useTheme, ThemeProvider } from './context/ThemeContext';
 import { useChat } from './context/ChatContext';
-import TerminalPanel from './components/Terminal';
+const TerminalPanel = retryableLazy(() => import('./components/Terminal'));
 import {
     appendMissionRunEvent,
     recordGatewayCheck,
@@ -80,6 +85,27 @@ import {
     recordTerminalCommandResult
 } from './lib/missionControl';
 import { buildTerminalWsUrl, getTerminalConnectionInfo, getTerminalPortCandidates, rememberTerminalPort } from './lib/terminalBridge';
+
+function retryableLazy(load, selectModule = module => module) {
+    let loadFailed = false;
+    let failure;
+    let retries = 0;
+    const createComponent = () => lazy(() => {
+        const retryUrl = lazyModuleRetryUrl(failure, import.meta.url, retries);
+        return (retryUrl ? import(/* @vite-ignore */ retryUrl) : load())
+            .then(selectModule)
+            .catch(error => { loadFailed = true; if (!failure) failure = error; throw error; });
+    });
+    let Component = createComponent();
+    return function LazyMode(props) {
+        const [attempt, setAttempt] = useState(0);
+        return <WindowErrorBoundary key={attempt} onRetry={() => { if (loadFailed) { loadFailed = false; retries = Math.min(3, retries + 1); Component = createComponent(); } setAttempt(value => value + 1); }}>
+            <Suspense fallback={<div role="status" className="p-6 text-[var(--text-secondary)]">Loading…</div>}>
+                <Component {...props} />
+            </Suspense>
+        </WindowErrorBoundary>;
+    };
+}
 
 class ModeErrorBoundary extends Component {
     constructor(props) {
@@ -121,6 +147,23 @@ class ModeErrorBoundary extends Component {
 }
 
 function AppContent() {
+    const appVisible = useAppVisibility();
+    const [startupFailures, setStartupFailures] = useState([]);
+    const gatewayRequestRef = useRef(null);
+    useEffect(() => {
+        let active = true;
+        const policy = readPerformancePolicy();
+        for (const id of Object.keys(AUTOMATIC_SERVICES)) {
+            if (shouldAutoStartService(policy, id, 'startup') && window.electron) {
+                Promise.resolve().then(() => startIntegrationService(id)).then(result => {
+                    if (result?.ok === false || result?.error) throw new Error('Service unavailable');
+                }).catch(() => {
+                    if (active) setStartupFailures(current => current.includes(id) ? current : [...current, id]);
+                });
+            }
+        }
+        return () => { active = false; };
+    }, []);
     const {
         currentMode,
         setCurrentMode,
@@ -250,45 +293,50 @@ function AppContent() {
     useEffect(() => {
         if (!activeOpenClawProfile) return;
         let cancelled = false;
+        let timer;
 
         async function testOpenClaw() {
-            if (!window.electron?.testOpenClawConnection) {
-                const checkedAt = new Date().toISOString();
-                const result = { ok: false, error: 'OpenClaw Gateway checks require the desktop app.' };
-                setOpenClawStatus({ state: 'unsupported', result, checkedAt });
-                recordGatewayCheck(activeOpenClawProfile, result, 'web fallback');
-                return;
-            }
-
-            const result = await window.electron.testOpenClawConnection(activeOpenClawProfile);
-            // When reachable, enrich with structured gateway health (runtime,
-            // tasks, agents) for the Mission Control lane. Best-effort — a failure
-            // here must not flip the reachability verdict from the TCP probe.
-            if (result.ok && window.electron?.getOpenClawGatewayStatus) {
-                try {
-                    const status = await window.electron.getOpenClawGatewayStatus(activeOpenClawProfile);
-                    if (status?.ok && status.health) result.health = status.health;
-                } catch { /* leave result as the bare reachability check */ }
-            }
-            if (!cancelled) {
-                const checkedAt = new Date().toISOString();
-                setOpenClawStatus({
-                    state: result.ok ? 'online' : 'offline',
-                    result,
-                    checkedAt
-                });
-                recordGatewayCheck(activeOpenClawProfile, result, 'automatic check');
+            try {
+                let result;
+                if (!window.electron?.testOpenClawConnection) {
+                    result = { ok: false, error: 'OpenClaw Gateway checks require the desktop app.' };
+                } else {
+                    // Visibility changes join a pending check for the same profile.
+                    // They do not start another native request while it is settling.
+                    if (gatewayRequestRef.current?.profile !== activeOpenClawProfile) {
+                        const request = { profile: activeOpenClawProfile };
+                        request.promise = (async () => {
+                            const next = await window.electron.testOpenClawConnection(activeOpenClawProfile);
+                            if (next.ok && window.electron?.getOpenClawGatewayStatus) {
+                                try {
+                                    const status = await window.electron.getOpenClawGatewayStatus(activeOpenClawProfile);
+                                    if (status?.ok && status.health) next.health = status.health;
+                                } catch { /* keep the reachability verdict */ }
+                            }
+                            return next;
+                        })().finally(() => {
+                            if (gatewayRequestRef.current === request) gatewayRequestRef.current = null;
+                        });
+                        gatewayRequestRef.current = request;
+                    }
+                    result = await gatewayRequestRef.current.promise;
+                }
+                if (!cancelled) {
+                    const checkedAt = new Date().toISOString();
+                    setOpenClawStatus({ state: result.ok ? 'online' : 'offline', result, checkedAt });
+                    recordGatewayCheck(activeOpenClawProfile, result, 'automatic check');
+                }
+            } catch {
+                if (!cancelled) setOpenClawStatus({ state: 'offline', checkedAt: new Date().toISOString() });
+            } finally {
+                if (!cancelled) timer = setTimeout(testOpenClaw, appVisible ? 30000 : 120000);
             }
         }
 
         setOpenClawStatus({ state: 'checking', checkedAt: new Date().toISOString() });
-        testOpenClaw();
-        const interval = setInterval(testOpenClaw, 30000);
-        return () => {
-            cancelled = true;
-            clearInterval(interval);
-        };
-    }, [activeOpenClawProfile]);
+        void testOpenClaw();
+        return () => { cancelled = true; clearTimeout(timer); };
+    }, [activeOpenClawProfile, appVisible]);
 
     useEffect(() => {
         setOpenClawDashboardIssue(null);
@@ -671,7 +719,6 @@ function AppContent() {
                         title="YouTube"
                     />
                 );
-            case OPEN_NOTEBOOK_WINDOW_ID: return <OpenNotebookMode />;
             case IPTV_WINDOW_ID: return <IptvMode />;
             case SIMPLEX_WINDOW_ID: return <SimplexMode />;
             case PXPIPE_WINDOW_ID: return <PxpipeMode />;
@@ -1006,25 +1053,19 @@ function AppContent() {
     return (
         <div className="app h-screen max-h-screen flex flex-col bg-[var(--bg-primary)] overflow-hidden">
             {/* Top Navigation / Header */}
-            <header className={`app-header glass-header select-none sticky top-0 z-50 flex-shrink-0 flex items-center justify-between px-6 pb-2.5 ${window.electron ? 'pt-8' : 'pt-2.5'}`} style={{ WebkitAppRegion: 'drag' }}>
-                <div className="flex items-center gap-2.5">
+            <header className={`app-header glass-header select-none sticky top-0 z-50 flex-shrink-0 flex items-center justify-between gap-3 px-4 pb-2.5 ${window.electron ? 'pt-8' : 'pt-2.5'}`} style={{ WebkitAppRegion: 'drag', '--accent': 'var(--accent-hover)' }}>
+                <div className="flex shrink-0 items-center">
                     {/* Professional macOS-style Logo Container */}
-                    <div 
+                    <div title={`Perci ${window.electron ? 'Desktop' : 'Web Fallback'}`}
                         className={`w-9 h-9 rounded-[8px] flex items-center justify-center relative shadow-sm overflow-hidden ${isDarkMode ? 'bg-gradient-to-b from-[#2a2a2e] to-[#0c0c0d]' : 'bg-gradient-to-b from-white to-[#f5f5f7] border border-[#e5e7eb]'}`}
                     >
                         <img src={perciLogo} alt="Perci" className="w-[70%] h-[70%] object-contain relative z-10" />
                     </div>
-                    <div className="flex flex-col">
-                        <h1 className="opal-text text-base font-semibold leading-none" style={{fontFamily: 'Outfit, sans-serif', letterSpacing: '-0.02em'}}>Perci</h1>
-                        <span className={`text-[9px] font-bold uppercase tracking-tighter mt-0.5 ${window.electron ? 'text-green-500' : 'text-amber-500'}`}>
-                            {window.electron ? 'Desktop' : 'Web Fallback'}
-                        </span>
-                    </div>
                 </div>
 
-                <div className="flex items-center gap-4" style={{ WebkitAppRegion: 'no-drag' }}>
+                <div className="flex min-w-0 flex-1 items-center justify-end gap-1 [&>button]:shrink-0" style={{ WebkitAppRegion: 'no-drag' }}>
                     {currentMode === MODES.CHAT && (
-                        <button onClick={createNewChat} className="p-1.5 text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)] rounded-md transition-colors" title="New Chat">
+                        <button onClick={createNewChat} className="p-1.5 text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)] rounded-md transition-colors" aria-label="New Chat" title="New Chat">
                             <Plus size={18} />
                         </button>
                     )}
@@ -1033,35 +1074,34 @@ function AppContent() {
                         <button
                             onClick={() => window.electron?.triggerUpdaterAction('download')}
                             className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 transition-colors text-sm font-medium border border-blue-500/20"
-                            title="Download Update"
+                            aria-label="Download Update" title="Download Update"
                         >
                             <Download size={16} />
-                            Update Available
                         </button>
                     )}
                     {updaterState === 'downloading' && (
-                        <div className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 bg-[var(--bg-hover)] text-[var(--text-secondary)] text-sm font-medium border border-[var(--border)]">
+                        <div role="status" title="Downloading update" className="inline-flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 bg-[var(--bg-hover)] text-[var(--text-secondary)] text-sm font-medium border border-[var(--border)]">
                             <RefreshCw size={16} className="animate-spin" />
-                            Downloading...
+                            <span className="sr-only">Downloading update</span>
                         </div>
                     )}
                     {updaterState === 'error' && (
                         <div
                             className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-medium border border-red-500/20"
+                            role="status"
                             title="Update failed — see renderer.log in the Perci user data folder"
                         >
                             <AlertCircle size={16} />
-                            Update Failed
+                            <span className="sr-only">Update failed</span>
                         </div>
                     )}
                     {updaterState === 'downloaded' && (
                         <button
                             onClick={() => window.electron?.triggerUpdaterAction('install')}
                             className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 transition-colors text-sm font-medium border border-emerald-500/20"
-                            title="Restart to Install Update"
+                            aria-label="Restart to Install Update" title="Restart to Install Update"
                         >
                             <RefreshCw size={16} />
-                            Restart to Update
                         </button>
                     )}
 
@@ -1069,25 +1109,23 @@ function AppContent() {
 
                     <button
                         onClick={() => setShowModeGuide(true)}
-                        className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)] transition-colors"
-                        title="Open mode guide"
+                        className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-colors"
+                        aria-label="Open mode guide" title="Open mode guide"
                     >
                         <BookOpen size={16} />
-                        <span className="hidden lg:inline text-sm font-medium">Guide</span>
                     </button>
 
                     {currentMode === MODES.CHAT && (
                         <button
                             onClick={() => setShowChatGuide(true)}
-                            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[#f97316] hover:bg-[rgba(249,115,22,0.1)] hover:text-[#ea580c] transition-all duration-150 ease-out border border-transparent hover:border-[rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 group"
-                            title="Open Chat Guide"
+                            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[var(--accent)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)] transition-all duration-150 ease-out border border-transparent hover:border-[rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 group"
+                            aria-label="Open Chat Guide" title="Open Chat Guide"
                         >
                             <BookOpen size={16} className="transition-transform duration-200 group-hover:rotate-6" />
-                            <span className="hidden lg:inline text-sm font-medium">Chat Guide</span>
                         </button>
                     )}
 
-                    <div className="h-6 w-px bg-[var(--border)] mx-2" />
+                    <div className="h-6 w-px shrink-0 bg-[var(--border)] mx-1" />
 
                     <button
                         onClick={openOpenClawDashboard}
@@ -1096,10 +1134,9 @@ function AppContent() {
                                 ? 'openclaw-branded active'
                                 : 'openclaw-branded'
                         }`}
-                        title={`OpenClaw: ${activeOpenClawProfile?.name || 'Not configured'}`}
+                        aria-label="OpenClaw" title={`OpenClaw: ${activeOpenClawProfile?.name || 'Not configured'}`}
                     >
                         <img src={openClawLogo} alt="OpenClaw" className="h-4 w-4" />
-                        <span className="hidden lg:inline">{activeOpenClawProfile?.mode === 'appliance' ? 'Appliance' : 'OpenClaw'}</span>
                         {openClawStatus.state === 'online' && (
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
                         )}
@@ -1110,19 +1147,17 @@ function AppContent() {
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all text-[11px] uppercase tracking-wider hermes-branded ${
                             hermesWindowOpen ? 'active' : ''
                         }`}
-                        title="Hermes Agent"
+                        aria-label="Hermes Agent" title="Hermes Agent"
                     >
                         <img src={nousLogo} alt="Hermes" className="h-4 w-4 rounded-full bg-white object-cover ring-1 ring-[var(--border)]" />
-                        <span className="hidden xl:inline">Hermes</span>
                     </button>
 
                     <button
                         onClick={() => openWindow(SKILLS_WINDOW_ID)}
                         className={`relative group flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all text-[11px] uppercase tracking-wider skills-branded ${skillsWindowOpen ? 'active' : ''}`}
-                        title="Skills Management"
+                        aria-label="Skills Management" title="Skills Management"
                     >
-                        <Puzzle size={16} />
-                        <span className="hidden xl:inline">Skills</span>
+                        <Puzzle size={16} style={{ color: 'var(--text-primary)' }} />
                         <span className="absolute -top-1 -right-1 w-3 h-3 bg-[var(--accent-secondary)] rounded-full transition-all duration-300 group-hover:translate-x-3 group-hover:-translate-y-1 group-hover:opacity-0 pointer-events-none" />
                     </button>
 
@@ -1133,10 +1168,9 @@ function AppContent() {
                                 ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
                                 : 'text-[var(--text-secondary)] hover:text-indigo-400 hover:bg-indigo-500/10'
                         }`}
-                        title="AgentMail"
+                        aria-label="AgentMail" title="AgentMail"
                     >
                         <img src={agentmailLogo} alt="" className="h-5 w-5 rounded" />
-                        <span className="hidden lg:inline text-sm font-medium">Mail</span>
                     </button>
 
                     <button
@@ -1147,36 +1181,41 @@ function AppContent() {
                                 : 'text-[var(--text-secondary)] hover:text-orange-400 hover:bg-orange-500/10 hover:shadow-[0_0_6px_rgba(249,115,22,0.2)]'
                         }`}
                         style={{ textShadow: '0 0 6px rgba(249,115,22,0.4)' }}
-                        title="AutoForge — Autonomous coding agent"
+                        aria-label="AutoForge — Autonomous coding agent" title="AutoForge — Autonomous coding agent"
                     >
                         <img src={autoforgeLogo} alt="" className="h-5 w-5 rounded" />
-                        <span className="hidden xl:inline">AutoForge</span>
                     </button>
 
-                    <button onClick={() => setShowGlobalTerminal(v => !v)} className={`p-1.5 rounded-md transition-colors ${showGlobalTerminal ? 'bg-[var(--accent)] text-white' : 'text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)]'}`} title="Toggle Terminal">
+                    <button onClick={() => setShowGlobalTerminal(v => !v)} className={`p-1.5 rounded-md transition-colors ${showGlobalTerminal ? 'bg-[var(--accent)] text-[var(--text-on-accent)]' : 'text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)]'}`} aria-label="Toggle Terminal" title="Toggle Terminal">
                         <TerminalIcon size={18} />
                     </button>
 
                     {window.electron && import.meta.env.DEV && (
-                        <button onClick={() => window.electron.toggleDevTools()} className="p-1.5 text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)] rounded-md transition-colors" title="Toggle DevTools">
-                            <div className="w-4 h-4 border border-current rounded-sm flex items-center justify-center text-[10px] font-bold">D</div>
+                        <button onClick={() => window.electron.toggleDevTools()} className="p-1.5 text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)] rounded-md transition-colors" aria-label="Toggle DevTools" title="Toggle DevTools">
+                            <Cpu size={16} />
                         </button>
                     )}
 
                     <button
                         onClick={cycleThemeMode}
                         className="p-1.5 text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)] rounded-md transition-colors"
-                        title={`Theme: ${themeMode}. Click to cycle modes.`}
+                        aria-label={`Theme: ${themeMode}. Click to cycle modes.`} title={`Theme: ${themeMode}. Click to cycle modes.`}
                     >
                         {themeMode === 'system' ? <Monitor size={18} /> : (isDarkMode ? <Moon size={18} /> : <Sun size={18} />)}
                     </button>
 
-                    <button onClick={toggleIncognitoMode} className={`p-1.5 rounded-md transition-colors ${isIncognitoMode ? 'bg-[var(--accent)] text-white' : 'text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)]'}`} title={isIncognitoMode ? "Disable Incognito Mode" : "Enable Incognito Mode"}>
+                    <button onClick={toggleIncognitoMode} className={`p-1.5 rounded-md transition-colors ${isIncognitoMode ? 'bg-[var(--accent)] text-[var(--text-on-accent)]' : 'text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)]'}`} aria-label={isIncognitoMode ? "Disable Incognito Mode" : "Enable Incognito Mode"} title={isIncognitoMode ? "Disable Incognito Mode" : "Enable Incognito Mode"}>
                         {isIncognitoMode ? <Lock size={18} /> : <Unlock size={18} />}
                     </button>
                 </div>
             </header>
 
+            {startupFailures.length > 0 && (
+                <div role="status" className="flex items-center justify-between gap-3 border-b border-[var(--border)] bg-[var(--bg-secondary)] px-6 py-2 text-sm text-[var(--text-secondary)]">
+                    <span>Could not start {startupFailures.map(id => AUTOMATIC_SERVICES[id]).join(', ')}. Open the tool to retry.</span>
+                    <button type="button" onClick={() => setStartupFailures([])} className="text-[var(--text-primary)] underline">Dismiss</button>
+                </div>
+            )}
             {/* Mode-Specific UI */}
             <main className="app-main relative flex-1 min-h-0 overflow-hidden flex flex-col">
                 <div className={`flex-1 min-h-0 overflow-hidden relative perci-dock-reserved${dockAutoHide ? ' perci-dock-reserved--autohide' : ''}`}>
@@ -1193,7 +1232,7 @@ function AppContent() {
                     <PerciPet openClawStatus={openClawStatus} />
 
                     <ModeGuideModal isOpen={showModeGuide} onClose={() => setShowModeGuide(false)} />
-                    <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+                    {isSettingsOpen && <SettingsModal isOpen onClose={() => setIsSettingsOpen(false)} />}
 
                 </div>
 

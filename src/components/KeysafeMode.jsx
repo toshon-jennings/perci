@@ -1,3 +1,4 @@
+import { useServiceAutoStart } from '../context/WindowActivityContext';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { RefreshCw, ShieldAlert, Play, Loader2 } from 'lucide-react';
 import keysafeLogo from '../assets/keysafe-logo.jpeg';
@@ -6,6 +7,9 @@ import './KeysafeMode.css';
 const KEYSAFE_ORIGIN = 'http://127.0.0.1:4100';
 
 export default function KeysafeMode() {
+    const autoStart = useServiceAutoStart('keysafe');
+    const mountedRef = useRef(false);
+    useEffect(() => { mountedRef.current = true; return () => { mountedRef.current = false; }; }, []);
     const [status, setStatus] = useState('checking'); // checking | running | offline | starting
     const [statusDetail, setStatusDetail] = useState('');
     const webviewRef = useRef(null);
@@ -50,10 +54,12 @@ export default function KeysafeMode() {
         setStatus('starting');
         try {
             const result = await window.electron.keysafeStart();
+            if (!mountedRef.current) return;
             if (!result?.ok) throw new Error(result?.error || 'KeySafe did not start.');
             setStatusDetail('');
             setStatus('running');
         } catch (err) {
+            if (!mountedRef.current) return;
             console.error('[KeySafe] Authenticated server launch failed');
             setStatusDetail(err instanceof Error ? err.message : 'KeySafe failed its authenticated identity check.');
             setStatus('offline');
@@ -68,14 +74,16 @@ export default function KeysafeMode() {
             if (!active) return;
             if (isAlive) {
                 setStatus('running');
-            } else {
+            } else if (autoStart) {
                 await handleLaunch();
+            } else {
+                setStatus('offline');
             }
         })();
         return () => {
             active = false;
         };
-    }, [checkAlive, handleLaunch]);
+    }, [checkAlive, handleLaunch, autoStart]);
 
     const handleReload = useCallback(() => {
         setFrameKey((prev) => prev + 1);

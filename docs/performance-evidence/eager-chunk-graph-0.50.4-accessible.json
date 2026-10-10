@@ -1,0 +1,55 @@
+{
+  "entry": "index-Cz-26kD7.js",
+  "entryBytes": 482198,
+  "totalStaticJSBytes": 2608663,
+  "chunks": [
+    {
+      "file": "index-Cz-26kD7.js",
+      "bytes": 482198,
+      "staticImports": [
+        "vendor-DDZ4Dcd2.js",
+        "pdf-export-5gWwDdm1.js",
+        "icons-B0uOhi0z.js",
+        "motion-BMXd61lD.js",
+        "syntax-ui-mcTRHXn_.js"
+      ]
+    },
+    {
+      "file": "vendor-DDZ4Dcd2.js",
+      "bytes": 1567794,
+      "staticImports": [
+        "pdf-export-5gWwDdm1.js"
+      ]
+    },
+    {
+      "file": "pdf-export-5gWwDdm1.js",
+      "bytes": 340517,
+      "staticImports": [
+        "vendor-DDZ4Dcd2.js"
+      ]
+    },
+    {
+      "file": "icons-B0uOhi0z.js",
+      "bytes": 89305,
+      "staticImports": [
+        "vendor-DDZ4Dcd2.js"
+      ]
+    },
+    {
+      "file": "motion-BMXd61lD.js",
+      "bytes": 109841,
+      "staticImports": [
+        "vendor-DDZ4Dcd2.js"
+      ]
+    },
+    {
+      "file": "syntax-ui-mcTRHXn_.js",
+      "bytes": 19008,
+      "staticImports": [
+        "vendor-DDZ4Dcd2.js",
+        "pdf-export-5gWwDdm1.js"
+      ]
+    }
+  ],
+  "caveat": "AST static import/export reachability; neither parse-time measurement nor runtime execution trace."
+}

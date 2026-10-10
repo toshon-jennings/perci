@@ -1,3 +1,4 @@
+import { useServiceAutoStart } from '../context/WindowActivityContext';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AlertCircle, ExternalLink, Play, RefreshCw, RotateCw } from 'lucide-react';
 import { launchArgsFor } from '../lib/localServices';
@@ -5,6 +6,9 @@ import { launchArgsFor } from '../lib/localServices';
 const GH_ORIGIN = 'http://127.0.0.1:6282';
 
 export default function GithubOverviewMode() {
+    const autoStart = useServiceAutoStart('github-overview');
+    const mountedRef = useRef(false);
+    useEffect(() => { mountedRef.current = true; return () => { mountedRef.current = false; }; }, []);
     const webviewRef = useRef(null);
     const canUseWebview = typeof window !== 'undefined' && Boolean(window.electron);
     const [frameKey, setFrameKey] = useState(0);
@@ -82,11 +86,13 @@ export default function GithubOverviewMode() {
         setLoadError(null);
         try {
             const result = await window.electron.localhostStartNow(launch);
+            if (!mountedRef.current) return;
             if (!result?.ok) throw new Error(result?.error || 'GitHub Overview did not start.');
             // The binary binds its port a moment after spawn (it prunes its poll
             // log first), so wait for it to answer before reloading the view.
             const canProbe = Boolean(window.electron.localhostCheckHealth);
             for (let attempt = 0; attempt < 10; attempt += 1) {
+                if (!mountedRef.current) return;
                 await new Promise(r => setTimeout(r, 500));
                 if (!canProbe) {
                     // Health bridge missing until Perci restarts; fall back to a
@@ -97,11 +103,13 @@ export default function GithubOverviewMode() {
                 const probe = await window.electron.localhostCheckHealth(GH_ORIGIN);
                 if (probe?.ok) break;
             }
+            if (!mountedRef.current) return;
             reload();
         } catch (err) {
+            if (!mountedRef.current) return;
             setLoadError(err.message || 'GitHub Overview did not start.');
         } finally {
-            setStarting(false);
+            if (mountedRef.current) setStarting(false);
         }
     }, [reload]);
 
@@ -110,10 +118,10 @@ export default function GithubOverviewMode() {
     // keeps its Start button rather than retrying in a loop.
     const autoStartedRef = useRef(false);
     useEffect(() => {
-        if (status !== 'offline' || autoStartedRef.current || !canStart) return;
+        if (!autoStart || status !== 'offline' || autoStartedRef.current || !canStart) return;
         autoStartedRef.current = true;
         startServer();
-    }, [status, canStart, startServer]);
+    }, [status, canStart, startServer, autoStart]);
 
     const handleRefreshAll = useCallback(async () => {
         setRefreshingAll(true);

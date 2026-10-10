@@ -1,0 +1,9 @@
+{
+  "candidate": "/Users/toshonjennings/opal/release-build/performance-0.50.3-verified/mac-arm64/Perci.app",
+  "version": "0.50.3",
+  "artifactSHA256": "c279021e85cd7216213225bdb62d466eab17068b1b6f1b9fd30d2bc11ff42a8a",
+  "packagedSourceMismatches": [],
+  "unrelatedNotesExcluded": true,
+  "signatureVerified": true,
+  "notarized": false
+}

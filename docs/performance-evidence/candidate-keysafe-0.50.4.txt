@@ -1,0 +1,3 @@
+npm notice run perci@0.50.4 build:keysafe
+npm notice run node scripts/prepare-keysafe-runtime.mjs
+Verified KeySafe 0.0.1 runtime (08ac81fa37f324a4702a1d6c6d8ab3b35fe5af6f2173886e309a22f01dcc8bb7).

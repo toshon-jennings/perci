@@ -1,3 +1,5 @@
+import { useServiceAutoStart, useWindowActivity } from '../context/WindowActivityContext';
+import { useVisiblePolling } from '../hooks/useVisiblePolling';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
     AlertCircle,
@@ -86,6 +88,10 @@ function KpiCard({ label, value, detail, tone = 'default' }) {
 
 
 function EidosModeInner({ onOpenGuide }) {
+    const autoStart = useServiceAutoStart('eidos');
+    const { shouldUpdate } = useWindowActivity();
+    const mountedRef = useRef(false);
+    useEffect(() => { mountedRef.current = true; return () => { mountedRef.current = false; }; }, []);
     const [status, setStatus] = useState('idle'); // idle | checking | starting | running | error
     const [currentStep, setCurrentStep] = useState(0);
     const [error, setError] = useState(null);
@@ -117,22 +123,13 @@ function EidosModeInner({ onOpenGuide }) {
         setContribGraphFailed(false);
         setContribAttempt(attempt => attempt + 1);
     };
-    const pollRef = useRef(null);
     const runningRef = useRef(false);
 
     const isElectron = !!window.electron;
     const hasEidosAPI = isElectron && window.electron?.eidosStatus;
     const hasInsightsAPI = isElectron && window.electron?.eidosInsights;
 
-    const stopPolling = useCallback(() => {
-        if (pollRef.current) {
-            clearInterval(pollRef.current);
-            pollRef.current = null;
-        }
-    }, []);
-
-
-    const loadInsights = useCallback(async ({ silent = false } = {}) => {
+    const loadInsights = useCallback(async ({ silent = false, isCurrent = () => true } = {}) => {
         if (!hasInsightsAPI) {
             setInsightsError('Git visualizer is only available in the desktop app.');
             return;
@@ -142,26 +139,27 @@ function EidosModeInner({ onOpenGuide }) {
         }
         try {
             const next = await window.electron.eidosInsights();
+            if (!mountedRef.current || !isCurrent()) return;
             setInsights(next || null);
             setInsightsError(next?.ok === false && next?.error ? next.error : '');
         } catch (err) {
-            setInsightsError(err?.message || 'Failed to load Git visualizer data');
+            if (mountedRef.current && isCurrent()) setInsightsError(err?.message || 'Failed to load Git visualizer data');
         } finally {
-            if (!silent) {
+            if (!silent && mountedRef.current && isCurrent()) {
                 setInsightsLoading(false);
             }
         }
     }, [hasInsightsAPI]);
 
-    const pollProgress = useCallback(async () => {
+    const pollProgress = useCallback(async (isCurrent) => {
         if (!hasEidosAPI || !runningRef.current) return;
         try {
             const progress = await window.electron.eidosProgress();
+            if (!mountedRef.current || !isCurrent()) return;
             if (progress.error) {
                 setError(progress.error);
                 setStatus('error');
                 runningRef.current = false;
-                stopPolling();
                 return;
             }
             if (progress.done || progress.step >= 4) {
@@ -169,16 +167,15 @@ function EidosModeInner({ onOpenGuide }) {
                 setDashboardReady(true);
                 setSurface('dashboard');
                 runningRef.current = false;
-                stopPolling();
                 return;
             }
             setCurrentStep(Math.min(progress.step, SETUP_STEPS.length - 1));
         } catch (err) {
             console.warn('[eidos] progress poll failed:', err.message);
         }
-    }, [hasEidosAPI, stopPolling]);
+    }, [hasEidosAPI]);
 
-    const startEidos = useCallback(async () => {
+    const startEidos = useCallback(async (allowStart = true) => {
         if (!hasEidosAPI || runningRef.current) return;
         runningRef.current = true;
 
@@ -189,10 +186,10 @@ function EidosModeInner({ onOpenGuide }) {
         setSurface('dashboard');
         setInsights(null);
         setInsightsError('');
-        stopPolling();
 
         try {
             const statusResult = await window.electron.eidosStatus();
+            if (!mountedRef.current) return;
             if (statusResult.error && statusResult.runtime !== 'orbstack-stopped') {
                 setError(statusResult.error);
                 setStatus('error');
@@ -208,6 +205,13 @@ function EidosModeInner({ onOpenGuide }) {
                 return;
             }
 
+            if (!allowStart) {
+                setStatus('error');
+                setError('Eidos is offline. Select Start to launch it.');
+                runningRef.current = false;
+                return;
+            }
+
             if (statusResult.state === 'no-docker' && statusResult.runtime !== 'orbstack-stopped') {
                 setError(statusResult.error || 'Docker/OrbStack not found. Install OrbStack from https://orbstack.dev');
                 setStatus('error');
@@ -219,55 +223,46 @@ function EidosModeInner({ onOpenGuide }) {
             setCurrentStep(1);
 
             window.electron.eidosStart().then((result) => {
+                if (!mountedRef.current) return;
                 if (result.error) {
                     setError(result.error);
                     setStatus('error');
                     runningRef.current = false;
-                    stopPolling();
                 } else if (result.ok || result.state === 'running') {
                     setStatus('running');
                     setDashboardReady(true);
                     setSurface('dashboard');
                     runningRef.current = false;
-                    stopPolling();
                 }
             }).catch((err) => {
+                if (!mountedRef.current) return;
                 setError(err?.message || 'Failed to start Eidos');
                 setStatus('error');
                 runningRef.current = false;
-                stopPolling();
             });
-
-            pollRef.current = setInterval(pollProgress, 2000);
         } catch (err) {
+            if (!mountedRef.current) return;
             setError(err.message || 'Failed to start Eidos');
             setStatus('error');
             runningRef.current = false;
         }
-    }, [hasEidosAPI, pollProgress, stopPolling]);
+    }, [hasEidosAPI]);
 
     useEffect(() => {
         if (hasEidosAPI) {
-            startEidos();
+            void startEidos(autoStart);
         }
-        return stopPolling;
-    }, [hasEidosAPI, startEidos, stopPolling]);
+    }, [hasEidosAPI, startEidos, autoStart]);
 
-    useEffect(() => {
-        if (status !== 'running' || !dashboardReady || surface !== 'overview') return;
-        void loadInsights();
-        const refreshId = setInterval(() => {
-            void loadInsights({ silent: true });
-        }, INSIGHTS_REFRESH_MS);
-        return () => clearInterval(refreshId);
-    }, [dashboardReady, loadInsights, status, surface]);
+    useVisiblePolling(pollProgress, 2000, shouldUpdate && status === 'starting');
+    useVisiblePolling(isCurrent => loadInsights({ silent: true, isCurrent }), INSIGHTS_REFRESH_MS,
+        shouldUpdate && status === 'running' && dashboardReady && surface === 'overview');
 
     const handleRetry = useCallback(() => {
         setFrameKey((prev) => prev + 1);
         runningRef.current = false;
-        stopPolling();
         startEidos();
-    }, [startEidos, stopPolling]);
+    }, [startEidos]);
 
     const handleOpenDashboardInBrowser = useCallback(() => {
         void window.electron?.openExternal?.(DASHBOARD_URL);
@@ -353,7 +348,7 @@ function EidosModeInner({ onOpenGuide }) {
                             className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--accent)] text-white text-sm font-medium hover:bg-[var(--accent-hover)] transition-colors"
                         >
                             <RefreshCw size={14} />
-                            Retry
+                            Start Eidos
                         </button>
                     </div>
                 </div>

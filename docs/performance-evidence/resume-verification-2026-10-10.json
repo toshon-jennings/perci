@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-10-10T16:50:32.175Z",
+  "ownedSourceFiles": 29,
+  "ownedSourceHashesMatch": true,
+  "artifactSHA256": "dad87e95afc50685cb9b684aec3055b55ef4d57771a7e5aa1939371e1f335fac",
+  "artifactHashUnchanged": true,
+  "signatureVerified": true,
+  "packageIdentity": {
+    "name": "perci",
+    "version": "0.50.4",
+    "main": "electron/main.cjs"
+  },
+  "preservationUnchanged": true,
+  "review2": {
+    "verdict": null,
+    "status": "usage-blocked; no verdict",
+    "unchanged": true,
+    "files": 1356,
+    "beforeSHA256": "cb30abfe4aa2b1dfd3007feeac75c3d314a56d065d55432491cc76aa96ba04d1",
+    "afterSHA256": "cb30abfe4aa2b1dfd3007feeac75c3d314a56d065d55432491cc76aa96ba04d1",
+    "runtime": {
+      "thread_id": "01a125a6-17d5-73c1-a61f-d65a96c41860",
+      "parent_thread_id": "01a122dc-f7cd-7323-979b-9dd8bccc8322",
+      "agent_role": "sol_advisor_sol_reviewer",
+      "agent_path": "/root/final_sol_audit_corrected",
+      "model_provider": "openai",
+      "model": "gpt-5.6-sol",
+      "effort": "high",
+      "sandbox_policy_type": "danger-full-access",
+      "permission_profile_type": "disabled",
+      "cwd": "/Users/toshonjennings/opal"
+    }
+  },
+  "missingInputs": [
+    "release-build/performance-clean-0.50.4",
+    "release-build/performance-clean-0.50.4-accessible-final",
+    "release-build/performance-baseline/Perci.app"
+  ],
+  "limit": "249 packaged file comparisons remain historical evidence tied to the unchanged ASAR hash; absent clean exports prevent repeating those comparisons. No recreation, rebuild, install or restart."
+}

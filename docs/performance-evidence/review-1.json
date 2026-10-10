@@ -1,0 +1,21 @@
+{
+  "verdict": "fix-first",
+  "reviewer": "01a125a1-c02f-7941-9aca-808b0207ad97",
+  "requiredCorrection": "README must distinguish deferred html2canvas from still-eager shipped PDF chunk. No other required correction.",
+  "runtime": {
+    "thread_id": "01a125a1-c02f-7941-9aca-808b0207ad97",
+    "parent_thread_id": "01a122dc-f7cd-7323-979b-9dd8bccc8322",
+    "agent_role": "sol_advisor_sol_reviewer",
+    "agent_path": "/root/final_sol_audit",
+    "model_provider": "openai",
+    "model": "gpt-5.6-sol",
+    "effort": "high",
+    "sandbox_policy_type": "danger-full-access",
+    "permission_profile_type": "disabled",
+    "cwd": "/Users/toshonjennings/opal"
+  },
+  "beforeSHA256": "4b93357bcb109ee8f5a4123e7c09d9c4520fdeddf931d2a7bd6534a090905af8",
+  "afterSHA256": "4b93357bcb109ee8f5a4123e7c09d9c4520fdeddf931d2a7bd6534a090905af8",
+  "unchanged": true,
+  "scope": "Tracked and nonignored untracked files plus HANDOFF.md; four exact app/installer artifacts. Ignored build/dependency trees outside those artifacts are not recursively hashed."
+}

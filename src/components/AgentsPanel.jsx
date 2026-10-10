@@ -1,3 +1,4 @@
+import { AGENT_DEFINITIONS, ACTIVE_JOB_STATUSES, ATTENTION_JOB_STATUSES } from '../lib/agentDefinitions';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Bot, RefreshCw, Send, FolderOpen, CheckCircle2, AlertTriangle, XCircle, Hourglass, Copy, TerminalSquare, Search } from 'lucide-react';
 import { useMode, HERMES_WINDOW_ID } from '../context/ModeContext';
@@ -7,158 +8,7 @@ import { VoiceInputButton } from './VoiceInputButton';
 
 // ─── Agent definitions ─────────────────────────────────────────────────────
 
-export const AGENT_DEFINITIONS = [
-  {
-    id: 'aider',
-    requestType: 'aider',
-    label: 'Aider',
-    shortLabel: 'Aider',
-    detail: 'Terminal-first AI pair programmer for repo-wide edits, refactors, and git-aware coding tasks.',
-    status: 'ready',
-    capabilities: ['prompt', 'working_directory'],
-    defaultPrompt: 'Ask Aider to inspect, edit, or refactor code in the selected folder.',
-  },
-  {
-    id: 'antigravity_cli',
-    requestType: 'antigravity_cli',
-    label: 'Antigravity CLI',
-    shortLabel: 'Antigravity',
-    detail: "Google's replacement path for Gemini CLI and the preferred Google local coding agent.",
-    status: 'ready',
-    capabilities: ['prompt', 'working_directory'],
-    defaultPrompt: 'Ask Antigravity to inspect, edit, or plan work in the selected folder.',
-  },
-  {
-    id: 'claude_code',
-    requestType: 'claude_code',
-    label: 'Claude Code',
-    shortLabel: 'Claude',
-    detail: 'Broad repo edits, refactors, and implementation tasks.',
-    status: 'ready',
-    capabilities: ['prompt', 'working_directory'],
-    defaultPrompt: 'Ask Claude Code to work in the selected folder.',
-  },
-  {
-    id: 'codex',
-    requestType: 'codex',
-    label: 'Codex',
-    shortLabel: 'Codex',
-    detail: 'Precise code changes and focused debugging through the local Codex CLI.',
-    status: 'ready',
-    capabilities: ['prompt', 'working_directory'],
-    defaultPrompt: 'Ask Codex to inspect, edit, or test this codebase.',
-  },
-  {
-    id: 'command_code',
-    requestType: 'command_code',
-    label: 'Command Code',
-    shortLabel: 'Cmd',
-    detail: 'Coding agent that learns your taste — full-stack projects, features, refactors, and debugging.',
-    status: 'ready',
-    capabilities: ['prompt', 'working_directory'],
-    defaultPrompt: 'Ask Command Code to build, edit, or debug code in the selected folder.',
-  },
-  {
-    id: 'copilot',
-    requestType: 'copilot',
-    label: 'Copilot',
-    shortLabel: 'Copilot',
-    detail: 'GitHub-oriented coding tasks and repo-aware assistance.',
-    status: 'ready',
-    capabilities: ['prompt', 'working_directory'],
-    defaultPrompt: 'Ask Copilot to work from the selected folder.',
-  },
-  {
-    id: 'cursor_cli',
-    requestType: 'cursor_cli',
-    label: 'Cursor CLI',
-    shortLabel: 'Cursor',
-    detail: 'Cursor\'s terminal agent for repo-aware coding, multi-file edits, and codebase search from the command line.',
-    status: 'ready',
-    capabilities: ['prompt', 'working_directory'],
-    defaultPrompt: 'Ask Cursor CLI to inspect, edit, or search code in the selected folder.',
-  },
-  {
-    id: 'hermes',
-    requestType: 'hermes',
-    label: 'Hermes',
-    shortLabel: 'Hermes',
-    detail: 'Nous Research\'s tool-calling agent — headless one-shot tasks through the local Hermes CLI.',
-    status: 'ready',
-    capabilities: ['prompt', 'project_directory', 'advanced'],
-    defaultPrompt: 'Describe the project or feature spec Hermes should create or revise.',
-  },
-  {
-    id: 'jan',
-    requestType: 'jan',
-    label: 'Jan',
-    shortLabel: 'Jan',
-    detail: 'Runs AI coding tasks through a locally-hosted model via Jan — fully on-device, no cloud required.',
-    status: 'ready',
-    capabilities: ['prompt', 'working_directory'],
-    defaultPrompt: 'Ask Jan CLI to load a local model and run an agentic coding session on your machine.',
-  },
-  {
-    id: 'jules',
-    requestType: 'jules',
-    label: 'Jules',
-    shortLabel: 'Jules',
-    detail: 'Google\'s cloud coding agent powered by Gemini 3 Pro. Runs autonomously in a GitHub cloud VM and creates PRs.',
-    status: 'specialized',
-    capabilities: ['prompt', 'github_repo'],
-    defaultPrompt: 'Describe the task for Jules to perform in your GitHub repo.',
-  },
-  {
-    id: 'openclaw',
-    requestType: 'openclaw',
-    label: 'OpenClaw',
-    shortLabel: 'OpenClaw',
-    detail: 'Autonomous agent platform for long-running tasks, scheduled jobs, and multi-step workflow orchestration.',
-    status: 'ready',
-    capabilities: ['prompt', 'advanced'],
-    defaultPrompt: 'Describe the task or workflow OpenClaw should execute.',
-  },
-  {
-    id: 'openhands',
-    requestType: 'openhands',
-    label: 'OpenHands',
-    shortLabel: 'OpenHands',
-    detail: 'Autonomous AI software engineer that reads repos, runs tests, and iterates on fixes from issue descriptions.',
-    status: 'ready',
-    capabilities: ['prompt', 'working_directory'],
-    defaultPrompt: 'Ask OpenHands to fix an issue or implement a feature in the selected folder.',
-  },
-  {
-    id: 'opencode',
-    requestType: 'opencode',
-    label: 'OpenCode',
-    shortLabel: 'OpenCode',
-    detail: 'Model-agnostic terminal coding agent with repo-wide context, multi-file edits, and interactive task management.',
-    status: 'ready',
-    capabilities: ['prompt', 'working_directory'],
-    defaultPrompt: 'Ask OpenCode to inspect, edit, or plan work in the selected folder.',
-  },
-  {
-    id: 'perci_code',
-    requestType: 'perci_code',
-    label: 'Percival',
-    shortLabel: 'Percival',
-    detail: 'Custom terminal-first coding assistant built for fast, focused edits in the active workspace.',
-    status: 'ready',
-    capabilities: ['prompt', 'working_directory'],
-    defaultPrompt: 'Ask Percival to inspect, edit, or plan work in the selected folder.',
-  },
-  {
-    id: 'qwen_code',
-    requestType: 'qwen_code',
-    label: 'Qwen Code',
-    shortLabel: 'Qwen',
-    detail: 'Alibaba\'s CLI coding agent for repo navigation, code generation, and debugging with Qwen model backends.',
-    status: 'ready',
-    capabilities: ['prompt', 'working_directory'],
-    defaultPrompt: 'Ask Qwen Code to inspect, edit, or debug code in the selected folder.',
-  },
-];
+
 
 // Agents whose CLI accepts a `--model` flag (verified against each CLI's
 // --help in the desktop bridge). Presence here gates the model field and
@@ -239,9 +89,9 @@ function resolveModelInput(agentId, raw) {
   return { value: text, matched: false, source: 'verbatim' };
 }
 
-export const ACTIVE_JOB_STATUSES = new Set(['pending', 'claimed', 'running', 'retry_queued']);
+
 const COMPLETED_JOB_STATUSES = new Set(['completed']);
-export const ATTENTION_JOB_STATUSES = new Set(['failed', 'cancelled', 'blocked', 'denied']);
+
 
 const JOB_FILTERS = [
   { id: 'all', label: 'All' },

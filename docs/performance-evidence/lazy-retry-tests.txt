@@ -1,0 +1,12 @@
+npm notice run perci@0.50.3 test
+npm notice run vitest run --run test/lazyModuleRetry.test.js
+
+ RUN  v1.6.1 /Users/toshonjennings/opal
+
+ ✓ test/lazyModuleRetry.test.js  (3 tests) 2ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  21:16:37
+   Duration  329ms (transform 37ms, setup 18ms, collect 7ms, tests 2ms, environment 0ms, prepare 100ms)
+

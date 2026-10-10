@@ -1,0 +1,43 @@
+{
+  "recordedAt": "2026-10-10T17:05:34.148965+00:00",
+  "verdict": "ship",
+  "findings": [],
+  "reviewer": "01a126c2-2d10-7fa3-be90-11d286bdb444",
+  "runtime": {
+    "thread_id": "01a126c2-2d10-7fa3-be90-11d286bdb444",
+    "parent_thread_id": "01a126b5-e397-7dc1-9d00-44dc841b961e",
+    "agent_role": "sol_advisor_sol_reviewer",
+    "agent_path": "/root/final_sol_review_resumed",
+    "model_provider": "openai",
+    "model": "gpt-5.6-sol",
+    "effort": "high",
+    "sandbox_policy_type": "danger-full-access",
+    "permission_profile_type": "disabled",
+    "cwd": "/Users/toshonjennings/opal"
+  },
+  "primary": {
+    "model": "gpt-6.1-sol",
+    "effort": "high",
+    "exception": "User confirmed retaining current chair and waiving only skill primary GPT-5.6 requirement; pinned reviewer unchanged."
+  },
+  "reason": "Actual owned changes preserve activation/persistence, mounted drafts, bounded retries, single-flight/guest identity and polling interfaces; reviewed source/artifact/test/runtime evidence is proportionate. Pre-color lifecycle evidence remains valid for recorded color-only delta. No required correction.",
+  "residualRisks": [
+    "Empty hydration reload 606->816ms fails10%target.",
+    "Cycle footprint1059->1107MB/+4.1424MB per minute; no-growth target and leak freedom unproven.",
+    "Synthetic/warm mocked measurements do not reproduce10GB case, establish cold-start causality or real backend readiness.",
+    "PDF remains eager.",
+    "Current installer pixels and splash rendered liveness unverified; capture blocked.",
+    "Missing clean exports/baseline app prevent repeating historic249file export comparison.",
+    "Host broadened sandbox to danger-full-access/disabled; read-only behavior proved only within captured scope."
+  ],
+  "beforeSHA256": "9aa94d4f2aa621e2f274901984d89e193d6a2a94bf8ce0ba58ce8866b3edec4d",
+  "afterSHA256": "9aa94d4f2aa621e2f274901984d89e193d6a2a94bf8ce0ba58ce8866b3edec4d",
+  "unchanged": true,
+  "files": 1358,
+  "scope": "Tracked and nonignored untracked files plus HANDOFF.md; four exact app/installer artifacts. Ignored build/dependency trees outside those artifacts are not recursively hashed.",
+  "presentArtifacts": 3,
+  "absentBaselineRecorded": true,
+  "candidateASAR": "dad87e95afc50685cb9b684aec3055b55ef4d57771a7e5aa1939371e1f335fac",
+  "parentAccepted": true,
+  "releaseOrInstallAccepted": false
+}

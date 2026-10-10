@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useWindowActivity } from '../context/WindowActivityContext';
+import { useVisiblePolling } from '../hooks/useVisiblePolling';
+import { useCallback, useState } from 'react';
 import { useChat } from '../context/ChatContext';
 import { useMode } from '../context/ModeContext';
-import { AGENT_DEFINITIONS, ACTIVE_JOB_STATUSES, ATTENTION_JOB_STATUSES } from './AgentsPanel';
+import { AGENT_DEFINITIONS, ACTIVE_JOB_STATUSES, ATTENTION_JOB_STATUSES } from '../lib/agentDefinitions';
 import OfficeScene from './OfficeScene';
 import './OfficePanel.css';
 
@@ -55,17 +57,19 @@ function perciBubble({ working, attention, done }) {
 }
 
 export default function OfficePanel() {
+    const { shouldUpdate } = useWindowActivity();
     const { openAgentWindow } = useMode();
     const { weatherCondition } = useChat();
     const [jobsByAgent, setJobsByAgent] = useState({});
     const [nowMs, setNowMs] = useState(() => Date.now());
     const bridgeAvailable = Boolean(window.electron?.listAgentJobs);
 
-    const loadJobs = useCallback(async () => {
+    const loadJobs = useCallback(async (isCurrent = () => true) => {
         setNowMs(Date.now());
         if (!window.electron?.listAgentJobs) return;
         try {
             const jobs = await window.electron.listAgentJobs({ limit: 50, source: 'office_panel' });
+            if (!isCurrent()) return;
             const grouped = {};
             for (const job of jobs || []) {
                 job._ts = job._ts || new Date(job.created_at).getTime();
@@ -81,11 +85,7 @@ export default function OfficePanel() {
         }
     }, []);
 
-    useEffect(() => {
-        void loadJobs();
-        const id = window.setInterval(() => void loadJobs(), POLL_MS);
-        return () => window.clearInterval(id);
-    }, [loadJobs]);
+    useVisiblePolling(loadJobs, POLL_MS, shouldUpdate);
 
     const desks = AGENT_DEFINITIONS.map((agent) => {
         const jobs = jobsByAgent[agent.id] ?? [];
@@ -122,6 +122,7 @@ export default function OfficePanel() {
 
             <div className="o-scene">
                 <OfficeScene
+                    isVisible={shouldUpdate}
                     desks={desks}
                     perciState={perciState}
                     bubble={perciBubble(counts)}

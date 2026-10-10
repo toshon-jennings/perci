@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useWindowActivity } from '../context/WindowActivityContext';
+import { useVisiblePolling } from '../hooks/useVisiblePolling';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     AlertTriangle,
     Archive,
@@ -124,6 +126,7 @@ function RemoveConfirm({ type, item, onCancel, onConfirm, onBackup, backupState 
 }
 
 export default function DockerMode() {
+    const { shouldUpdate } = useWindowActivity();
     const [bridgeState, setBridgeState] = useState('checking'); // checking | running | stopped | not-installed | error
     const [bridgeError, setBridgeError] = useState('');
     const [data, setData] = useState({ containers: [], images: [], volumes: [] });
@@ -134,7 +137,6 @@ export default function DockerMode() {
     const [busyKey, setBusyKey] = useState(null);
     const [backups, setBackups] = useState({}); // name -> { busy, ok, path, error }
     const [startingOrb, setStartingOrb] = useState(false);
-    const pollRef = useRef(null);
 
     const canUseBridge = Boolean(window.electron?.dockerList);
 
@@ -151,11 +153,12 @@ export default function DockerMode() {
         return state;
     }, []);
 
-    const refreshList = useCallback(async () => {
+    const refreshList = useCallback(async (isCurrent = () => true) => {
         if (!canUseBridge) return;
         setLoading(true);
         try {
             const result = await window.electron.dockerList();
+            if (!isCurrent()) return;
             if (result?.ok) {
                 setData({ containers: result.containers || [], images: result.images || [], volumes: result.volumes || [] });
                 setListError('');
@@ -163,29 +166,23 @@ export default function DockerMode() {
                 setListError(result?.error || 'Could not load Docker state.');
             }
         } catch (err) {
+            if (!isCurrent()) return;
             setListError(err.message || 'Could not load Docker state.');
         } finally {
-            setLoading(false);
+            if (isCurrent()) setLoading(false);
         }
     }, [canUseBridge]);
 
     useEffect(() => {
         let cancelled = false;
         (async () => {
-            const state = await refreshStatus();
-            if (!cancelled && state === 'running') await refreshList();
+            await refreshStatus();
+            if (cancelled) return;
         })();
         return () => { cancelled = true; };
     }, [refreshStatus, refreshList]);
 
-    useEffect(() => {
-        if (bridgeState !== 'running') {
-            if (pollRef.current) clearInterval(pollRef.current);
-            return;
-        }
-        pollRef.current = setInterval(refreshList, POLL_MS);
-        return () => clearInterval(pollRef.current);
-    }, [bridgeState, refreshList]);
+    useVisiblePolling(refreshList, POLL_MS, shouldUpdate && bridgeState === 'running');
 
     const startOrbStack = useCallback(async () => {
         if (!window.electron?.dockerStartOrbStack) return;
@@ -332,7 +329,7 @@ export default function DockerMode() {
                 </div>
                 <button
                     type="button"
-                    onClick={refreshList}
+                    onClick={() => void refreshList()}
                     disabled={bridgeState !== 'running' || loading}
                     className="inline-flex h-9 items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--bg-primary)] px-3 text-xs font-semibold text-[var(--text-primary)] transition-colors hover:bg-[var(--bg-tertiary)] disabled:cursor-not-allowed disabled:opacity-50"
                 >

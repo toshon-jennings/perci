@@ -1,0 +1,23 @@
+{
+  "appBundle": "/Users/toshonjennings/opal/release-build/performance-0.50.4-final/mac-arm64/Perci.app",
+  "profile": "/Users/toshonjennings/opal/docs/performance-evidence/native-visibility-0.50.4/profile-1791629071853",
+  "collectedAt": "2026-10-10T10:44:31.861Z",
+  "caveat": "Native app lifecycle; synthetic Docker/job reads, no live backend readiness claim.",
+  "beforeHide": {
+    "visible": true,
+    "throttled": true
+  },
+  "hidden": {
+    "docker": 2,
+    "dashboard": 1
+  },
+  "afterHidden": {
+    "docker": 2,
+    "dashboard": 1
+  },
+  "shown": {
+    "docker": 3,
+    "dashboard": 2
+  },
+  "passed": true
+}

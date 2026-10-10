@@ -1,0 +1,36 @@
+import { createRequire } from 'node:module';
+import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
+import { resolve, join } from 'node:path';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import assert from 'node:assert/strict';
+const require = createRequire(import.meta.url);
+const asar = require('@electron/asar');
+const candidate = resolve(process.argv[2] || 'release-build/performance-0.50.4-final/mac-arm64/Perci.app');
+const exportRoot = resolve(process.argv[3] || 'release-build/performance-clean-0.50.4');
+const manifestPath = process.argv[4] || 'docs/performance-evidence/candidate-source-0.50.4.json';
+const recordPath = process.argv[5] || 'docs/performance-evidence/artifact-0.50.4.json';
+const archive = join(candidate, 'Contents/Resources/app.asar');
+assert.ok(existsSync(join(exportRoot, 'package.json')), `Clean source export is unavailable: ${exportRoot}`);
+const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+const mismatches = []; let verifiedFiles = 0;
+for (const entry of asar.listPackage(archive)) {
+    const relative = entry.replace(/^\//, '');
+    if (!(relative.startsWith('dist/') || relative.startsWith('electron/') && relative.endsWith('.cjs') || relative === 'src/lib/persistentStore.js')) continue;
+    const source = join(exportRoot, relative);
+    if (!existsSync(source) || !statSync(source).isFile()) continue;
+    if (hash(readFileSync(source)) !== hash(asar.extractFile(archive, relative))) mismatches.push(relative);
+    verifiedFiles++;
+}
+const manifest = JSON.parse(readFileSync(manifestPath));
+for (const [name, expected] of Object.entries(manifest.ownedSHA256)) if (hash(readFileSync(name)) !== expected) mismatches.push('current source: ' + name);
+assert.deepEqual(mismatches, []);
+const sourcePackage = JSON.parse(readFileSync(join(exportRoot, 'package.json')));
+const shippedPackage = JSON.parse(asar.extractFile(archive, 'package.json'));
+for (const key of ['name', 'version', 'main']) assert.equal(shippedPackage[key], sourcePackage[key]);
+const headNotes = execFileSync('git', ['show', 'HEAD:src/components/NotesMode.jsx']);
+assert.equal(hash(readFileSync(join(exportRoot, 'src/components/NotesMode.jsx'))), hash(headNotes));
+execFileSync('codesign', ['--verify', '--deep', '--strict', candidate]);
+const result = { candidate, version: shippedPackage.version, artifactSHA256: hash(readFileSync(archive)), packagedSourceMismatches: mismatches, verifiedFiles, unrelatedNotesExcluded: true, packageIdentity: Object.fromEntries(['name', 'version', 'main'].map(key => [key, shippedPackage[key]])), packageMetadataCaveat: 'electron-builder transforms package.json; identity/version/main checked separately. Shipped CJS and Vite assets match byte-for-byte.', signatureVerified: true, notarized: false };
+writeFileSync(recordPath, JSON.stringify(result, null, 2) + '\n');
+console.log(JSON.stringify(result));

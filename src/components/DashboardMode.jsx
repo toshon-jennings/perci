@@ -1,3 +1,5 @@
+import { useAppVisibility } from '../context/WindowActivityContext';
+import { useVisiblePolling } from '../hooks/useVisiblePolling';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
@@ -10,7 +12,7 @@ import { useMode, MODES, OPENCLAW_WINDOW_ID, HERMES_WINDOW_ID, GDASH_WINDOW_ID, 
 import { useChat } from '../context/ChatContext';
 import DashboardPerciNowGlance from './DashboardPerciNowGlance';
 import UsageLimitsGlance from './UsageLimitsGlance';
-import { AGENT_DEFINITIONS, ACTIVE_JOB_STATUSES, ATTENTION_JOB_STATUSES } from './AgentsPanel';
+import { AGENT_DEFINITIONS, ACTIVE_JOB_STATUSES, ATTENTION_JOB_STATUSES } from '../lib/agentDefinitions';
 import OnboardingCard, { hasOnboardingBeenSeen } from './OnboardingCard';
 import { BeginnerGuideModal } from './BeginnerGuideModal';
 import { NATIVE_TILES, SYSTEM_TILES, PERCI_OS_SETTINGS_TILE, LOGO_WHITE_BOX_IDS, LOGO_FILL_COVER_IDS } from '../lib/appCatalog.jsx';
@@ -286,6 +288,9 @@ function jobTone(status) {
 }
 
 export default function DashboardMode({ openClawStatus, onOpenSettings }) {
+    const appVisible = useAppVisibility();
+    const { performancePolicy } = useMode();
+    const shouldUpdate = appVisible || !performancePolicy.pauseHiddenViews;
     const { openWindow, windows } = useMode();
     const { chats, createNewChat, switchToChat, userName, updateProvider } = useChat();
     const [now, setNow] = useState(() => new Date());
@@ -337,15 +342,18 @@ export default function DashboardMode({ openClawStatus, onOpenSettings }) {
 
     // Clock tick
     useEffect(() => {
+        if (!shouldUpdate) return undefined;
+        setNow(new Date());
         const id = window.setInterval(() => setNow(new Date()), 1000);
         return () => window.clearInterval(id);
-    }, []);
+    }, [shouldUpdate]);
 
     // Agent job pulse (shares the bridge the Agents/Office panels use)
-    const loadJobs = useCallback(async () => {
+    const loadJobs = useCallback(async (isCurrent = () => true) => {
         if (!window.electron?.listAgentJobs) return;
         try {
             const list = await window.electron.listAgentJobs({ limit: 30, source: 'dashboard' });
+            if (!isCurrent()) return;
             setJobs((list || []).slice().sort(
                 (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
             ));
@@ -354,11 +362,7 @@ export default function DashboardMode({ openClawStatus, onOpenSettings }) {
         }
     }, []);
 
-    useEffect(() => {
-        void loadJobs();
-        const id = window.setInterval(() => void loadJobs(), JOBS_POLL_MS);
-        return () => window.clearInterval(id);
-    }, [loadJobs]);
+    useVisiblePolling(loadJobs, JOBS_POLL_MS, shouldUpdate);
 
     const nowMs = now.getTime();
     const jobStats = useMemo(() => ({
@@ -398,7 +402,7 @@ export default function DashboardMode({ openClawStatus, onOpenSettings }) {
     // the IPC returns immediately without touching Google and the static desc shows.
     const [gdashDesc, setGdashDesc] = useState(null);
     useEffect(() => {
-        if (!window.electron?.gdashDashboard) return undefined;
+        if (!shouldUpdate || !window.electron?.gdashDashboard) return undefined;
         let cancelled = false;
         const load = async () => {
             try {
@@ -425,7 +429,7 @@ export default function DashboardMode({ openClawStatus, onOpenSettings }) {
         void load();
         const id = window.setInterval(() => void load(), 5 * 60 * 1000);
         return () => { cancelled = true; window.clearInterval(id); };
-    }, []);
+    }, [shouldUpdate]);
 
     const openIds = useMemo(() => new Set(windows.map((w) => w.modeId)), [windows]);
     const orderedNativeTiles = useMemo(() => {

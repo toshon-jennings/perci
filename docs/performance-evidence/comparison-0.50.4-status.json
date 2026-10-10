@@ -1,0 +1,72 @@
+{
+  "startedAt": "2026-10-10T10:48:33.910830+00:00",
+  "baselineLabels": [
+    "baseline-final-v2",
+    "baseline-empty-final-v2",
+    "baseline-soak-final-v2"
+  ],
+  "phases": [
+    {
+      "label": "candidate-0-50-4-final",
+      "startedAt": "2026-10-10T10:48:33.911187+00:00",
+      "command": [
+        "node",
+        "scripts/measure-perci-performance.mjs",
+        "--app",
+        "release-build/performance-0.50.4-final/mac-arm64/Perci.app",
+        "--label",
+        "candidate-0-50-4-final",
+        "--runs",
+        "3",
+        "--idle-seconds",
+        "60",
+        "--allow-test-exit"
+      ],
+      "exitCode": 0,
+      "finishedAt": "2026-10-10T10:51:49.484850+00:00"
+    },
+    {
+      "label": "candidate-empty-0-50-4-final",
+      "startedAt": "2026-10-10T10:51:49.485967+00:00",
+      "command": [
+        "node",
+        "scripts/measure-perci-performance.mjs",
+        "--app",
+        "release-build/performance-0.50.4-final/mac-arm64/Perci.app",
+        "--label",
+        "candidate-empty-0-50-4-final",
+        "--runs",
+        "3",
+        "--idle-seconds",
+        "60",
+        "--empty",
+        "--allow-test-exit"
+      ],
+      "exitCode": 0,
+      "finishedAt": "2026-10-10T10:55:05.418777+00:00"
+    },
+    {
+      "label": "candidate-soak-0-50-4-final",
+      "startedAt": "2026-10-10T10:55:05.422857+00:00",
+      "command": [
+        "node",
+        "scripts/measure-perci-performance.mjs",
+        "--app",
+        "release-build/performance-0.50.4-final/mac-arm64/Perci.app",
+        "--label",
+        "candidate-soak-0-50-4-final",
+        "--runs",
+        "1",
+        "--idle-seconds",
+        "300",
+        "--soak-seconds",
+        "1200",
+        "--cycles",
+        "--allow-test-exit"
+      ],
+      "exitCode": 0,
+      "finishedAt": "2026-10-10T11:20:14.866558+00:00"
+    }
+  ],
+  "finishedAt": "2026-10-10T11:20:14.878150+00:00"
+}

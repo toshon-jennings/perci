@@ -1,0 +1,20 @@
+--prepared:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--prepared:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--validated:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--prepared:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Perci Helper.app
+--prepared:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Perci Helper (Renderer).app
+--prepared:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Perci Helper (GPU).app
+--validated:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Perci Helper.app
+--validated:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Perci Helper (Renderer).app
+--prepared:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Perci Helper (Plugin).app
+--validated:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--validated:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Perci Helper (GPU).app
+--validated:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Perci Helper (Plugin).app
+--prepared:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--validated:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--prepared:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+--prepared:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Users/toshonjennings/opal/release-build/performance-0.50.3-candidate/mac-arm64/Perci.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+release-build/performance-0.50.3-candidate/mac-arm64/Perci.app: valid on disk
+release-build/performance-0.50.3-candidate/mac-arm64/Perci.app: satisfies its Designated Requirement

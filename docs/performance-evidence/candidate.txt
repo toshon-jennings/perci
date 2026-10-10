@@ -1,0 +1,3 @@
+{"label":"candidate","run":0,"sample":1,"guests":0,"elapsedMs":61347}
+{"label":"candidate","run":1,"sample":1,"guests":0,"elapsedMs":61578}
+{"label":"candidate","run":2,"sample":1,"guests":0,"elapsedMs":61354}

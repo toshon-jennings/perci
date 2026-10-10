@@ -1,0 +1,27 @@
+{
+  "observedAt": "2026-10-10T16:50:32Z",
+  "suppliedScreenshot": {
+    "path": "/var/folders/x0/vn7xdx5j0zx94nckt50hrnnc0000gn/T/codex-clipboard-e22a3ca9-f038-4099-a196-9476c1cebc5b.png",
+    "sha256": "e5ee1c67e4a4377f10249435307ebc81489fe0968a0a95609610d9596607130a",
+    "menuClock": "2026-10-10 06:41:23 America/New_York",
+    "observation": "White video splash with orange animated mark, over white windows. A still frame does not establish duration or a hang."
+  },
+  "installed": {
+    "version": "0.50.4",
+    "asarSHA256": "aedb9a2347e92dbe7f5851fc5c0cddaccb9de0a2b70f9102e52005d8d6f5e852",
+    "mainPID": 87818,
+    "processStarted": "2026-10-10 08:44:12 host-reported time; 12:44:20Z renderer log",
+    "sourceChecks": "Installed electron/main.cjs, splash.html and splash-preload.cjs byte-match current source; header colors differ from final candidate."
+  },
+  "currentAX": "Main Perci window: bundled dist/index.html, Dashboard selected, icon-only header controls have accessible names. No splash in this returned tree. Dashboard clock reads 10:49 AM and stayed unchanged; do not treat AX state as proof of current pixel rendering or full app responsiveness.",
+  "capture": "Two screenshot observations returned uniform white 508x312 images. Raise existing window then state/capture failed with ScreenCaptureKit SCStreamErrorDomain -3812 (invalid parameter). No successful current rendered acceptance.",
+  "latestStartupLog": {
+    "created": "2026-10-10T12:44:20.489Z",
+    "didFinishLoad": "2026-10-10T12:44:20.899Z",
+    "currentLaunchWatchdogOrMainRendererCrash": false,
+    "limits": "No missing console payloads were fetched; sparse log is not proof of complete backend readiness. Historical watchdogs from Oct 4/5 and guest crash Oct 7 are not current-launch failures."
+  },
+  "sourceBehavior": "Video ended/error/click/key signal completion; 12-second renderer fallback; 15-second main watchdog forces both reveal gates. White splash pixels come from the video, despite dark HTML/native background. Timer upper bound is not guaranteed during suspension or main-process blocking.",
+  "conclusion": "Screenshot predates current process and cannot diagnose this launch. Main document successfully loaded and dashboard appears in AX. Current splash/pixel state remains unverified because native capture failed; no persistent splash defect reproduced or fixed.",
+  "actions": "Read-only source/log/process inspection and existing-window Raise attempt only. No installed restart/reload/replacement, profile changes, OS theme changes or service stop."
+}

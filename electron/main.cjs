@@ -1,3 +1,4 @@
+const { singleFlight } = require('./single-flight.cjs');
 const { app, BrowserWindow, ipcMain, dialog, Menu, shell, safeStorage, session, nativeImage, webContents } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const { installRedactedConsole, redactSecrets } = require('./redact-console.cjs');
@@ -292,7 +293,7 @@ async function probeKeySafe() {
   return validateKeySafeHealth(result, { nonce: keysafeServerNonce, version });
 }
 
-async function startKeySafeServer() {
+const startKeySafeServer = singleFlight(async () => {
   const existing = await probeKeySafe();
   if (existing.ok) return { ok: true, alreadyRunning: true, identity: existing };
   if (!['unreachable', 'installation-missing'].includes(existing.reason)) {
@@ -333,7 +334,7 @@ async function startKeySafeServer() {
     if (!keysafeServerProcess) break;
   }
   return { ok: false, error: 'KeySafe did not pass its authenticated identity check.' };
-}
+});
 
 function requestText(url, timeoutMs = 8000, headers = {}) {
   return new Promise((resolve) => {
@@ -5322,7 +5323,7 @@ ipcMain.handle('alias:write', async (event, content) => {
   }
 });
 
-ipcMain.handle('localhost:start-now', async (event, { cwd, command } = {}) => {
+async function launchLocalProcess({ cwd, command } = {}) {
   if (typeof command !== 'string' || !command.trim()) {
     return { ok: false, error: 'A launch command is required.' };
   }
@@ -5362,6 +5363,32 @@ ipcMain.handle('localhost:start-now', async (event, { cwd, command } = {}) => {
       finish({ ok: true });
     });
   });
+}
+
+const automaticLocalServices = [
+  ['npm start', 'dotenvx-gui', 'http://127.0.0.1:7843'],
+  ['./github-overview serve', 'github-overview', 'http://127.0.0.1:6282'],
+];
+const automaticLocalStarts = Object.fromEntries(automaticLocalServices.map(([command, folder, url]) => [folder, singleFlight(async () => {
+  if ((await probeLocalHttp(url)).ok) return { ok: true, alreadyRunning: true };
+  const result = await launchLocalProcess({ command, cwd: path.join(app.getPath('home'), folder) });
+  if (!result.ok) return result;
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    if ((await probeLocalHttp(url)).ok) return result;
+    await new Promise(resolve => setTimeout(resolve, 500));
+  }
+  return { ok: false, error: 'Service was launched but did not become ready.' };
+})]));
+
+ipcMain.handle('localhost:start-now', async (event, request = {}) => {
+  assertTrustedMainFrame(event);
+  const homeDir = app.getPath('home');
+  for (const [command, folder] of automaticLocalServices) {
+    if (request?.command === command && [path.join(homeDir, folder), `~/${folder}`].includes(request.cwd)) {
+      return automaticLocalStarts[folder]();
+    }
+  }
+  return launchLocalProcess(request);
 });
 
 ipcMain.handle('keysafe:status', async (event) => {
@@ -7086,7 +7113,7 @@ ipcMain.handle('eidos:status', async () => {
   }
 });
 
-ipcMain.handle('eidos:start', async () => {
+const startEidosServices = singleFlight(async () => {
   try {
     // Step 1: Ensure Docker/OrbStack is available and running
     let dockerCheck = await eidosCheckDocker();
@@ -7137,6 +7164,11 @@ ipcMain.handle('eidos:start', async () => {
   } catch (err) {
     return { error: err.message };
   }
+});
+
+ipcMain.handle('eidos:start', async (event) => {
+  assertTrustedMainFrame(event);
+  return startEidosServices();
 });
 
 // Progress polling — renderer calls this to get current step during startup

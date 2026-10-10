@@ -1,0 +1,2989 @@
+{
+  "label": "header-0-50-4-accessible-final",
+  "collectedAt": "2026-10-10T11:26:48.418Z",
+  "appBundle": "/Users/toshonjennings/opal/release-build/performance-0.50.4-accessible-final/mac-arm64/Perci.app",
+  "sourceExport": "/Users/toshonjennings/opal/release-build/performance-clean-0.50.4-accessible-final",
+  "source": "cf036d73362816546d54bc98a7319c13c187bc28",
+  "dirty": "M MISTAKES.md\n M electron/main.cjs\n M package-lock.json\n M package.json\n M src/App.jsx\n M src/components/AgentsPanel.jsx\n M src/components/ArtifactPanel.jsx\n M src/components/DashboardMode.jsx\n M src/components/DockerMode.jsx\n M src/components/DotenvxMode.jsx\n M src/components/EidosMode.jsx\n M src/components/GithubOverviewMode.jsx\n M src/components/KeysafeMode.jsx\n M src/components/ModeSwitcher.jsx\n M src/components/NotesMode.jsx\n M src/components/OfficePanel.jsx\n M src/components/OfficeScene.jsx\n M src/components/OpencodeMode.jsx\n M src/components/SettingsModal.jsx\n M src/components/windows/DesktopHost.jsx\n M src/components/windows/WindowErrorBoundary.jsx\n M src/context/ModeContext.jsx\n M src/lib/persistentStore.js\n?? docs/Perci-Performance-Implementation-Plan.md\n?? docs/performance-evidence/\n?? electron/single-flight.cjs\n?? perci-security-audit.md\n?? scripts/measure-perci-performance.mjs\n?? scripts/probe-perci-visibility.mjs\n?? src/context/WindowActivityContext.jsx\n?? src/hooks/useVisiblePolling.js\n?? src/lib/agentDefinitions.js\n?? src/lib/lazyModuleRetry.js\n?? src/lib/performancePolicy.js\n?? src/lib/startIntegrationService.js\n?? src/lib/visiblePoller.js\n?? test/lazyModuleRetry.test.js\n?? test/performancePolicy.test.js\n?? test/runtime-evidence/startup-probe.json\n?? test/runtime-evidence/startup-profile/\n?? test/singleFlight.test.js\n?? test/visiblePoller.test.js",
+  "artifactSHA256": "dad87e95afc50685cb9b684aec3055b55ef4d57771a7e5aa1939371e1f335fac",
+  "hardware": {
+    "hostname": "MacBookPro2.local",
+    "memoryBytes": 17179869184
+  },
+  "protocol": {
+    "repetitions": 1,
+    "idleMs": 0,
+    "soakMs": 0,
+    "cycles": false,
+    "empty": false,
+    "syntheticBackends": true,
+    "playwrightFocusEmulation": true
+  },
+  "fixture": [
+    {
+      "id": "chat",
+      "modeId": "chat",
+      "title": "Chat",
+      "state": "minimized",
+      "z": 20,
+      "bounds": {
+        "x": 30,
+        "y": 20,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "code",
+      "modeId": "code",
+      "title": "Code",
+      "state": "normal",
+      "z": 21,
+      "bounds": {
+        "x": 38,
+        "y": 25,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "notes",
+      "modeId": "notes",
+      "title": "Workspace Notes",
+      "state": "normal",
+      "z": 22,
+      "bounds": {
+        "x": 46,
+        "y": 30,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "office",
+      "modeId": "office",
+      "title": "Perci HQ",
+      "state": "minimized",
+      "z": 23,
+      "bounds": {
+        "x": 54,
+        "y": 35,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "eidos",
+      "modeId": "eidos",
+      "title": "Eidos",
+      "state": "normal",
+      "z": 24,
+      "bounds": {
+        "x": 62,
+        "y": 40,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "keysafe",
+      "modeId": "keysafe",
+      "title": "KeySafe",
+      "state": "normal",
+      "z": 25,
+      "bounds": {
+        "x": 70,
+        "y": 45,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "dotenvx-gui",
+      "modeId": "dotenvx-gui",
+      "title": "Dotenvx GUI",
+      "state": "minimized",
+      "z": 26,
+      "bounds": {
+        "x": 78,
+        "y": 50,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "github-overview",
+      "modeId": "github-overview",
+      "title": "GitHub Overview",
+      "state": "normal",
+      "z": 27,
+      "bounds": {
+        "x": 86,
+        "y": 55,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "localhost",
+      "modeId": "localhost",
+      "title": "Localhost",
+      "state": "normal",
+      "z": 28,
+      "bounds": {
+        "x": 94,
+        "y": 60,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "docker",
+      "modeId": "docker",
+      "title": "Docker",
+      "state": "minimized",
+      "z": 29,
+      "bounds": {
+        "x": 102,
+        "y": 65,
+        "width": 920,
+        "height": 620
+      }
+    },
+    {
+      "id": "opencode-rig",
+      "modeId": "opencode-rig",
+      "title": "OpenCode Rig",
+      "state": "normal",
+      "z": 30,
+      "bounds": {
+        "x": 110,
+        "y": 70,
+        "width": 920,
+        "height": 620
+      }
+    }
+  ],
+  "caveats": [
+    "External starts and network are blocked in the disposable process.",
+    "These measurements isolate view initialization, not real backend startup. Office font lookup/data/font bytes are supplied locally as synthetic fixtures.",
+    "Summed process accounting is approximate; footprint errors are retained."
+  ],
+  "runs": [
+    {
+      "run": 0,
+      "profile": "/Users/toshonjennings/opal/docs/performance-evidence/header-0-50-4-accessible-final/profile-0-1791631608899",
+      "processLaunchMs": 11483,
+      "shellUsableMs": 426,
+      "samples": [
+        {
+          "elapsedMs": 788,
+          "version": "0.50.4",
+          "electron": "42.0.1",
+          "processes": [
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 2.012832,
+                "percentCPUUsage": 2.4442309744903405,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 40661,
+              "type": "Browser",
+              "creationTime": 1791631608907.011,
+              "memory": {
+                "workingSetSize": 192720,
+                "peakWorkingSetSize": 200656
+              },
+              "sandboxed": false
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.592341,
+                "percentCPUUsage": 0.07494245490070124,
+                "idleWakeupsPerSecond": 161
+              },
+              "pid": 40696,
+              "type": "GPU",
+              "creationTime": 1791631615516.203,
+              "serviceName": "GPU",
+              "memory": {
+                "workingSetSize": 105120,
+                "peakWorkingSetSize": 114992
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.209591,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 40697,
+              "type": "Utility",
+              "creationTime": 1791631615539.719,
+              "serviceName": "network.mojom.NetworkService",
+              "name": "Network Service",
+              "memory": {
+                "workingSetSize": 52608,
+                "peakWorkingSetSize": 56448
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.2076,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 40698,
+              "type": "Tab",
+              "creationTime": 1791631616060.518,
+              "memory": {
+                "workingSetSize": 84752,
+                "peakWorkingSetSize": 91856
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 1.281237,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 40699,
+              "type": "Tab",
+              "creationTime": 1791631616083.557,
+              "memory": {
+                "workingSetSize": 251424,
+                "peakWorkingSetSize": 279744
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.130107,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 40701,
+              "type": "Tab",
+              "creationTime": 1791631616590.754,
+              "memory": {
+                "workingSetSize": 64128,
+                "peakWorkingSetSize": 73024
+              },
+              "sandboxed": true
+            },
+            {
+              "cpu": {
+                "cumulativeCPUUsage": 0.140342,
+                "percentCPUUsage": 0,
+                "idleWakeupsPerSecond": 0
+              },
+              "pid": 40702,
+              "type": "Utility",
+              "creationTime": 1791631616608.109,
+              "serviceName": "audio.mojom.AudioService",
+              "name": "Audio Service",
+              "memory": {
+                "workingSetSize": 36144,
+                "peakWorkingSetSize": 40096
+              },
+              "sandboxed": true
+            }
+          ],
+          "guests": 0,
+          "calls": {
+            "agent-jobs:list": 1,
+            "openclaw:test-connection": 2,
+            "models:list": 2,
+            "credentials:status": 1
+          },
+          "sources": {
+            "dashboard": 1
+          },
+          "footprint": "======================================================================\nPerci Helper (Renderer) [40699]: 64-bit    Footprint: 253 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 253 MB\n    phys_footprint_peak: 253 MB\n\n======================================================================\nPerci Helper [40696]: 64-bit    Footprint: 142 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 145 MB\n    phys_footprint_peak: 145 MB\n\n======================================================================\nPerci [40661]: 64-bit    Footprint: 112 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 112 MB\n    phys_footprint_peak: 112 MB\n\n======================================================================\nPerci Helper (Renderer) [40698]: 64-bit    Footprint: 20 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 20 MB\n    phys_footprint_peak: 20 MB\n\n======================================================================\nPerci Helper (Renderer) [40701]: 64-bit    Footprint: 15 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 15 MB\n    phys_footprint_peak: 15 MB\n\n======================================================================\nPerci Helper [40697]: 64-bit    Footprint: 10 MB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 10 MB\n    phys_footprint_peak: 10 MB\n\n======================================================================\nPerci Helper [40702]: 64-bit    Footprint: 7873 KB (16384 bytes per page)\n======================================================================\n\nAuxiliary data:\n    phys_footprint: 7905 KB\n    phys_footprint_peak: 7905 KB\n\n======================================================================\nSummary Footprint: 559 MB\n======================================================================\n\n",
+          "requestedJsResourceEntries": []
+        }
+      ],
+      "diagnostics": [
+        "[stray-navigation] activeElement at unload: <body>\n  <div id=\"root\"><div class=\"app h-screen max-h-screen flex flex-col bg-[var(--bg-primary)] overflow-hidden\"><header class=\"app-header glass-header select-none sticky top-0 z-50 flex-shrink-0 flex items-center justify-between gap-3 px-4 pb-2.5 pt-8\" style=\"app-region: drag; --accent: var(--accent-hover);\"><div class=\"flex shrink-0 items-center\"><div title=\"Perci Desktop\" class=\"w-9 h-9 roun",
+        "Request failed: https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "WebSocket connection to 'ws://localhost:3001/?sessionId=default&token=synthetic-fixture' failed: ",
+        "Terminal WebSocket error: {isTrusted: true}",
+        "Request failed: http://127.0.0.1:47821/ net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: http://127.0.0.1:47821/v1/messages net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "WebSocket connection to 'ws://localhost:3001/?sessionId=default&token=synthetic-fixture' failed: ",
+        "Terminal WebSocket error: {isTrusted: true}",
+        "WebSocket connection to 'ws://localhost:3002/?sessionId=default&token=synthetic-fixture' failed: ",
+        "Terminal WebSocket error: {isTrusted: true}",
+        "[stray-navigation] activeElement at unload: <button class=\"p-1.5 rounded-md transition-colors text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--bg-hover)]\" aria-label=\"Enable Incognito Mode\" title=\"Enable Incognito Mode\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-u",
+        "Request failed: https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "Request failed: https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&display=swap net::ERR_BLOCKED_BY_CLIENT",
+        "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT",
+        "[stray-navigation] activeElement at unload: <body>\n  <div id=\"root\"><div class=\"app h-screen max-h-screen flex flex-col bg-[var(--bg-primary)] overflow-hidden\"><header class=\"app-header glass-header select-none sticky top-0 z-50 flex-shrink-0 flex items-center justify-between gap-3 px-4 pb-2.5 pt-8\" style=\"app-region: drag; --accent: var(--accent-hover);\"><div class=\"flex shrink-0 items-center\"><div title=\"Perci Desktop\" class=\"w-9 h-9 roun"
+      ],
+      "viewport": {
+        "width": 1280,
+        "height": 900,
+        "devicePixelRatio": 2
+      },
+      "acceptance": [
+        {
+          "name": "icon header fits native widths with named tooltips and keyboard focus in both themes",
+          "passed": true
+        }
+      ],
+      "headerLayouts": [
+        {
+          "width": 1000,
+          "theme": "light",
+          "visibleText": "",
+          "documentOverflow": false,
+          "groupWidth": 457,
+          "groupScrollWidth": 652,
+          "modeGuideColor": "rgb(80, 80, 94)",
+          "chatGuideColor": "rgb(234, 88, 12)",
+          "names": [
+            {
+              "title": "New Chat",
+              "label": "New Chat"
+            },
+            {
+              "title": "Dashboard",
+              "label": "Dashboard"
+            },
+            {
+              "title": "Map",
+              "label": "Map"
+            },
+            {
+              "title": "Now",
+              "label": "Now"
+            },
+            {
+              "title": "Desk",
+              "label": "Desk"
+            },
+            {
+              "title": "Chat",
+              "label": "Chat"
+            },
+            {
+              "title": "Ensemble",
+              "label": "Ensemble"
+            },
+            {
+              "title": "Cowork",
+              "label": "Cowork"
+            },
+            {
+              "title": "Code",
+              "label": "Code"
+            },
+            {
+              "title": "Shipyard",
+              "label": "Shipyard"
+            },
+            {
+              "title": "Power Workspace",
+              "label": "Power Workspace"
+            },
+            {
+              "title": "Docket",
+              "label": "Docket"
+            },
+            {
+              "title": "Git Shells",
+              "label": "Git Shells"
+            },
+            {
+              "title": "Notes",
+              "label": "Notes"
+            },
+            {
+              "title": "Autoresearch",
+              "label": "Autoresearch"
+            },
+            {
+              "title": "Agents",
+              "label": "Agents"
+            },
+            {
+              "title": "Office",
+              "label": "Office"
+            },
+            {
+              "title": "Build",
+              "label": "Build"
+            },
+            {
+              "title": "Mission",
+              "label": "Mission"
+            },
+            {
+              "title": "Localhost",
+              "label": "Localhost"
+            },
+            {
+              "title": "Open mode guide",
+              "label": "Open mode guide"
+            },
+            {
+              "title": "Open Chat Guide",
+              "label": "Open Chat Guide"
+            },
+            {
+              "title": "OpenClaw: Local OpenClaw",
+              "label": "OpenClaw"
+            },
+            {
+              "title": "Hermes Agent",
+              "label": "Hermes Agent"
+            },
+            {
+              "title": "Skills Management",
+              "label": "Skills Management"
+            },
+            {
+              "title": "AgentMail",
+              "label": "AgentMail"
+            },
+            {
+              "title": "AutoForge — Autonomous coding agent",
+              "label": "AutoForge — Autonomous coding agent"
+            },
+            {
+              "title": "Toggle Terminal",
+              "label": "Toggle Terminal"
+            },
+            {
+              "title": "Theme: light. Click to cycle modes.",
+              "label": "Theme: light. Click to cycle modes."
+            },
+            {
+              "title": "Enable Incognito Mode",
+              "label": "Enable Incognito Mode"
+            }
+          ],
+          "clippedUtilities": [],
+          "iconContrast": [
+            {
+              "name": "New Chat",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            },
+            {
+              "name": "Dashboard",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Map",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Now",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Desk",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Chat",
+              "color": "rgb(10, 10, 18)",
+              "background": [
+                241.6321408809583,
+                241.6321408809583,
+                241.6321408809583
+              ],
+              "ratio": 17.55519844738143
+            },
+            {
+              "name": "Ensemble",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Cowork",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Code",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Shipyard",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Power Workspace",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Docket",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Git Shells",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Notes",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Autoresearch",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Agents",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Office",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Build",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Mission",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Localhost",
+              "color": "color(srgb 0.249412 0.528627 0.255686)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 4.397325988328474
+            },
+            {
+              "name": "Open mode guide",
+              "color": "rgb(80, 80, 94)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 7.830575253625534
+            },
+            {
+              "name": "Open Chat Guide",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            },
+            {
+              "name": "Skills Management",
+              "color": "rgb(10, 10, 18)",
+              "background": [
+                252.73018069973088,
+                239.78116109188775,
+                229.78900422914265
+              ],
+              "ratio": 17.599953217402348
+            },
+            {
+              "name": "Toggle Terminal",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            },
+            {
+              "name": "Theme: light. Click to cycle modes.",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            },
+            {
+              "name": "Enable Incognito Mode",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            }
+          ]
+        },
+        {
+          "width": 1000,
+          "theme": "dark",
+          "visibleText": "",
+          "documentOverflow": false,
+          "groupWidth": 457,
+          "groupScrollWidth": 652,
+          "modeGuideColor": "rgb(161, 161, 170)",
+          "chatGuideColor": "rgb(251, 146, 60)",
+          "names": [
+            {
+              "title": "New Chat",
+              "label": "New Chat"
+            },
+            {
+              "title": "Dashboard",
+              "label": "Dashboard"
+            },
+            {
+              "title": "Map",
+              "label": "Map"
+            },
+            {
+              "title": "Now",
+              "label": "Now"
+            },
+            {
+              "title": "Desk",
+              "label": "Desk"
+            },
+            {
+              "title": "Chat",
+              "label": "Chat"
+            },
+            {
+              "title": "Ensemble",
+              "label": "Ensemble"
+            },
+            {
+              "title": "Cowork",
+              "label": "Cowork"
+            },
+            {
+              "title": "Code",
+              "label": "Code"
+            },
+            {
+              "title": "Shipyard",
+              "label": "Shipyard"
+            },
+            {
+              "title": "Power Workspace",
+              "label": "Power Workspace"
+            },
+            {
+              "title": "Docket",
+              "label": "Docket"
+            },
+            {
+              "title": "Git Shells",
+              "label": "Git Shells"
+            },
+            {
+              "title": "Notes",
+              "label": "Notes"
+            },
+            {
+              "title": "Autoresearch",
+              "label": "Autoresearch"
+            },
+            {
+              "title": "Agents",
+              "label": "Agents"
+            },
+            {
+              "title": "Office",
+              "label": "Office"
+            },
+            {
+              "title": "Build",
+              "label": "Build"
+            },
+            {
+              "title": "Mission",
+              "label": "Mission"
+            },
+            {
+              "title": "Localhost",
+              "label": "Localhost"
+            },
+            {
+              "title": "Open mode guide",
+              "label": "Open mode guide"
+            },
+            {
+              "title": "Open Chat Guide",
+              "label": "Open Chat Guide"
+            },
+            {
+              "title": "OpenClaw: Local OpenClaw",
+              "label": "OpenClaw"
+            },
+            {
+              "title": "Hermes Agent",
+              "label": "Hermes Agent"
+            },
+            {
+              "title": "Skills Management",
+              "label": "Skills Management"
+            },
+            {
+              "title": "AgentMail",
+              "label": "AgentMail"
+            },
+            {
+              "title": "AutoForge — Autonomous coding agent",
+              "label": "AutoForge — Autonomous coding agent"
+            },
+            {
+              "title": "Toggle Terminal",
+              "label": "Toggle Terminal"
+            },
+            {
+              "title": "Theme: dark. Click to cycle modes.",
+              "label": "Theme: dark. Click to cycle modes."
+            },
+            {
+              "title": "Enable Incognito Mode",
+              "label": "Enable Incognito Mode"
+            }
+          ],
+          "clippedUtilities": [],
+          "iconContrast": [
+            {
+              "name": "New Chat",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            },
+            {
+              "name": "Dashboard",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Map",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Now",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Desk",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Chat",
+              "color": "rgb(245, 245, 247)",
+              "background": [
+                31.502153410076062,
+                31.502153410076062,
+                34.2296525469088
+              ],
+              "ratio": 15.015064175809929
+            },
+            {
+              "name": "Ensemble",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Cowork",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Code",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Shipyard",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Power Workspace",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Docket",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Git Shells",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Notes",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Autoresearch",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Agents",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Office",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Build",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Mission",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Localhost",
+              "color": "color(srgb 0.433726 0.712941 0.435294)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 7.56003560199217
+            },
+            {
+              "name": "Open mode guide",
+              "color": "rgb(161, 161, 170)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 7.298766633255192
+            },
+            {
+              "name": "Open Chat Guide",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            },
+            {
+              "name": "Skills Management",
+              "color": "rgb(245, 245, 247)",
+              "background": [
+                52.267835447904645,
+                32.29920799692426,
+                20.417147251057283
+              ],
+              "ratio": 14.101619393190996
+            },
+            {
+              "name": "Toggle Terminal",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            },
+            {
+              "name": "Theme: dark. Click to cycle modes.",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            },
+            {
+              "name": "Enable Incognito Mode",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            }
+          ]
+        },
+        {
+          "width": 1200,
+          "theme": "light",
+          "visibleText": "",
+          "documentOverflow": false,
+          "groupWidth": 652,
+          "groupScrollWidth": 652,
+          "modeGuideColor": "rgb(80, 80, 94)",
+          "chatGuideColor": "rgb(234, 88, 12)",
+          "names": [
+            {
+              "title": "New Chat",
+              "label": "New Chat"
+            },
+            {
+              "title": "Dashboard",
+              "label": "Dashboard"
+            },
+            {
+              "title": "Map",
+              "label": "Map"
+            },
+            {
+              "title": "Now",
+              "label": "Now"
+            },
+            {
+              "title": "Desk",
+              "label": "Desk"
+            },
+            {
+              "title": "Chat",
+              "label": "Chat"
+            },
+            {
+              "title": "Ensemble",
+              "label": "Ensemble"
+            },
+            {
+              "title": "Cowork",
+              "label": "Cowork"
+            },
+            {
+              "title": "Code",
+              "label": "Code"
+            },
+            {
+              "title": "Shipyard",
+              "label": "Shipyard"
+            },
+            {
+              "title": "Power Workspace",
+              "label": "Power Workspace"
+            },
+            {
+              "title": "Docket",
+              "label": "Docket"
+            },
+            {
+              "title": "Git Shells",
+              "label": "Git Shells"
+            },
+            {
+              "title": "Notes",
+              "label": "Notes"
+            },
+            {
+              "title": "Autoresearch",
+              "label": "Autoresearch"
+            },
+            {
+              "title": "Agents",
+              "label": "Agents"
+            },
+            {
+              "title": "Office",
+              "label": "Office"
+            },
+            {
+              "title": "Build",
+              "label": "Build"
+            },
+            {
+              "title": "Mission",
+              "label": "Mission"
+            },
+            {
+              "title": "Localhost",
+              "label": "Localhost"
+            },
+            {
+              "title": "Open mode guide",
+              "label": "Open mode guide"
+            },
+            {
+              "title": "Open Chat Guide",
+              "label": "Open Chat Guide"
+            },
+            {
+              "title": "OpenClaw: Local OpenClaw",
+              "label": "OpenClaw"
+            },
+            {
+              "title": "Hermes Agent",
+              "label": "Hermes Agent"
+            },
+            {
+              "title": "Skills Management",
+              "label": "Skills Management"
+            },
+            {
+              "title": "AgentMail",
+              "label": "AgentMail"
+            },
+            {
+              "title": "AutoForge — Autonomous coding agent",
+              "label": "AutoForge — Autonomous coding agent"
+            },
+            {
+              "title": "Toggle Terminal",
+              "label": "Toggle Terminal"
+            },
+            {
+              "title": "Theme: light. Click to cycle modes.",
+              "label": "Theme: light. Click to cycle modes."
+            },
+            {
+              "title": "Enable Incognito Mode",
+              "label": "Enable Incognito Mode"
+            }
+          ],
+          "clippedUtilities": [],
+          "iconContrast": [
+            {
+              "name": "New Chat",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            },
+            {
+              "name": "Dashboard",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Map",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Now",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Desk",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Chat",
+              "color": "rgb(10, 10, 18)",
+              "background": [
+                241.6321408809583,
+                241.6321408809583,
+                241.6321408809583
+              ],
+              "ratio": 17.55519844738143
+            },
+            {
+              "name": "Ensemble",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Cowork",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Code",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Shipyard",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Power Workspace",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Docket",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Git Shells",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Notes",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Autoresearch",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Agents",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Office",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Build",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Mission",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Localhost",
+              "color": "oklab(0.559494 -0.101818 0.0737855)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 4.397325988328474
+            },
+            {
+              "name": "Open mode guide",
+              "color": "rgb(80, 80, 94)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 7.830575253625534
+            },
+            {
+              "name": "Open Chat Guide",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            },
+            {
+              "name": "Skills Management",
+              "color": "rgb(10, 10, 18)",
+              "background": [
+                252.73018069973088,
+                239.78116109188775,
+                229.78900422914265
+              ],
+              "ratio": 17.599953217402348
+            },
+            {
+              "name": "Toggle Terminal",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            },
+            {
+              "name": "Theme: light. Click to cycle modes.",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            },
+            {
+              "name": "Enable Incognito Mode",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            }
+          ]
+        },
+        {
+          "width": 1200,
+          "theme": "dark",
+          "visibleText": "",
+          "documentOverflow": false,
+          "groupWidth": 652,
+          "groupScrollWidth": 652,
+          "modeGuideColor": "rgb(161, 161, 170)",
+          "chatGuideColor": "rgb(251, 146, 60)",
+          "names": [
+            {
+              "title": "New Chat",
+              "label": "New Chat"
+            },
+            {
+              "title": "Dashboard",
+              "label": "Dashboard"
+            },
+            {
+              "title": "Map",
+              "label": "Map"
+            },
+            {
+              "title": "Now",
+              "label": "Now"
+            },
+            {
+              "title": "Desk",
+              "label": "Desk"
+            },
+            {
+              "title": "Chat",
+              "label": "Chat"
+            },
+            {
+              "title": "Ensemble",
+              "label": "Ensemble"
+            },
+            {
+              "title": "Cowork",
+              "label": "Cowork"
+            },
+            {
+              "title": "Code",
+              "label": "Code"
+            },
+            {
+              "title": "Shipyard",
+              "label": "Shipyard"
+            },
+            {
+              "title": "Power Workspace",
+              "label": "Power Workspace"
+            },
+            {
+              "title": "Docket",
+              "label": "Docket"
+            },
+            {
+              "title": "Git Shells",
+              "label": "Git Shells"
+            },
+            {
+              "title": "Notes",
+              "label": "Notes"
+            },
+            {
+              "title": "Autoresearch",
+              "label": "Autoresearch"
+            },
+            {
+              "title": "Agents",
+              "label": "Agents"
+            },
+            {
+              "title": "Office",
+              "label": "Office"
+            },
+            {
+              "title": "Build",
+              "label": "Build"
+            },
+            {
+              "title": "Mission",
+              "label": "Mission"
+            },
+            {
+              "title": "Localhost",
+              "label": "Localhost"
+            },
+            {
+              "title": "Open mode guide",
+              "label": "Open mode guide"
+            },
+            {
+              "title": "Open Chat Guide",
+              "label": "Open Chat Guide"
+            },
+            {
+              "title": "OpenClaw: Local OpenClaw",
+              "label": "OpenClaw"
+            },
+            {
+              "title": "Hermes Agent",
+              "label": "Hermes Agent"
+            },
+            {
+              "title": "Skills Management",
+              "label": "Skills Management"
+            },
+            {
+              "title": "AgentMail",
+              "label": "AgentMail"
+            },
+            {
+              "title": "AutoForge — Autonomous coding agent",
+              "label": "AutoForge — Autonomous coding agent"
+            },
+            {
+              "title": "Toggle Terminal",
+              "label": "Toggle Terminal"
+            },
+            {
+              "title": "Theme: dark. Click to cycle modes.",
+              "label": "Theme: dark. Click to cycle modes."
+            },
+            {
+              "title": "Enable Incognito Mode",
+              "label": "Enable Incognito Mode"
+            }
+          ],
+          "clippedUtilities": [],
+          "iconContrast": [
+            {
+              "name": "New Chat",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            },
+            {
+              "name": "Dashboard",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Map",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Now",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Desk",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Chat",
+              "color": "rgb(245, 245, 247)",
+              "background": [
+                31.502153410076062,
+                31.502153410076062,
+                34.2296525469088
+              ],
+              "ratio": 15.015064175809929
+            },
+            {
+              "name": "Ensemble",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Cowork",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Code",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Shipyard",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Power Workspace",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Docket",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Git Shells",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Notes",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Autoresearch",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Agents",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Office",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Build",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Mission",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Localhost",
+              "color": "oklab(0.710668 -0.100568 0.0724232)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 7.56003560199217
+            },
+            {
+              "name": "Open mode guide",
+              "color": "rgb(161, 161, 170)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 7.298766633255192
+            },
+            {
+              "name": "Open Chat Guide",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            },
+            {
+              "name": "Skills Management",
+              "color": "rgb(245, 245, 247)",
+              "background": [
+                52.267835447904645,
+                32.29920799692426,
+                20.417147251057283
+              ],
+              "ratio": 14.101619393190996
+            },
+            {
+              "name": "Toggle Terminal",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            },
+            {
+              "name": "Theme: dark. Click to cycle modes.",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            },
+            {
+              "name": "Enable Incognito Mode",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            }
+          ]
+        },
+        {
+          "width": 1440,
+          "theme": "light",
+          "visibleText": "",
+          "documentOverflow": false,
+          "groupWidth": 652,
+          "groupScrollWidth": 652,
+          "modeGuideColor": "rgb(80, 80, 94)",
+          "chatGuideColor": "rgb(234, 88, 12)",
+          "names": [
+            {
+              "title": "New Chat",
+              "label": "New Chat"
+            },
+            {
+              "title": "Dashboard",
+              "label": "Dashboard"
+            },
+            {
+              "title": "Map",
+              "label": "Map"
+            },
+            {
+              "title": "Now",
+              "label": "Now"
+            },
+            {
+              "title": "Desk",
+              "label": "Desk"
+            },
+            {
+              "title": "Chat",
+              "label": "Chat"
+            },
+            {
+              "title": "Ensemble",
+              "label": "Ensemble"
+            },
+            {
+              "title": "Cowork",
+              "label": "Cowork"
+            },
+            {
+              "title": "Code",
+              "label": "Code"
+            },
+            {
+              "title": "Shipyard",
+              "label": "Shipyard"
+            },
+            {
+              "title": "Power Workspace",
+              "label": "Power Workspace"
+            },
+            {
+              "title": "Docket",
+              "label": "Docket"
+            },
+            {
+              "title": "Git Shells",
+              "label": "Git Shells"
+            },
+            {
+              "title": "Notes",
+              "label": "Notes"
+            },
+            {
+              "title": "Autoresearch",
+              "label": "Autoresearch"
+            },
+            {
+              "title": "Agents",
+              "label": "Agents"
+            },
+            {
+              "title": "Office",
+              "label": "Office"
+            },
+            {
+              "title": "Build",
+              "label": "Build"
+            },
+            {
+              "title": "Mission",
+              "label": "Mission"
+            },
+            {
+              "title": "Localhost",
+              "label": "Localhost"
+            },
+            {
+              "title": "Open mode guide",
+              "label": "Open mode guide"
+            },
+            {
+              "title": "Open Chat Guide",
+              "label": "Open Chat Guide"
+            },
+            {
+              "title": "OpenClaw: Local OpenClaw",
+              "label": "OpenClaw"
+            },
+            {
+              "title": "Hermes Agent",
+              "label": "Hermes Agent"
+            },
+            {
+              "title": "Skills Management",
+              "label": "Skills Management"
+            },
+            {
+              "title": "AgentMail",
+              "label": "AgentMail"
+            },
+            {
+              "title": "AutoForge — Autonomous coding agent",
+              "label": "AutoForge — Autonomous coding agent"
+            },
+            {
+              "title": "Toggle Terminal",
+              "label": "Toggle Terminal"
+            },
+            {
+              "title": "Theme: light. Click to cycle modes.",
+              "label": "Theme: light. Click to cycle modes."
+            },
+            {
+              "title": "Enable Incognito Mode",
+              "label": "Enable Incognito Mode"
+            }
+          ],
+          "clippedUtilities": [],
+          "iconContrast": [
+            {
+              "name": "New Chat",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            },
+            {
+              "name": "Dashboard",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Map",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Now",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Desk",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Chat",
+              "color": "rgb(11, 11, 19)",
+              "background": [
+                241.6321408809583,
+                241.6321408809583,
+                241.6321408809583
+              ],
+              "ratio": 17.449608653788815
+            },
+            {
+              "name": "Ensemble",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Cowork",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Code",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Shipyard",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Power Workspace",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Docket",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Git Shells",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Notes",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Autoresearch",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Agents",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Office",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Build",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Mission",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 3.547802249739498
+            },
+            {
+              "name": "Localhost",
+              "color": "oklab(0.55981 -0.101816 0.0737826)",
+              "background": [
+                254.61237985390235,
+                254.61237985390235,
+                254.61237985390235
+              ],
+              "ratio": 4.397325988328474
+            },
+            {
+              "name": "Open mode guide",
+              "color": "rgb(80, 80, 94)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 7.830575253625534
+            },
+            {
+              "name": "Open Chat Guide",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            },
+            {
+              "name": "Skills Management",
+              "color": "rgb(10, 10, 18)",
+              "background": [
+                252.73018069973088,
+                239.78116109188775,
+                229.78900422914265
+              ],
+              "ratio": 17.599953217402348
+            },
+            {
+              "name": "Toggle Terminal",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            },
+            {
+              "name": "Theme: light. Click to cycle modes.",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            },
+            {
+              "name": "Enable Incognito Mode",
+              "color": "rgb(234, 88, 12)",
+              "background": [
+                253.60784313725492,
+                253.60784313725492,
+                253.60784313725492
+              ],
+              "ratio": 3.5175629784998574
+            }
+          ]
+        },
+        {
+          "width": 1440,
+          "theme": "dark",
+          "visibleText": "",
+          "documentOverflow": false,
+          "groupWidth": 652,
+          "groupScrollWidth": 652,
+          "modeGuideColor": "rgb(161, 161, 170)",
+          "chatGuideColor": "rgb(251, 146, 60)",
+          "names": [
+            {
+              "title": "New Chat",
+              "label": "New Chat"
+            },
+            {
+              "title": "Dashboard",
+              "label": "Dashboard"
+            },
+            {
+              "title": "Map",
+              "label": "Map"
+            },
+            {
+              "title": "Now",
+              "label": "Now"
+            },
+            {
+              "title": "Desk",
+              "label": "Desk"
+            },
+            {
+              "title": "Chat",
+              "label": "Chat"
+            },
+            {
+              "title": "Ensemble",
+              "label": "Ensemble"
+            },
+            {
+              "title": "Cowork",
+              "label": "Cowork"
+            },
+            {
+              "title": "Code",
+              "label": "Code"
+            },
+            {
+              "title": "Shipyard",
+              "label": "Shipyard"
+            },
+            {
+              "title": "Power Workspace",
+              "label": "Power Workspace"
+            },
+            {
+              "title": "Docket",
+              "label": "Docket"
+            },
+            {
+              "title": "Git Shells",
+              "label": "Git Shells"
+            },
+            {
+              "title": "Notes",
+              "label": "Notes"
+            },
+            {
+              "title": "Autoresearch",
+              "label": "Autoresearch"
+            },
+            {
+              "title": "Agents",
+              "label": "Agents"
+            },
+            {
+              "title": "Office",
+              "label": "Office"
+            },
+            {
+              "title": "Build",
+              "label": "Build"
+            },
+            {
+              "title": "Mission",
+              "label": "Mission"
+            },
+            {
+              "title": "Localhost",
+              "label": "Localhost"
+            },
+            {
+              "title": "Open mode guide",
+              "label": "Open mode guide"
+            },
+            {
+              "title": "Open Chat Guide",
+              "label": "Open Chat Guide"
+            },
+            {
+              "title": "OpenClaw: Local OpenClaw",
+              "label": "OpenClaw"
+            },
+            {
+              "title": "Hermes Agent",
+              "label": "Hermes Agent"
+            },
+            {
+              "title": "Skills Management",
+              "label": "Skills Management"
+            },
+            {
+              "title": "AgentMail",
+              "label": "AgentMail"
+            },
+            {
+              "title": "AutoForge — Autonomous coding agent",
+              "label": "AutoForge — Autonomous coding agent"
+            },
+            {
+              "title": "Toggle Terminal",
+              "label": "Toggle Terminal"
+            },
+            {
+              "title": "Theme: dark. Click to cycle modes.",
+              "label": "Theme: dark. Click to cycle modes."
+            },
+            {
+              "title": "Enable Incognito Mode",
+              "label": "Enable Incognito Mode"
+            }
+          ],
+          "clippedUtilities": [],
+          "iconContrast": [
+            {
+              "name": "New Chat",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            },
+            {
+              "name": "Dashboard",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Map",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Now",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Desk",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Chat",
+              "color": "rgb(243, 243, 245)",
+              "background": [
+                31.502153410076062,
+                31.502153410076062,
+                34.2296525469088
+              ],
+              "ratio": 14.752817757513158
+            },
+            {
+              "name": "Ensemble",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Cowork",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Code",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Shipyard",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Power Workspace",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Docket",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Git Shells",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Notes",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Autoresearch",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Agents",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Office",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Build",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Mission",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 8.159824514631632
+            },
+            {
+              "name": "Localhost",
+              "color": "oklab(0.709484 -0.100578 0.0724338)",
+              "background": [
+                19.496070742022297,
+                19.496070742022297,
+                22.37008842752787
+              ],
+              "ratio": 7.476902173523705
+            },
+            {
+              "name": "Open mode guide",
+              "color": "rgb(161, 161, 170)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 7.298766633255192
+            },
+            {
+              "name": "Open Chat Guide",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            },
+            {
+              "name": "Skills Management",
+              "color": "rgb(245, 245, 247)",
+              "background": [
+                52.267835447904645,
+                32.29920799692426,
+                20.417147251057283
+              ],
+              "ratio": 14.101619393190996
+            },
+            {
+              "name": "Toggle Terminal",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            },
+            {
+              "name": "Theme: dark. Click to cycle modes.",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            },
+            {
+              "name": "Enable Incognito Mode",
+              "color": "rgb(251, 146, 60)",
+              "background": [
+                17.992156862745098,
+                17.992156862745098,
+                20.49019607843137
+              ],
+              "ratio": 8.265096781657595
+            }
+          ]
+        }
+      ],
+      "firstActivationMs": {
+        "chat": 101
+      },
+      "filledToggleContrast": [
+        {
+          "theme": "dark",
+          "name": "Toggle Terminal",
+          "foreground": "rgb(23, 23, 28)",
+          "background": "rgb(251, 146, 60)",
+          "ratio": 7.891629743458429
+        },
+        {
+          "theme": "dark",
+          "name": "Enable Incognito Mode",
+          "foreground": "rgb(23, 23, 28)",
+          "background": "rgb(251, 146, 60)",
+          "ratio": 7.891629743458429
+        },
+        {
+          "theme": "light",
+          "name": "Toggle Terminal",
+          "foreground": "rgb(23, 23, 28)",
+          "background": "rgb(234, 88, 12)",
+          "ratio": 5.017769140262513
+        },
+        {
+          "theme": "light",
+          "name": "Enable Incognito Mode",
+          "foreground": "rgb(23, 23, 28)",
+          "background": "rgb(234, 88, 12)",
+          "ratio": 5.017769140262513
+        }
+      ],
+      "packagedModuleImports": [
+        {
+          "file": "ChatMode-BYmPDLkU.js",
+          "passed": true
+        },
+        {
+          "file": "CodeMode-ZVU8N2E6.js",
+          "passed": true
+        },
+        {
+          "file": "CoworkMode-DYTFRTOw.js",
+          "passed": true
+        },
+        {
+          "file": "MissionControl-DnxrF_Si.js",
+          "passed": true
+        },
+        {
+          "file": "BuildMode-CfdUyWoE.js",
+          "passed": true
+        },
+        {
+          "file": "AgentsPanel-CfENzZ8B.js",
+          "passed": true
+        },
+        {
+          "file": "CodexMicroMode-AxGrHQL9.js",
+          "passed": true
+        },
+        {
+          "file": "AutoresearchPanel-C6Bb0_a2.js",
+          "passed": true
+        },
+        {
+          "file": "OfficePanel-C1NAh3yF.js",
+          "passed": true
+        },
+        {
+          "file": "HermesMode-DrDRXlaU.js",
+          "passed": true
+        },
+        {
+          "file": "GDashMode-DaT2S309.js",
+          "passed": true
+        },
+        {
+          "file": "LighthouseMode-Ddb9XwTw.js",
+          "passed": true
+        },
+        {
+          "file": "PowerWorkspaceMode-DqCPYd1g.js",
+          "passed": true
+        },
+        {
+          "file": "PerciMapMode-BPDhkJuO.js",
+          "passed": true
+        },
+        {
+          "file": "PerciNowMode-yGoY0S2c.js",
+          "passed": true
+        },
+        {
+          "file": "PerciDeskMode-CaVVtOCc.js",
+          "passed": true
+        },
+        {
+          "file": "NotesMode-C9rFmIqw.js",
+          "passed": true
+        },
+        {
+          "file": "BarsMode-DFbdEpbd.js",
+          "passed": true
+        },
+        {
+          "file": "MarkItDownMode-CTs1T0zX.js",
+          "passed": true
+        },
+        {
+          "file": "BillboardMode-w1tq93Is.js",
+          "passed": true
+        },
+        {
+          "file": "StudioOSMode-ClihhbEk.js",
+          "passed": true
+        },
+        {
+          "file": "ProjectsMode-DT16DtX_.js",
+          "passed": true
+        },
+        {
+          "file": "EidosMode-w6phzfnL.js",
+          "passed": true
+        },
+        {
+          "file": "LocalhostMode-Bt1VFA40.js",
+          "passed": true
+        },
+        {
+          "file": "SkillsMode-BGkLAvOI.js",
+          "passed": true
+        },
+        {
+          "file": "EnsembleMode-9IIv4htl.js",
+          "passed": true
+        },
+        {
+          "file": "CleanmacMode-RBoGvDUz.js",
+          "passed": true
+        },
+        {
+          "file": "AutoforgeMode-BHrfqi8G.js",
+          "passed": true
+        },
+        {
+          "file": "AgentMailMode-t9ByeddT.js",
+          "passed": true
+        },
+        {
+          "file": "PackagesMode-BnDYLgfY.js",
+          "passed": true
+        },
+        {
+          "file": "OpenNotebookMode-BaggQbVZ.js",
+          "passed": true
+        },
+        {
+          "file": "IptvMode-CiZ5f67O.js",
+          "passed": true
+        },
+        {
+          "file": "SimplexMode-DAL0YQFZ.js",
+          "passed": true
+        },
+        {
+          "file": "PxpipeMode-eEdW0dKO.js",
+          "passed": true
+        },
+        {
+          "file": "KeysafeMode-CNiIbmCE.js",
+          "passed": true
+        },
+        {
+          "file": "ApfelMode--lBHLmbI.js",
+          "passed": true
+        },
+        {
+          "file": "DotenvxMode-cLzgB4D5.js",
+          "passed": true
+        },
+        {
+          "file": "OpencodeMode-oHOtCrbP.js",
+          "passed": true
+        },
+        {
+          "file": "DockerMode-CCqgXRR8.js",
+          "passed": true
+        },
+        {
+          "file": "DbInspectorMode-DFHv5Nh0.js",
+          "passed": true
+        },
+        {
+          "file": "GithubOverviewMode-BZGCA0ap.js",
+          "passed": true
+        },
+        {
+          "file": "AliasManagerMode-D01BuIpo.js",
+          "passed": true
+        },
+        {
+          "file": "ShipyardMode-BARIyIZg.js",
+          "passed": true
+        },
+        {
+          "file": "DocketMode-KYFyk1hQ.js",
+          "passed": true
+        },
+        {
+          "file": "SystemSettingsMode-DVt7dUs-.js",
+          "passed": true
+        },
+        {
+          "file": "SettingsModal-B3XAe7uV.js",
+          "passed": true
+        },
+        {
+          "file": "ArtifactWindow-DAyX15Al.js",
+          "passed": true
+        },
+        {
+          "file": "ResearchResultsWindow-1h7mGL2N.js",
+          "passed": true
+        },
+        {
+          "file": "PwaShortcutWindow-DE4vUYAJ.js",
+          "passed": true
+        },
+        {
+          "file": "Terminal-By6nLZEu.js",
+          "passed": true
+        }
+      ],
+      "processExit": {
+        "code": 0,
+        "signal": null,
+        "at": "2026-10-10T11:27:36.265Z"
+      }
+    }
+  ]
+}

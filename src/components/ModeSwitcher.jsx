@@ -1,4 +1,3 @@
-import React from 'react';
 import { useMode, MODES, LOCALHOST_WINDOW_ID } from '../context/ModeContext';
 import {
     DashboardIcon, ChatIcon, EnsembleIcon, CoworkIcon, CodeIcon, NotesIcon, ResearchIcon,
@@ -8,11 +7,12 @@ import { Globe, Ship, Rocket } from 'lucide-react';
 
 // Duotone palettes for the custom mode icons (see ModeIcons.jsx).
 // Secondary is a translucent tint so the primary outline/detail stays
-// legible at ~15px; the solid accent does the recognising, not the fill.
-const ICON_ACTIVE = { '--mi-primary': '#fff', '--mi-secondary': 'rgba(255,255,255,0.32)' };
+// legible at 17px; the solid accent does the recognising, not the fill.
+const ICON_ACTIVE = { '--mi-primary': 'var(--text-primary)', '--mi-secondary': 'color-mix(in srgb, var(--accent) 40%, transparent)', color: 'var(--text-primary)' };
 const ICON_RESTING = {
     '--mi-primary': 'var(--accent)',
     '--mi-secondary': 'color-mix(in srgb, var(--accent-cyan) 50%, transparent)',
+    color: 'var(--accent)',
 };
 
 export default function ModeSwitcher() {
@@ -22,7 +22,7 @@ export default function ModeSwitcher() {
     const perciDeskOpen = windows.some(w => w.id === MODES.PERCI_DESK && w.state !== 'minimized');
 
     const modes = [
-        { id: MODES.DASHBOARD, icon: DashboardIcon, label: '' },
+        { id: MODES.DASHBOARD, icon: DashboardIcon, label: 'Dashboard' },
         { id: MODES.SURFACE_MAP, icon: SurfaceMapIcon, label: 'Map' },
         { id: MODES.PERCI_NOW, icon: PerciNowIcon, label: 'Now' },
         { id: MODES.PERCI_DESK, icon: PerciDeskIcon, label: 'Desk' },
@@ -30,8 +30,8 @@ export default function ModeSwitcher() {
         { id: MODES.ENSEMBLE, icon: EnsembleIcon,   label: 'Ensemble' },
         { id: MODES.COWORK, icon: CoworkIcon,       label: 'Cowork' },
         { id: MODES.CODE,   icon: CodeIcon,         label: 'Code' },
-        { id: MODES.SHIPYARD, icon: Ship,   label: 'Shipyard', color: '#f97316' },
-        { id: MODES.POWER_WORKSPACE, icon: Rocket, label: 'Power Ws', color: '#f97316' },
+        { id: MODES.SHIPYARD, icon: Ship,   label: 'Shipyard' },
+        { id: MODES.POWER_WORKSPACE, icon: Rocket, label: 'Power Workspace' },
         { id: MODES.DOCKET, icon: DocketIcon,       label: 'Docket' },
         { id: MODES.PROJECTS, icon: ProjectsIcon,   label: 'Git Shells' },
         { id: MODES.NOTES,  icon: NotesIcon,        label: 'Notes' },
@@ -40,11 +40,11 @@ export default function ModeSwitcher() {
         { id: MODES.OFFICE, icon: OfficeIcon,       label: 'Office' },
         { id: MODES.BUILD,  icon: BuildIcon,        label: 'Build' },
         { id: MODES.MISSION, icon: MissionIcon,     label: 'Mission' },
-        { id: LOCALHOST_WINDOW_ID, icon: Globe, label: 'Localhost', color: '#4DA64D' },
+        { id: LOCALHOST_WINDOW_ID, icon: Globe, label: 'Localhost', color: 'color-mix(in srgb, var(--text-primary) 20%, #4DA64D)' },
     ];
 
     return (
-        <div className="flex gap-0.5 p-1 rounded-xl glass-panel layout-transition">
+        <div className="flex min-w-0 gap-0.5 overflow-x-auto p-1 rounded-xl glass-panel layout-transition">
             {modes.map(mode => {
                 const active = currentMode === mode.id
                     || (mode.id === MODES.PERCI_NOW && perciNowOpen)
@@ -54,31 +54,22 @@ export default function ModeSwitcher() {
                         key={mode.id}
                         onClick={() => setCurrentMode(mode.id)}
                         aria-label={mode.label}
+                        aria-pressed={active}
                         title={mode.label}
-                        className="micro-interaction state-feedback relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200"
-                        style={{ fontFamily: 'DM Sans, sans-serif' }}
+                        className="micro-interaction state-feedback relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-[-2px]"
                     >
                         {/* Sliding active indicator */}
                         {active && (
                             <span
                                 className="absolute inset-0 rounded-lg layout-transition"
-                                style={mode.color ? { background: 'linear-gradient(135deg, ' + mode.color + ', color-mix(in srgb, ' + mode.color + ' 70%, white))', boxShadow: '0 0 16px color-mix(in srgb, ' + mode.color + ' 50%, transparent)' } : {
-                                    background: 'linear-gradient(135deg, var(--accent), var(--accent-cyan))',
-                                    boxShadow: '0 0 16px var(--accent-glow)',
-                                }}
+                                style={{ background: 'var(--bg-hover)', boxShadow: 'inset 0 0 0 1px var(--text-secondary)' }}
                             />
                         )}
                         <mode.icon
-                            size={15}
+                            size={17}
                             className="relative z-10 transition-colors duration-200"
-                            style={mode.color ? { '--mi-primary': mode.color, '--mi-secondary': 'color-mix(in srgb, ' + mode.color + ' 50%, transparent)', color: active ? 'white' : mode.color } : active ? ICON_ACTIVE : ICON_RESTING}
+                            style={active ? ICON_ACTIVE : mode.color ? { '--mi-primary': mode.color, '--mi-secondary': 'color-mix(in srgb, ' + mode.color + ' 50%, transparent)', color: mode.color } : ICON_RESTING}
                         />
-                        <span
-                            className="relative z-10 hidden lg:inline transition-colors duration-200"
-                            style={{ color: mode.color ? mode.color : active ? 'white' : 'var(--text-secondary)' }}
-                        >
-                            {mode.label}
-                        </span>
                     </button>
                 );
             })}

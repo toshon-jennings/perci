@@ -1,0 +1,148 @@
+{
+  "method": "Serial identical synthetic backend fixtures; macOS Summary Footprint MB, summed primed Electron CPU percentages. Shell timing measures fixture hydration reload, not end-to-end cold launch or backend readiness.",
+  "restored": {
+    "footprintMB": {
+      "baselineMedian": 1008.0,
+      "candidateMedian": 626.0,
+      "reductionPercent": 37.89682539682539
+    },
+    "cpuPercent": {
+      "baselineMedian": 7.207714689516408,
+      "candidateMedian": 4.650847520935609,
+      "reductionPercent": 35.47403412484892
+    },
+    "shellHydrationMs": {
+      "baselineMedian": 2248,
+      "candidateMedian": 947,
+      "reductionPercent": 57.87366548042705
+    }
+  },
+  "empty": {
+    "footprintMB": {
+      "baselineMedian": 876.0,
+      "candidateMedian": 626.0,
+      "reductionPercent": 28.538812785388124
+    },
+    "cpuPercent": {
+      "baselineMedian": 5.3586823417275795,
+      "candidateMedian": 4.641849158929662,
+      "reductionPercent": 13.377041912262676
+    },
+    "shellHydrationMs": {
+      "baselineMedian": 606,
+      "candidateMedian": 816,
+      "reductionPercent": -34.65346534653466
+    }
+  }
+}
+{
+  "baseline-final-v2": {
+    "complete": true,
+    "sampledRuns": 3,
+    "completedCycles": null,
+    "postWarmup": null
+  },
+  "candidate-0-50-4-accessible-final": {
+    "complete": true,
+    "sampledRuns": 3,
+    "completedCycles": null,
+    "postWarmup": null
+  },
+  "baseline-empty-final-v2": {
+    "complete": true,
+    "sampledRuns": 3,
+    "completedCycles": null,
+    "postWarmup": null
+  },
+  "candidate-empty-0-50-4-accessible-final": {
+    "complete": true,
+    "sampledRuns": 3,
+    "completedCycles": null,
+    "postWarmup": null
+  },
+  "baseline-soak-final-v2": {
+    "complete": true,
+    "sampledRuns": 1,
+    "completedCycles": 27,
+    "postWarmup": {
+      "samples": 24,
+      "firstThreeMedianMB": 1399.0,
+      "lastThreeMedianMB": 1496.0,
+      "slopeMBPerMinute": -0.8730438194912397,
+      "cpuPercent": {
+        "median": 13.089814091133736,
+        "min": 11.743474748229204,
+        "max": 14.533567227030309,
+        "values": [
+          13.661456136191589,
+          12.92308116184631,
+          13.306799908486374,
+          13.029761105242843,
+          13.048584197053481,
+          13.930942541686301,
+          12.134120471109235,
+          13.264887156094606,
+          13.909318773016144,
+          13.582963183352001,
+          12.923419422005017,
+          12.039499059986817,
+          12.964611359618829,
+          12.491076807143653,
+          12.972009323814397,
+          13.441898314807876,
+          14.266566260437871,
+          12.55739430708292,
+          13.735215441979786,
+          11.743474748229204,
+          12.130301369871363,
+          13.131043985213989,
+          13.736658652794512,
+          14.533567227030309
+        ]
+      }
+    }
+  },
+  "candidate-soak-0-50-4-final": {
+    "complete": true,
+    "sampledRuns": 1,
+    "completedCycles": 28,
+    "postWarmup": {
+      "samples": 25,
+      "firstThreeMedianMB": 1059.0,
+      "lastThreeMedianMB": 1107.0,
+      "slopeMBPerMinute": 4.142408199093255,
+      "cpuPercent": {
+        "median": 5.150401323436893,
+        "min": 4.749534809961956,
+        "max": 6.051661642021679,
+        "values": [
+          4.957940214162684,
+          5.065079920704993,
+          4.88802247313623,
+          5.295578264518695,
+          5.2637503661933875,
+          5.603860884333202,
+          5.143700003675453,
+          5.321114216949671,
+          5.330702624337709,
+          5.346450992705536,
+          5.148646215949937,
+          5.090491762954551,
+          5.334263434557569,
+          5.208681810448499,
+          5.43787614159654,
+          5.150401323436893,
+          4.749534809961956,
+          4.759205067700369,
+          4.819827635124298,
+          5.076452783737599,
+          5.106344363295048,
+          5.378508833643409,
+          5.262932943657903,
+          5.120005810065613,
+          6.051661642021679
+        ]
+      }
+    }
+  }
+}

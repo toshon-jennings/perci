@@ -1,0 +1,96 @@
+{
+  "startedAt": "2026-10-10T09:55:38.706591+00:00",
+  "phases": [
+    {
+      "label": "baseline-final-v2",
+      "startedAt": "2026-10-10T09:55:38.707045+00:00",
+      "command": [
+        "node",
+        "scripts/measure-perci-performance.mjs",
+        "--app",
+        "release-build/performance-baseline/Perci.app",
+        "--label",
+        "baseline-final-v2",
+        "--runs",
+        "3",
+        "--idle-seconds",
+        "60",
+        "--allow-test-exit"
+      ],
+      "exitCode": 0,
+      "finishedAt": "2026-10-10T09:59:01.307976+00:00"
+    },
+    {
+      "label": "candidate-final-v2",
+      "startedAt": "2026-10-10T09:59:01.314590+00:00",
+      "command": [
+        "node",
+        "scripts/measure-perci-performance.mjs",
+        "--app",
+        "release-build/performance-0.50.3-verified/mac-arm64/Perci.app",
+        "--label",
+        "candidate-final-v2",
+        "--runs",
+        "3",
+        "--idle-seconds",
+        "60",
+        "--allow-test-exit"
+      ],
+      "exitCode": 0,
+      "finishedAt": "2026-10-10T10:02:20.321938+00:00"
+    },
+    {
+      "label": "baseline-empty-final-v2",
+      "startedAt": "2026-10-10T10:02:20.330416+00:00",
+      "command": [
+        "node",
+        "scripts/measure-perci-performance.mjs",
+        "--app",
+        "release-build/performance-baseline/Perci.app",
+        "--label",
+        "baseline-empty-final-v2",
+        "--runs",
+        "3",
+        "--idle-seconds",
+        "60",
+        "--empty",
+        "--allow-test-exit"
+      ],
+      "exitCode": 0,
+      "finishedAt": "2026-10-10T10:05:35.347161+00:00"
+    },
+    {
+      "label": "candidate-empty-final-v2",
+      "startedAt": "2026-10-10T10:05:35.356487+00:00",
+      "command": [
+        "node",
+        "scripts/measure-perci-performance.mjs",
+        "--app",
+        "release-build/performance-0.50.3-verified/mac-arm64/Perci.app",
+        "--label",
+        "candidate-empty-final-v2",
+        "--runs",
+        "3",
+        "--idle-seconds",
+        "60",
+        "--empty",
+        "--allow-test-exit"
+      ],
+      "exitCode": 0,
+      "finishedAt": "2026-10-10T10:08:55.356144+00:00"
+    },
+    {
+      "label": "baseline-soak-final-v2",
+      "startedAt": "2026-10-10T10:08:55.358546+00:00"
+    }
+  ],
+  "headerFollowup": {
+    "version": "0.50.4",
+    "status": "Baseline soak running; old coordinator paused, old candidate phase superseded. New clean build queued in build-header-candidate.py.",
+    "candidateLabels": [
+      "candidate-0-50-4-final",
+      "candidate-empty-0-50-4-final",
+      "candidate-soak-0-50-4-final"
+    ]
+  }
+}
