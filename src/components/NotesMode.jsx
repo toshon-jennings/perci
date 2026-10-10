@@ -24,6 +24,7 @@ import {
     setWorkspaceLink,
 } from '../lib/powerWorkspace';
 import NotesGraph3D from './NotesGraph3D';
+import { useTheme } from '../context/ThemeContext';
 
 const NOTES_FOLDER_KEY = 'perci_notes_folder';
 
@@ -139,6 +140,7 @@ function SidebarNoteItem({ fileName, noteId, isActive, isLocked, onSelect, onRen
 }
 
 export default function NotesMode() {
+    const { isDarkMode } = useTheme();
     const { codeState, setCodeState } = useMode();
     const workingDirectory = codeState?.workingDirectory;
     const initialWorkspaceHandoff = useMemo(() => consumeWorkspaceSurfaceHandoff('notes'), []);
@@ -211,9 +213,6 @@ export default function NotesMode() {
                 if (shouldPersistResolvedFolder) {
                     writeStringStorage(NOTES_FOLDER_KEY, savedFolder);
                 }
-                if (window.electron?.registerWorkspace) {
-                    await window.electron.registerWorkspace(savedFolder);
-                }
             }
         }
         initNotesFolder();
@@ -228,9 +227,6 @@ export default function NotesMode() {
             if (folderPath) {
                 writeStringStorage(NOTES_FOLDER_KEY, folderPath);
                 setNotesFolder(folderPath);
-                if (window.electron?.registerWorkspace) {
-                    await window.electron.registerWorkspace(folderPath);
-                }
             }
         } catch (err) {
             console.error('Failed to select directory:', err);
@@ -1618,7 +1614,7 @@ export default function NotesMode() {
                                     <MonacoEditor
                                         height="100%"
                                         language="markdown"
-                                        theme="vs-dark"
+                                        theme={isDarkMode ? 'vs-dark' : 'vs'}
                                         value={unsavedContent}
                                         onChange={handleEditorChange}
                                         options={{
@@ -1640,7 +1636,7 @@ export default function NotesMode() {
 
                             {(viewMode === 'preview' || viewMode === 'split') && (
                                 <div className="flex-1 h-full overflow-y-auto bg-[var(--bg-primary)]">
-                                    <div className="p-6 max-w-4xl mx-auto prose prose-invert">
+                                    <div className={`p-6 max-w-4xl mx-auto prose ${isDarkMode ? 'prose-invert' : ''}`}>
                                     <ReactMarkdown
                                         remarkPlugins={[remarkGfm]}
                                         components={renderMarkdownComponents}
