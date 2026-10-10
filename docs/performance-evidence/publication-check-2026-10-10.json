@@ -64,5 +64,14 @@
     "tests": "npm test:48files/248tests pass on2026-10-10",
     "stagedWhitespace": "git diff --cached --check passes; scoped attributes preserve raw CLI logs and unified diff context.",
     "reviewedProductHashes": "All29ownedsourcehashes still match reviewed0.50.4manifest; no product changes after final ship verdict."
+  },
+  "sourcePublication": {
+    "commit": "57a07672f9fe1b4c11c4ff43eff1d62635a13e50",
+    "branch": "main",
+    "remote": "origin",
+    "remoteSHAIndependentlyVerified": true,
+    "tagOrInstallerReleaseCreated": false,
+    "unrelatedNotesOnlyRemainingDirty": true,
+    "temporaryScanCopiesRemovedAfterGitBlobVerification": true
   }
 }
